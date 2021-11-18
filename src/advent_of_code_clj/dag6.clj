@@ -38,7 +38,7 @@ b")
   (count (set (mapcat identity gruppe))))
 
 (defn antall-spørsmål-besvart-av-hele-gruppe [gruppe]
-  (count (apply set/union (map set gruppe))))
+  (count (apply set/intersection (map set gruppe))))
 
 (defn del-1 [data]
   (let [linjer (str/split-lines data)
@@ -52,16 +52,16 @@ b")
         grupperte-svar (->> linjer
                             (partition-by #{""})
                             (remove #{'("")}))]
-    (reduce + (map antall-besvarte-spørsmål-i-gruppe grupperte-svar))))
+    (reduce + (map antall-spørsmål-besvart-av-hele-gruppe grupperte-svar))))
 
 (= 11 (del-1 test-data-del-1))
 
-(= 11 (del-2 test-data-del-2))
+(= 6 (del-2 test-data-del-2))
 
 (comment
   ; Del 1
-  (process (slurp "input/day6-input.txt"))
+  (del-1 (slurp "input/day6-input.txt"))
 
   ; Del 2
-
+  (del-2 (slurp "input/day6-input.txt"))
   )
