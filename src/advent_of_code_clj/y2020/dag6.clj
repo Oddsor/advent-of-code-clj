@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.dag6
+(ns advent-of-code-clj.y2020.dag6
   (:require [clojure.string :as str]
             [clojure.set :as set]))
 
@@ -60,8 +60,8 @@ b")
 
 (comment
   ; Del 1
-  (del-1 (slurp "input/day6-input.txt"))
+  (del-1 (slurp "input/y2020/day6-input.txt"))
 
   ; Del 2
-  (del-2 (slurp "input/day6-input.txt"))
+  (del-2 (slurp "input/y2020/day6-input.txt"))
   )

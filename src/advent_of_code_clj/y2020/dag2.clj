@@ -1,11 +1,11 @@
-(ns advent-of-code-clj.dag2
+(ns advent-of-code-clj.y2020.dag2
   (:require [clojure.string :as str]))
 
 (def testinput "1-3 a: abcde
 1-3 b: cdefg
 2-9 c: ccccccccc")
 
-(def data (slurp "input/day2-input.txt"))
+(def data (slurp "input/y2020/day2-input.txt"))
 
 ; Ønsker en regex som "[x]{1,3}"
 
@@ -21,7 +21,7 @@
                         (inc maximum))))
                  (str/split-lines data))))
 
-(defn bokstaver-er-riktig-plassert []
+(comment
   (count (filter (fn [linje]
                    (let [[regel passord] (str/split linje #"\: ")
                          [pos-streng bokstav-str] (str/split regel #"\s")

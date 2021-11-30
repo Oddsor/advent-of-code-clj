@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.dag4
+(ns advent-of-code-clj.y2020.dag4
   (:require [clojure.string :as str]))
 
 (def test-data "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
@@ -101,7 +101,7 @@ eyr:2022
 iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719")
 
 (comment
-  (->> (slurp "input/day4-input.txt")
+  (->> (slurp "input/y2020/day4-input.txt")
        split-passports
        (map parse-passport)
        (filter valid-passport-2?)

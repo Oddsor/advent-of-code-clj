@@ -1,11 +1,26 @@
-(ns advent-of-code-clj.dag5
+(ns advent-of-code-clj.y2020.dag5
   (:require [clojure.string :as str]
-            [clojure.set :as set]))
+            [com.rpl.specter :refer :all #_[srange-dynamic subselect ALL FIRST select-one]]))
 
 (def test-data
   [["BFFFBBFRRR" 70 7 567]
    ["FFFBBBFRRR" 14 7 119]
    ["BBFFBBFRLL" 102 4 820]])
+
+(def seats (map (fn [row]
+                  (map (fn [col]
+                         (+ (* row 8) col)) (range 8))) (range 128)))
+
+(def to-sym (comp deref resolve symbol str))
+
+(def F (srange-dynamic (constantly 0) #(/ (count %) 2)))
+(def B (srange-dynamic #(/ (count %) 2) count))
+(def L (subselect [ALL F] identity))
+(def R (subselect [ALL B] identity))
+
+(select-one (concat (map to-sym "BFFFBBFRRR")
+                    [FIRST FIRST])
+                    seats)
 
 (defn seat-info [boarding-code]
   (let [{:keys [row-range col-range]}
@@ -30,14 +45,14 @@
 
 (comment
   ;Høyeste registrerte boarding pass
-  (->> (slurp "input/day5-input.txt")
+  (->> (slurp "input/y2020/day5-input.txt")
        (str/split-lines)
-       (map (comp :seat-id seat-info)))
-  )
+       (map (comp :seat-id seat-info))
+       (apply max)))
 
 (comment
   ; Ledige seter som eksisterer
-  (let [registrerte-sete-ider (->> (slurp "input/day5-input.txt")
+  (let [registrerte-sete-ider (->> (slurp "input/y2020/day5-input.txt")
                                    (str/split-lines)
                                    (map (comp :seat-id seat-info))
                                    set)

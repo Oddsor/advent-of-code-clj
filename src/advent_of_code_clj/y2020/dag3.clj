@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.dag3
+(ns advent-of-code-clj.y2020.dag3
   (:require [clojure.string :as str]))
 
 (def test-data "..##.........##.........##.........##.........##.........##.......  --->
@@ -23,13 +23,13 @@
        count))
 (comment
   ;; Kartet er lengre enn det er bredt, så man må bruke modulo bredde for å få rett svar
-  (->> (slurp "input/day3-input.txt")
+  (->> (slurp "input/y2020/day3-input.txt")
        str/split-lines
        (x-til-høyre 3))
   )
 
 (comment
-  (let [kart (str/split-lines (slurp "input/day3-input.txt"))]
+  (let [kart (str/split-lines (slurp "input/y2020/day3-input.txt"))]
     (* (x-til-høyre 1 kart)
        (x-til-høyre 3 kart)
        (x-til-høyre 5 kart)
