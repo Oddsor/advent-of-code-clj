@@ -100,7 +100,19 @@ dotted black bags contain no other bags.")
   )
 
 (comment
-  (m/search bagmaps
+  ;; Forsøk med Meander
+  (m/rewrite (parse test-data)
+             ({:bag !bagname
+               :contains (!bagname ...)} ... :as !bag)
+             ({:bag !bagname
+               :contains (m/cata ?????)}))
+
+
+
+  (m/search (parse test-data)
             ({:bag !bagname
-              :contains (m/rewrite !bagname ...)} ...)
-            !bagname))
+              :contains ((m/cata !bagname) ...)} ... :as !bag)
+            !bag
+            ?x
+            (m/pred #{?x} !bag))
+  )
