@@ -58,8 +58,13 @@
 (comment
   ;; Minimal versjon
   ;; (let[i(read-string(str"["(slurp *in*)"]"))p #(partition %1 1 %2)m(fn[x](count(filter #(apply < %)(p 2 x))))s(fn[x](map #(apply + %)(p 3 x)))](prn[(m i)(-> i s m)]))
-  (let [i (read-string (str "[" (slurp *in*) "]")) 
+  ;; (let[i(read-string(str"["(slurp *in*)"]"))m(fn[n x](count(filter #(apply < %)(map list x(drop n x)))))](prn[(m 2 i)(m 3 i)]))
+  (let [i (read-string (str "[" (slurp *in*) "]"))
         p #(partition %1 1 %2)
         m (fn [x] (count (filter #(apply < %) (p 2 x))))
         s (fn [x] (map #(apply + %) (p 3 x)))]
-    (prn [(m i) (-> i s m)])))
+    (prn [(m i) (-> i s m)]))
+  ;; Innsikt: deloppgave 2 tilsvarer å sammenligne verdi n og n+3, og droppe multiplisering
+  (let [i (read-string (str "[" (slurp *in*) "]")) 
+        m (fn [n x] (count (filter #(apply < %) (map list x (drop n x)))))] 
+    (prn [(m 2 i) (m 3 i)])))
