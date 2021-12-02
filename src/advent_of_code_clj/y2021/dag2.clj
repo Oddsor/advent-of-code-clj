@@ -17,30 +17,24 @@ forward 2")
        (str/split-lines text)))
 
 (defn update-position
-  [{:keys [depth h-pos]} {:keys [op amount]}]
-  {:depth (condp = op
-            :down (+ depth amount)
-            :up (- depth amount)
-            depth)
-   :h-pos (cond-> h-pos
-            (= op :forward) (+ amount))})
+  [{:keys [depth h-pos] :as state} {:keys [op amount]}]
+  (merge state (condp = op
+                 :down {:depth (+ depth amount)}
+                 :up {:depth (- depth amount)}
+                 :forward {:h-pos (+ h-pos amount)})))
 
-(defn navigate-1
-  [ops]
+(defn navigate-1 [ops]
   (reduce update-position {:depth 0 :h-pos 0} ops))
 
 (defn update-position-with-aim
-  [{:keys [aim] :as state} {:keys [op amount]}]
-  (condp = op
-    :down (update state :aim + amount)
-    :up (update state :aim - amount)
-    :forward (-> state
-                 (update :h-pos + amount)
-                 (update :depth + (* aim amount)))
-    state))
+  [{:keys [aim depth h-pos] :as state} {:keys [op amount]}]
+  (merge state (condp = op
+                 :down {:aim (+ aim amount)}
+                 :up {:aim (- aim amount)}
+                 :forward {:h-pos (+ h-pos amount)
+                           :depth (+ depth (* amount aim))})))
 
-(defn navigate-2
-  [ops]
+(defn navigate-2 [ops]
   (reduce update-position-with-aim {:depth 0 :h-pos 0 :aim 0} ops))
 
 (defn multiply-positions [{:keys [depth h-pos] :as _state}]
@@ -51,7 +45,7 @@ forward 2")
   (multiply-positions (navigate-1 (parse (slurp "input/y2021/day2-input.txt")))))
 
 (comment
-;; Part 2
+  ;; Part 2
   (multiply-positions (navigate-2 (parse (slurp "input/y2021/day2-input.txt")))))
 
 ;; Asserts
