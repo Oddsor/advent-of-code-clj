@@ -1,5 +1,4 @@
-(ns advent-of-code-clj.y2021.dag3
-  (:require [clojure.string :as str]))
+(ns advent-of-code-clj.y2021.dag3)
 
 (def test-data "00100
 11110
@@ -14,12 +13,12 @@
 00010
 01010")
 
-(defn parse [text]
-  (str/split-lines text))
-
 (defn bit-str-to-dec [bit-str]
   (when (re-matches #"^[10]*$" bit-str)
     (read-string (str "2r" bit-str))))
+
+(defn parse [text]
+  (re-seq #"\d+" text))
 
 (defn transpose
   "(transpose [[1 2] [3 4]])
@@ -43,23 +42,23 @@
   (reduce (fn [data idx]
             (if (= 1 (count data))
               (reduced data)
-              (let [preferred-bit ({> \1
-                                    < \0} fun)
+              (let [preferred-bit ({> true
+                                    < false} fun)
                     sorted (->> data
-                                (map #(nth % idx))
+                                (map #(bit-test % idx))
                                 frequencies
                                 (sort (fn [a b]
                                         (fun (val a) (val b)))))
                     to-take (if (apply = (map second sorted))
                               preferred-bit
                               (ffirst sorted))]
-                (filter #(= to-take (nth % idx)) data))))
-          data 
-          (range (count (first data)))))
+                (filter #(= to-take (bit-test % idx)) data))))
+          (map bit-str-to-dec data)
+          (reverse (range (count (first data))))))
 
 (assert (= 230 (let [data (parse test-data)]
-                 (* (bit-str-to-dec (first (narrow-bits-by-fn > data)))
-                    (bit-str-to-dec (first (narrow-bits-by-fn < data)))))))
+                 (* (first (narrow-bits-by-fn > data))
+                    (first (narrow-bits-by-fn < data))))))
 
 (comment
   (let [data (parse (slurp "input/y2021/day3-input.txt"))]
