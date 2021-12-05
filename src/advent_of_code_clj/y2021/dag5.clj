@@ -78,16 +78,11 @@
 
 ;; Second variant instead generates points and counts all repetitions
 
-(defn plots [[x1 y1] [x2 y2 :as b]]
-  (loop [p []
-         x1 x1
-         y1 y1]
-    (let [np (conj p [x1 y1])]
-      (if (= [x1 y1] b)
-        np
-        (recur np
-               (+ x1 (compare x2 x1))
-               (+ y1 (compare y2 y1)))))))
+(defn plots [[x1 y1 :as a] [x2 y2 :as b]]
+  (lazy-seq
+   (cons [x1 y1] (when-not (= a b)
+                   (plots [(+ x1 (compare x2 x1))
+                           (+ y1 (compare y2 y1))] b)))))
 
 (assert (= 5
            (->> test-data

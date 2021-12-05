@@ -44,30 +44,31 @@
                          (mapv read-numbers seq-of-nums))))}))
 
 (defn board-wins? [board]
-  (let [horizontal-sets (map set board)
-        vertical-sets (map set (transpose board))]
-    (boolean (or (some #{#{nil}} horizontal-sets)
-                 (some #{#{nil}} vertical-sets)))))
+  ;; Mer elegant algo fra tschady: https://github.com/tschady/advent-of-code/blob/main/src/aoc/2021/d04.clj
+  (some #(every? nil? %) (concat board (transpose board))))
 
 (defn remove-value-from-board [num board]
   (s/setval (s/walker #{num}) nil board))
 
-(defn determine-winner [or-loser {:keys [draw-seq boards]}]
-  (reduce (fn [boards drawn-num]
-            (let [{winners true
-                   losers false} (group-by board-wins? (map (partial remove-value-from-board drawn-num) boards))]
-              (if-let [board (and (if or-loser
-                                    (= 1 (count boards))
-                                    true)
-                                  (first winners))]
-                (reduced {:drawn-num drawn-num
-                          :winning-sum (* drawn-num (apply + (s/select (s/walker number?) board)))
-                          :winning-board board})
-                losers)))
-          boards draw-seq))
-(assert (= 4512 (:winning-sum (determine-winner false (parse test-data)))))
-(assert (= 1924 (:winning-sum (determine-winner true (parse test-data)))))
+;; Mer elegant rekursjon via lazy-seq, også inspirert av tschady (og hele clojure core)
+(defn scores [[num & nums] boards]
+  (lazy-seq
+   (when num
+     (let [{winners true
+            losers nil} (group-by board-wins? (map (partial remove-value-from-board num) boards))]
+       (if (seq winners)
+         (cons {:score (* num (reduce + (s/select (s/walker number?) (first winners))))
+                :winning-boards winners}
+               (scores nums losers))
+         (scores nums losers))))))
+
+(assert (= 4512 (:score (first (scores (:draw-seq (parse test-data))
+                                       (:boards (parse test-data)))))))
+(assert (= 1924 (:score (last (scores (:draw-seq (parse test-data))
+                                      (:boards (parse test-data)))))))
 
 (comment
-  (determine-winner false (parse (slurp "input/y2021/day4-input.txt")))
-  (determine-winner true (parse (slurp "input/y2021/day4-input.txt"))))
+  (= 74320 (:score (first (apply scores ((juxt :draw-seq :boards) (parse (slurp "input/y2021/day4-input.txt")))))))
+  (= 17884 (:score (last (apply scores ((juxt :draw-seq :boards) (parse (slurp "input/y2021/day4-input.txt")))))))
+  ;;
+  )
