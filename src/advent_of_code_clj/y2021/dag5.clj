@@ -13,10 +13,16 @@
 0,0 -> 8,8
 5,5 -> 8,2")
 
+(defn plotify
+  "\"7,0 -> 7,4\" => ((7 0) (7 4))"
+  [plot-str]
+  (->> plot-str
+       (re-seq #"\d+")
+       (map read-string)
+       (partition 2)))
+
 (defn parse [text]
-  (->> (str/split-lines text)
-       (map #(map (fn [x] (map read-string (str/split x #",")))
-                  (str/split % #" -> ")))))
+  (map plotify (str/split-lines text)))
 
 (defn apply-plot [board [[x1 y1 :as a] [x2 y2 :as b]]]
   #_(update board x1 (fn [row]
@@ -27,31 +33,35 @@
       (recur updated-board [[(+ x1 (compare x2 x1))
                              (+ y1 (compare y2 y1))] b]))))
 
-(defn intersecting-lines [xs-of-xs]
+(defn intersecting-points [xs-of-xs]
   (count (filter #(> % 1)
                  (mapcat #(remove nil? %) xs-of-xs))))
 
+(defn only-horizontal-or-vertical? [[a b]]
+  (some zero? (map - a b)))
+
+(defn init-grid [size]
+  (vec (repeat size (vec (repeat size nil)))))
+
 (assert (= 5
-           (intersecting-lines
+           (intersecting-points
             (reduce apply-plot
-                    (vec (repeat 10 (vec (repeat 10 nil))))
-                    (filter (fn [[[x1 y1] [x2 y2]]]
-                              (or (= x1 x2)
-                                  (= y1 y2)))
+                    (init-grid 10)
+                    (filter only-horizontal-or-vertical?
                             (parse test-data))))))
 
 (assert (= 12
-           (intersecting-lines
+           (intersecting-points
             (reduce apply-plot
-                    (vec (repeat 10 (vec (repeat 10 nil))))
+                    (init-grid 10)
                     (parse test-data)))))
 
 (comment
   ;; Part 1
   (= 6225
-     (intersecting-lines
+     (intersecting-points
       (reduce apply-plot
-              (vec (repeat 1000 (vec (repeat 1000 nil))))
+              (init-grid 1000)
               (filter (fn [[[x1 y1] [x2 y2]]]
                         (or (= x1 x2)
                             (= y1 y2)))
@@ -59,11 +69,14 @@
 
   ;; Part 2
   (= 22116
-     (intersecting-lines
+     (intersecting-points
       (reduce apply-plot
-              (vec (repeat 1000 (vec (repeat 1000 nil))))
+              (init-grid 1000)
               (parse (slurp "input/y2021/day6-input.txt")))))
+  ;;
   )
+
+;; Second variant instead generates points and counts all repetitions
 
 (defn plots [[x1 y1] [x2 y2 :as b]]
   (loop [p []
@@ -76,10 +89,19 @@
                (+ x1 (compare x2 x1))
                (+ y1 (compare y2 y1)))))))
 
-(assert (= 12
-           (count (filter #(> (val %) 1)
-                          (frequencies (mapcat (fn [[a b]] (plots a b)) (parse test-data)))))))
+(assert (= 5
+           (->> test-data
+                parse
+                (filter only-horizontal-or-vertical?)
+                (mapcat (partial apply plots))
+                frequencies
+                (filter #(> (val %) 1))
+                count)))
 
-(assert (= 22116
-           (count (filter #(> (val %) 1)
-                          (frequencies (mapcat (fn [[a b]] (plots a b)) (parse (slurp "input/y2021/day6-input.txt"))))))))
+(assert (= 12
+           (->> test-data
+                parse
+                (mapcat (partial apply plots))
+                frequencies
+                (filter #(> (val %) 1))
+                count)))
