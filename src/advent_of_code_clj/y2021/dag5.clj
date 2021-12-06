@@ -65,14 +65,14 @@
               (filter (fn [[[x1 y1] [x2 y2]]]
                         (or (= x1 x2)
                             (= y1 y2)))
-                      (parse (slurp "input/y2021/day6-input.txt"))))))
+                      (parse (slurp "input/y2021/day5-input.txt"))))))
 
   ;; Part 2
   (= 22116
      (intersecting-points
       (reduce apply-plot
               (init-grid 1000)
-              (parse (slurp "input/y2021/day6-input.txt")))))
+              (parse (slurp "input/y2021/day5-input.txt")))))
   ;;
   )
 
