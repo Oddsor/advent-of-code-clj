@@ -1,4 +1,5 @@
-(ns advent-of-code-clj.y2021.dag3)
+(ns advent-of-code-clj.y2021.dag3
+  (:require [clojure.core.matrix :as m]))
 
 (def test-data "00100
 11110
@@ -20,17 +21,11 @@
 (defn parse [text]
   (re-seq #"\d+" text))
 
-(defn transpose
-  "(transpose [[1 2] [3 4]])
-   => '((1 3) (2 4]))"
-  [seq-of-seqs]
-  (apply map list seq-of-seqs))
-
 (defn calculate-power-consumption [data]
-  (->> data
-       transpose
+  (->> (map seq data)
+       m/transpose
        (map #(->> % frequencies (sort-by val) (map first)))
-       transpose
+       m/transpose
        (map #(->> % (apply str) bit-str-to-dec))
        (apply *)))
 

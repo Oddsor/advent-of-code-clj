@@ -6,7 +6,8 @@
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [com.rpl/specter "1.1.3"]
                  [meander/epsilon "0.0.650"]
-                 [datascript "1.3.1"]]
+                 [datascript "1.3.1"]
+                 [net.mikera/core.matrix "0.62.0"]]
   :main ^:skip-aot advent-of-code-clj.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all

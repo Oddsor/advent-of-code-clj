@@ -1,6 +1,7 @@
 (ns advent-of-code-clj.y2021.dag4
   (:require [clojure.string :as str]
-            [com.rpl.specter :as s]))
+            [com.rpl.specter :as s]
+            [clojure.core.matrix :as m]))
 
 (def test-data "7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
 
@@ -27,13 +28,6 @@
   [text]
   (map read-string (re-seq #"\d+" text)))
 
-
-(defn transpose
-  "(transpose [[1 2] [3 4]])
-   => '((1 3) (2 4]))"
-  [seq-of-seqs]
-  (apply map list seq-of-seqs))
-
 (defn parse [text]
   (let [[draw-seq & lines] (str/split-lines text)]
     {:draw-seq (read-numbers draw-seq)
@@ -45,7 +39,7 @@
 
 (defn board-wins? [board]
   ;; Mer elegant algo fra tschady: https://github.com/tschady/advent-of-code/blob/main/src/aoc/2021/d04.clj
-  (some #(every? nil? %) (concat board (transpose board))))
+  (some #(every? nil? %) (concat board (m/transpose board))))
 
 (defn remove-value-from-board [num board]
   (s/setval (s/walker #{num}) nil board))
