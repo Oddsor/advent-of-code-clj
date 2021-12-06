@@ -2,7 +2,7 @@
 
 (def test-data (map read-string (re-seq #"\d+" "3,4,3,1,2")))
 
-(defn step 
+(defn step
   "Slow; updates list of fish by one day"
   [xs]
   (into (replace {-1 6} (map dec xs))
@@ -21,7 +21,7 @@
                         (dec (get x i)))))))
     (persistent! x)))
 
-(defn as-fishmap 
+(defn as-fishmap
   "Fish-map where key is days and value number of fish
    that have that day as its internal timer"
   [data]
@@ -30,13 +30,14 @@
 (defn update-fishmap
   "By using a fishmap we limit the size of the collection"
   [xs]
-  (let [zeros (xs 0 0)]
+  (let [zeros (xs 0 0)
+        +n (fnil + 0)]
     (-> (into {} (comp (map (fn [[k v]]
                               [(dec k) v]))
                        (remove (comp neg? first)))
               xs)
-        (update 6 (fnil + 0) zeros)
-        (update 8 (fnil + 0) zeros))))
+        (update 6 +n zeros)
+        (update 8 +n zeros))))
 
 (assert (= 5934 (count (last (take 81 (iterate step test-data))))))
 (assert (= 5934 (count (step-mutative 80 test-data))))
@@ -48,5 +49,23 @@
   (def data (map read-string (re-seq #"\d+" (slurp "input/y2021/day6-input.txt"))))
   (= 377263 (count (last (take 81 (iterate step data)))))
   (= 1695929023803 (apply + (vals (last (take 257 (iterate update-fishmap (as-fishmap data)))))))
+  ;
+  )
+
+(comment
+  ;; "Oneliner", eller "onethreader"
+  (->> (slurp "input/y2021/day6-input.txt")
+       (re-seq #"\d+")
+       (map read-string)
+       frequencies
+       (iterate (fn [xs]
+                  (let [z (xs 0 0)]
+                    (->> xs
+                         (keep (fn [[k v]]
+                                 (when-not (zero? k)
+                                   {(dec k) v})))
+                         (apply merge-with + {6 z 8 z})))))
+       ((juxt #(nth % 80) #(nth % 256)))
+       (map #(apply + (vals %))))
   ;
   )
