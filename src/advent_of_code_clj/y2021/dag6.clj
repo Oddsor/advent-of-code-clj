@@ -12,7 +12,7 @@
   "Faster; but bounded by collection size in step 2"
   [days xs]
   (let [x (transient (into [] xs))]
-    (dotimes [n days]
+    (dotimes [_n days]
       (dotimes [i (count x)]
         (let [v (get x i)]
           (when (zero? v) (conj! x 8))
