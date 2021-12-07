@@ -29,13 +29,23 @@
 (defn mean [data]
   (nth (sort data) (/ (count data) 2)))
 
-(defn avg-int [data]
-  (Math/round (float (/ (apply + data) (count data)))))
+(defn avg [data]
+  (float (/ (apply + data) (count data))))
 
-(assert (= 37 (apply + (map (partial distance (mean test-data)) test-data))))
+(defn calc-distance-with-f [f n data]
+  (apply + (map (partial f n) data)))
 
-(assert (= 168 (apply + (map (partial (comp triangle distance) (avg-int test-data))
-                             test-data))))
+(defn find-min-distance [data]
+  ;; For part 2, optimal index will be within 0.5 of the average (floor or ceiling)
+  ;; https://www.reddit.com/r/adventofcode/comments/rawxad/2021_day_7_part_2_i_wrote_a_paper_on_todays/
+  (->> (avg data)
+       ((juxt #(Math/floor %) #(Math/ceil %)))
+       (map #(calc-distance-with-f (comp triangle distance) (int %) data))
+       (apply min)))
+
+(assert (= 37 (calc-distance-with-f distance (mean test-data) test-data)))
+
+(assert (= 168 (find-min-distance test-data)))
 
 (comment
   (def data (parse (slurp "input/y2021/day7-input.txt")))
@@ -44,11 +54,6 @@
   (= 90040997 (calc-min-f (comp triangle distance) data))
 
   (time (= 328262 (apply + (map (partial distance (mean data)) data))))
-  ;; Not working, need something besides "average index"
-  (avg-int data)
-  ;; => 465 (464.546)
-  ;; Optimal index is 464
-  (= 90040997 (apply + (map (partial (comp triangle distance) 464)
-                            data)))
+  (time (= 90040997 (find-min-distance data)))
   ;;
   )
