@@ -67,7 +67,7 @@ dotted black bags contain no other bags.")
 (defn bags-that-shiny-holds [bagmaps]
   (let [mapped (into {} (map (juxt :bag identity))
                      bagmaps)]
-    (loop [gold-bag (first (filter (comp #{"shiny gold bag"} :bag) bagmaps))
+    (loop [gold-bag (mapped "shiny gold bag")
            recs 0]
       (let [modified (s/transform (s/walker (every-pred
                                              coll?
