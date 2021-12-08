@@ -18,51 +18,45 @@ bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbg
 egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce"))
 
-(defn manually-deduce-patterns [patterns]
-  (let [patterns (map set patterns)
-        c->p (into {} (map (juxt count identity))
-                   patterns)
-        four (c->p 4)
-        seven (c->p 3)
-        eight (c->p 7)
-        one (c->p 2)
-        {tr 1
-         br 2} (->> patterns
-                    (map #(set/difference % (set/difference eight one)))
-                    frequencies
-                    set/map-invert)
-        {bottom 3
-         bbl 4} (-> (map #(set/difference % (set/union four seven)) patterns)
-                    frequencies
-                    (dissoc #{})
-                    set/map-invert)
-        bl (set/difference bbl bottom)
-        mid (->> patterns
-                 (map #(set/difference % seven bottom))
-                 (filter (comp #{1} count))
-                 first)
-        tl (set/difference four mid one)]
-    {(set/difference eight mid) 0
-     one 1
-     (set/difference eight tl br) 2
-     (set/union seven mid bottom) 3
-     four 4
-     (set/difference eight tr bl) 5
-     (set/difference eight tr) 6
-     seven 7
-     eight 8
-     (set/difference eight bl) 9}))
+(defn to-pattern->number [patterns]
+  (let [{twos 2 threes 3 fours 4 fives 5 sixes 6 sevens 7}
+        (group-by count (map set patterns))
 
-(defn process-line [[nums num]]
-  (let [patterns (manually-deduce-patterns nums)]
-    (prn nums)
-    (map (comp patterns set) num)))
+        [n1 n4 n7 n8]
+        (map first [twos fours threes sevens])
+
+        n9 (->> sixes
+                (filter (partial set/subset? n4))
+                first)
+        n0 (->> sixes
+                (remove #{n9})
+                (filter (partial set/subset? n1))
+                first)
+        n6 (->> sixes (remove #{n9 n0}) first)
+
+        n3 (->> fives (filter (partial set/subset? n1)) first)
+        n5 (->> fives (filter (partial set/superset? n6)) first)
+        n2 (->> fives (remove #{n3 n5}) first)]
+    {n0 0 n1 1 n2 2 n3 3 n4 4
+     n5 5 n6 6 n7 7 n8 8 n9 9}))
+
+(defn process-line [[num-patterns nums]]
+  (let [pattern->number (to-pattern->number num-patterns)]
+    (map (comp pattern->number set) nums)))
 
 (defn count-simple-nums [data]
   (count (mapcat #(filter #{1 4 7 8} %) data)))
 
-(assert (= 26 (->> (map process-line test-data)
+(assert (= 26 (->> test-data
+                   (map process-line)
                    count-simple-nums)))
+
+(defn xs->number [xs]
+  (Integer/parseInt (apply str xs)))
+
+(assert (= 61229 (->> test-data
+                      (map (comp xs->number process-line))
+                      (apply +))))
 
 (comment
   (= 479
@@ -71,6 +65,7 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
           count-simple-nums))
   (= 1041746
      (->> (parse (slurp "input/y2021/day8-input.txt"))
-          (map (comp #(Integer/parseInt %) #(apply str %) process-line))
-          (apply +))))
-
+          (map (comp xs->number process-line))
+          (apply +)))
+  ;;
+  )
