@@ -1,5 +1,6 @@
 (ns advent-of-code-clj.y2021.dag9-map
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [clojure.core.reducers :as r]))
 
 (defn parse-nums [idy text]
   (apply merge
@@ -19,10 +20,14 @@
   [[(dec x) y] [(inc x) y] [x (dec y)] [x (inc y)]])
 
 (defn find-minima [data]
-  (filter (fn [[point value]]
-            (< value
-               (apply min (keep data (apply adjacent point)))))
-          data))
+  (->> data
+       (r/filter (fn [point value]
+                   (< value
+                      (apply min (keep data (apply adjacent point))))))
+       (r/fold (r/monoid merge hash-map) assoc)))
+
+(r/fold (r/monoid merge hash-map) assoc (r/filter (fn [k v] (odd? v)) {[1 2] 1 :b 2 :c 3 :d 4}))
+(into [] (r/filter odd? [1 2 3 4]))
 
 (defn higher-adjacent-points [data point]
   (->> (apply adjacent point)
@@ -32,7 +37,10 @@
 
 (defn climb [data points]
   (lazy-seq
-   (if-let [xs (seq (mapcat (partial higher-adjacent-points data) points))]
+   (if-let [xs (->> points
+                    (r/mapcat (partial higher-adjacent-points data))
+                    r/foldcat
+                    seq)]
      (cons points (climb data xs))
      [points])))
 
@@ -74,8 +82,8 @@
                 (= 444))
            (->> minima
                 keys
-                (map (fn [plot]
-                       (area (climb data [plot]))))
+                (pmap (fn [plot]
+                        (area (climb data [plot]))))
                 (sort >)
                 (take 3)
                 (apply *)
