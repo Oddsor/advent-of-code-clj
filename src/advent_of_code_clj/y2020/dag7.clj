@@ -1,6 +1,7 @@
 (ns advent-of-code-clj.y2020.dag7
   (:require [clojure.string :as str]
             [meander.epsilon :as m]
+            [meander.strategy.epsilon :as r]
             [com.rpl.specter :as s]
             [datascript.core :as d]
             [clojure.walk :as walk]))
@@ -101,18 +102,29 @@ dotted black bags contain no other bags.")
 
 (comment
   ;; Forsøk med Meander
-  (m/rewrite (parse test-data)
-             ({:bag !bagname
-               :contains (!bagname ...)} ... :as !bag)
-             ({:bag !bagname
-               :contains (m/cata ?????)}))
+  ;; For treg til å brukes på det virkelige datasettet
 
+  (def recursively-built-bags (let [bags (parse test-data)
+                                    bags-by-name (into {} (map (juxt :bag identity) bags))]
+                                ((r/until
+                                  =
+                                  (r/bottom-up
+                                   (r/attempt
+                                    (r/rewrite
+                                     ((m/pred string? !bagnames) ...)
+                                     ~(map bags-by-name !bagnames)))))
+                                 bags)))
 
-
-  (m/search (parse test-data)
-            ({:bag !bagname
-              :contains ((m/cata !bagname) ...)} ... :as !bag)
-            !bag
-            ?x
-            (m/pred #{?x} !bag))
+  (count (filterv (fn [bag]
+                    (let [counter (volatile! 0)]
+                      (walk/postwalk (fn [x]
+                                       (when (and (map-entry? x)
+                                                  (= "shiny gold bag" (val x)))
+                                         (vswap! counter inc))
+                                       x)
+                                     bag)
+                      (> @counter 0)))
+                  (remove (comp #{"shiny gold bag"} :bag)
+                          recursively-built-bags)))
+  ;;
   )
