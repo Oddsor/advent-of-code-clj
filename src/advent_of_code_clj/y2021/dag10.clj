@@ -42,13 +42,11 @@
     (conj nesting ch)))
 
 (defn process-line [line]
-  (try (loop [[h & rest] line
-              nesting []]
-         (if h
-           (recur rest (add nesting h))
-           nesting))
-       (catch Exception e
-         (ex-data e))))
+  (try
+    (reduce (fn [acc ch]
+              (add acc ch)) [] line)
+    (catch Exception e
+      (ex-data e))))
 
 (defn calc-incomplete-score [nesting]
   (reduce (fn [acc x]
