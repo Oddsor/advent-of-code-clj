@@ -15,8 +15,8 @@
 <{([([[(<>()){}]>(<<{{
 <{([{{}}[<[[[<>{}]]]>[]]"))
 
-(def ending-delimiter #{\) \] \} \>})
 (def pairs {\( \) \[ \] \{ \} \< \>})
+(def ending-delimiter (set (vals pairs)))
 (def bad-scores
   {\) 3
    \] 57
@@ -51,15 +51,10 @@
          (ex-data e))))
 
 (defn calc-incomplete-score [nesting]
-  (loop [score 0
-         [h & tail] (->> nesting
-                         reverse
-                         (map pairs))]
-    (if h
-      (recur (+ (* score 5)
-                (incomplete-scores h))
-             tail)
-      score)))
+  (reduce (fn [acc x]
+            (+ (* 5 acc) x)) 0
+          (map (comp incomplete-scores pairs) 
+               (reverse nesting))))
 
 (assert (->> test-data
              (map process-line)
