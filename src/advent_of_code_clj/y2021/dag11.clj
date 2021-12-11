@@ -58,10 +58,10 @@
 (defn zero-coord-set [m]
   (set (keys (filter (comp zero? val) m))))
 
-(defn flash-step [coord-map]
+(defn step [coord-map]
   (loop [previously-flashed #{}
-         newly-flashed (zero-coord-set coord-map)
-         m coord-map]
+         m (increment-all coord-map)
+         newly-flashed (zero-coord-set m)]
     (let [total-flashed (into previously-flashed newly-flashed)
           surrounding-coords (remove total-flashed
                                      (mapcat #(apply adjacent-coords %)
@@ -78,24 +78,18 @@
                         m surrounding-coords)]
       (if (= new-m m)
         new-m
-        (recur total-flashed
-               @visited
-               new-m)))))
-
-(defn step [coord-map]
-  (lazy-seq
-   (cons coord-map
-         (step (flash-step (increment-all coord-map))))))
+        (recur total-flashed new-m @visited)))))
 
 (defn not-all-zero? [m]
   (not-every? zero? (vals m)))
 
-(assert (->> (take 101 (step test-data))
+(assert (->> (take 101 (iterate step test-data))
              (mapcat vals)
              (filter zero?)
              count
              (= 1656)))
-(assert (->> (step test-data)
+
+(assert (->> (iterate step test-data)
              (take-while not-all-zero?)
              count
              (= 195)))
@@ -103,14 +97,14 @@
 (comment
   (def data (parse (slurp "input/y2021/day11-input.txt")))
   ;; Part 1
-  (->> (step data)
+  (->> (iterate step data)
        (take 101)
        (mapcat vals)
        (filter zero?)
        count
        (= 1642))
   ;; Part 2
-  (->> (step data)
+  (->> (iterate step data)
        (take-while not-all-zero?)
        count
        (= 320)))
