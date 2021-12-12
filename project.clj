@@ -7,8 +7,11 @@
                  [com.rpl/specter "1.1.3"]
                  [meander/epsilon "0.0.650"]
                  [datascript "1.3.1"]
-                 [net.mikera/core.matrix "0.62.0"]]
+                 [net.mikera/core.matrix "0.62.0"]
+                 [criterium "0.4.6"]
+                 [com.clojure-goes-fast/clj-async-profiler "0.5.1"]]
   :main ^:skip-aot advent-of-code-clj.core
   :target-path "target/%s"
+  :jvm-opts ["-Djdk.attach.allowAttachSelf"]
   :profiles {:uberjar {:aot :all
                        :jvm-opts ["-Dclojure.compiler.direct-linking=true"]}})

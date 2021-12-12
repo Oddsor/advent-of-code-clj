@@ -25,7 +25,7 @@ b-end"))
 
 (defn small-cave-visited? [path x]
   (not (and (is-small-cave? x)
-            (some #{x} path))))
+            (some #(= x %) path))))
 
 (defn can-visit-2? [path x]
   (not (and (is-small-cave? x)
@@ -36,13 +36,13 @@ b-end"))
 
 (defn paths [f path-map]
   (loop [paths [["start"]]]
-    (let [new-paths (mapcat (fn [p]
-                              (if (= "end" (last p))
-                                [p]
+    (let [new-paths (mapcat (fn [[h :as p]]
+                              (if (= "end" h)
+                                (list p)
                                 (sequence (comp (remove #{"start"})
                                                 (filter (partial f p))
-                                                (map (partial conj p)))
-                                          (path-map (last p)))))
+                                                (map #(cons % p)))
+                                          (path-map h))))
                             paths)]
       (if (= new-paths paths) paths (recur new-paths)))))
 
