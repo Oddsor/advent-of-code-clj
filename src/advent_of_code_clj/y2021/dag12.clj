@@ -2,15 +2,6 @@
 
 (defn text->pairs [t]
   (partition 2 (re-seq #"\w+" t)))
-
-(def test-data "start-A
-start-b
-A-c
-A-b
-b-d
-A-end
-b-end")
-
 (defn path-map [xs]
   (->> xs
        (mapcat (fn [[a b]]
@@ -18,44 +9,48 @@ b-end")
        (group-by first)
        (into {} (map (fn [[k v]]
                        [k (map second v)])))))
+(defn parse [t] (path-map (text->pairs t)))
+
+(def test-data (parse "start-A
+start-b
+A-c
+A-b
+b-d
+A-end
+b-end"))
 
 (defn is-small-cave? [x]
-  (re-matches #"[a-z]+" x))
+  (and (not= "end" x)
+       (re-matches #"[a-z]+" x)))
 
-(defn is-large-cave? [x]
-  (re-matches #"[A-Z]+" x))
-
-(defn can-visit? [path x]
+(defn small-cave-visited? [path x]
   (not (and (is-small-cave? x)
-            ((set path) x))))
+            (some #{x} path))))
 
 (defn can-visit-2? [path x]
-  (or (not (is-small-cave? x))
-      (or (->> (frequencies (filter is-small-cave? path))
-               (every? (fn [[_ v]]
-                         (= v 1))))
-          (not ((set path) x)))))
+  (not (and (is-small-cave? x)
+            (some #(= x %) path)
+            (->> (frequencies (filter is-small-cave? path))
+                 (some (fn [[_ v]]
+                         (> v 1)))))))
 
 (defn paths [f path-map]
-  (loop [paths (mapv (fn [x] ["start" x]) (path-map "start"))
-         loops 0]
-    (let [new-paths (into [] (mapcat (fn [p]
-                                       (if (= "end" (last p))
-                                         [p]
-                                         (let [branches (remove #{"start"} (path-map (last p)))]
-                                           (->> branches
+  (loop [paths [["start"]]]
+    (let [new-paths (mapcat (fn [p]
+                              (if (= "end" (last p))
+                                [p]
+                                (sequence (comp (remove #{"start"})
                                                 (filter (partial f p))
-                                                (map (partial conj p)))))))
-                          paths)]
-      (when (> loops 100) (throw (ex-info "Loopy" {})))
-      (if (= new-paths paths)
-        paths
-        (recur new-paths (inc loops))))))
+                                                (map (partial conj p)))
+                                          (path-map (last p)))))
+                            paths)]
+      (if (= new-paths paths) paths (recur new-paths)))))
 
-(assert (= 10 (count (paths can-visit? (path-map (text->pairs test-data))))))
-(assert (= 36 (count (paths can-visit-2? (path-map (text->pairs test-data))))))
+(assert (= 10 (count (paths small-cave-visited? test-data))))
+(assert (= 36 (count (paths can-visit-2? test-data))))
 
 (comment
-  (time (count (paths can-visit? (path-map (text->pairs (slurp "input/y2021/day12-input.txt"))))))
+  (def data (parse (slurp "input/y2021/day12-input.txt")))
+  (time (= 3738 (count (paths small-cave-visited? data))))
 
-  (time (count (paths can-visit-2? (path-map (text->pairs (slurp "input/y2021/day12-input.txt")))))))
+  (time (= 120506 (count (paths can-visit-2? data)))))
