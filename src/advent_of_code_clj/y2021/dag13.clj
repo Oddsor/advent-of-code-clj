@@ -37,9 +37,7 @@ fold along y=7
 fold along x=5"))
 
 (defn fold [num at]
-  (if (> at num)
-    num
-    (- at (- num at))))
+  (- at (Math/abs (- at num))))
 
 (defn new-coords [coords [c n :as rule]]
   (set (map (fn [[x y]]
