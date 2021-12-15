@@ -1,19 +1,11 @@
 (ns advent-of-code-clj.y2021.dag11
   (:require [clojure.string :as str]
             [com.rpl.specter :as s]
-            [clojure.set :as set]))
-
-(defn to-coord-map [xs-of-xses]
-  (->> xs-of-xses
-       (map-indexed (fn [idy xs]
-                      (map-indexed (fn [idx v]
-                                     [[idx idy] v])
-                                   xs)))
-       (transduce cat merge)))
+            [advent-of-code-clj.utils :as u]))
 
 (def parse-nums (comp (partial map read-string)
                       (partial re-seq #"\d")))
-(def parse (comp to-coord-map
+(def parse (comp u/coord-map
                  (partial map parse-nums)
                  str/split-lines))
 
@@ -42,11 +34,6 @@
          (map str/join)
          (str/join "\n"))))
 
-(defn adjacent-coords [x y]
-  [[(dec x) (dec y)] [x (dec y)] [(inc x) (dec y)]
-   [(dec x) y]                   [(inc x) y]
-   [(dec x) (inc y)] [x (inc y)] [(inc x) (inc y)]])
-
 (defn modinc [x] (mod (inc x) 10))
 
 (defn increment-all [coord-map]
@@ -64,7 +51,7 @@
          newly-flashed (zero-coord-set m)]
     (let [total-flashed (into previously-flashed newly-flashed)
           surrounding-coords (remove total-flashed
-                                     (mapcat #(apply adjacent-coords %)
+                                     (mapcat #(apply u/adjacent %)
                                              newly-flashed))
           visited (volatile! #{})
           new-m (reduce (fn [m c]
