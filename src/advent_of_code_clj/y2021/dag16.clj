@@ -47,7 +47,7 @@ F = 1111")
           g (concat numbits (take 4 (drop 1 xs)))]
       (if (= \1 c)
         (recur (drop 5 xs) g)
-        [[(bin-xs-to-num g)] (drop 5 xs)]))))
+        [(bin-xs-to-num g) (drop 5 xs)]))))
 
 (declare packets)
 
@@ -69,16 +69,13 @@ F = 1111")
           (recur (conj ps p) remainder))))))
 
 (defn packets [bits]
-  (let [version (bin-xs-to-num (take 3 bits))
-        ptype (packet-type (bin-xs-to-num (take 3 (drop 3 bits))))
-        content-offset (drop 6 bits)
-        [content remainder] (if (= identity ptype)
-                              (get-literal content-offset)
-                              (get-operation content-offset))]
-    [{:version version
+  (let [ptype (packet-type (bin-xs-to-num (take 3 (drop 3 bits))))
+        func (if (= identity ptype) get-literal get-operation)
+        [content remainder] (func (drop 6 bits))]
+    [{:version (bin-xs-to-num (take 3 bits))
       :op ptype
       :content content}
-     (if (every? #{\0} remainder) nil remainder)]))
+     remainder]))
 
 (defn count-version-sum [packet]
   (let [sum-version (volatile! 0)]
@@ -102,9 +99,9 @@ F = 1111")
     :else x))
 
 (defn calc [{:keys [op content] :as packet}]
-  (apply (comp coerce-int op)
-         (map (if (= identity op) identity calc)
-              content)))
+  (if (= identity op) content
+      (apply (comp coerce-int op)
+             (map calc content))))
 
 (assert (= 3 (calc (first (packets (get-bits "C200B40A82"))))))
 (assert (= 54 (calc (first (packets (get-bits "04005AC33890"))))))
@@ -116,10 +113,10 @@ F = 1111")
 (assert (= 1 (calc (first (packets (get-bits "9C0141080250320F1802104A08"))))))
 
 (comment
+  (def packet (first (packets (get-bits (slurp "input/y2021/16.txt")))))
   ;; Part 1
-  (= 943 (count-version-sum (first (packets (get-bits (slurp "input/y2021/16.txt"))))))
+  (= 943 (count-version-sum packet))
   ;; Part 2
-  (= 167737115857
-     (calc (first (packets (get-bits (slurp "input/y2021/16.txt"))))))
+  (= 167737115857 (calc packet))
   ;
   )
