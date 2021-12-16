@@ -1,6 +1,5 @@
 (ns advent-of-code-clj.y2021.dag16
-  (:require [clojure.string :as str]
-            [clojure.walk :as walk]))
+  (:require [clojure.string :as str]))
 
 (def xform-rules "0 = 0000
 1 = 0001
@@ -78,14 +77,10 @@ F = 1111")
      remainder]))
 
 (defn count-version-sum [packet]
-  (let [sum-version (volatile! 0)]
-    (walk/postwalk (fn [x]
-                     (when (and (map-entry? x)
-                                (= :version (first x)))
-                       (vswap! sum-version + (last x)))
-                     x)
-                   packet)
-    @sum-version))
+  (->> packet
+       (tree-seq (comp coll? :content) :content)
+       (map :version)
+       (apply +)))
 
 (assert (= 16 (count-version-sum (first (packets (get-bits "8A004A801A8002F478"))))))
 (assert (= 12 (count-version-sum (first (packets (get-bits "620080001611562C8802118E34"))))))
