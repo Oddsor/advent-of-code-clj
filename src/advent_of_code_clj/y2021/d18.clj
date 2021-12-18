@@ -1,6 +1,7 @@
 (ns advent-of-code-clj.y2021.d18
   (:require [clojure.zip :as zip]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.walk :as walk]))
 
 (defn branches [nest-level z]
   (if (= nest-level 0) [z]
@@ -12,8 +13,7 @@
 (defn go-until-number [fn z]
   (let [nz (fn z)]
     (cond
-      (nil? nz) nil
-      (zip/end? nz) nil
+      (or (nil? nz) (zip/end? nz)) nil
       (number? (zip/node nz)) nz
       :else (recur fn nz))))
 
@@ -83,20 +83,13 @@
 (assert (= (add [[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]] [7,[[[3,7],[4,3]],[[6,3],[8,8]]]])
            [[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]))
 
-(defn combine-num [z]
-  (let [n (zip/node z)]
-    (if (and (coll? n)
-             (every? number? n))
-      (zip/root (zip/replace z (+ (* 3 (first n))
-                                  (* 2 (second n)))))
-      (recur (zip/next z)))))
-
 (defn magnitude [xs]
-  (loop [x xs]
-    (let [c (combine-num (zip/vector-zip x))]
-      (if (number? c)
-        c
-        (recur c)))))
+  (walk/postwalk (fn [x]
+                   (if (and (coll? x)
+                            (every? number? x))
+                     (+ (* 3 (first x))
+                        (* 2 (second x)))
+                     x)) xs))
 
 (assert (= 143 (magnitude [[1,2],[[3,4],5]])))
 (assert (= 3488 (magnitude [[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]])))
@@ -119,8 +112,6 @@
                                                  (map (comp magnitude (partial apply add))
                                                       [[x y] [y x]]))) data)))
                      [] data)))
-
-
 
 (assert (= 3993 (max-magnitude test-part-2)))
 
