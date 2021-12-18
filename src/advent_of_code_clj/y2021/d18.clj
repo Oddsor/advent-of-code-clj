@@ -3,11 +3,6 @@
             [clojure.string :as str]
             [clojure.walk :as walk]))
 
-(defn find-node [pred zipper]
-  (cond (zip/end? zipper) nil
-        (pred zipper) zipper
-        :else (recur pred (zip/next zipper))))
-
 (defn apply-until [f pred z]
   (let [nz (f z)]
     (cond
@@ -15,25 +10,28 @@
       (pred nz) nz
       :else (recur f pred nz))))
 
+(def find-next (partial apply-until zip/next))
+(def find-prev (partial apply-until zip/prev))
+
 (defn explode [data]
-  (if-let [xp (find-node (fn [x]
+  (if-let [xp (find-next (fn [x]
                            (and (= 4 (count (zip/path x)))
                                 (zip/branch? x)))
                          (zip/vector-zip data))]
     (let [[l r] (zip/node xp)
           nz (zip/replace xp 0)
           num-pred (comp number? zip/node)
-          wal (if-let [pos (apply-until zip/prev num-pred nz)]
-                (apply-until zip/next num-pred (zip/edit pos + l))
+          wal (if-let [pos (find-prev num-pred nz)]
+                (find-next num-pred (zip/edit pos + l))
                 nz)
-          war (if-let [pos (apply-until zip/next num-pred wal)]
+          war (if-let [pos (find-next num-pred wal)]
                 (zip/edit pos + r)
                 wal)]
       (zip/root war))
     data))
 
 (defn split [data]
-  (if-let [z (find-node (fn [x]
+  (if-let [z (find-next (fn [x]
                           (let [n (zip/node x)]
                             (and (number? n)
                                  (>= n 10))))
