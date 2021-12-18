@@ -13,69 +13,83 @@
 (def find-next (partial apply-until zip/next))
 (def find-prev (partial apply-until zip/prev))
 
-(defn explode [data]
-  (if-let [xp (find-next (fn [x]
-                           (and (= 4 (count (zip/path x)))
-                                (zip/branch? x)))
-                         (zip/vector-zip data))]
-    (let [[l r] (zip/node xp)
-          nz (zip/replace xp 0)
-          num-pred (comp number? zip/node)
-          wal (if-let [pos (find-prev num-pred nz)]
-                (find-next num-pred (zip/edit pos + l))
-                nz)
-          war (if-let [pos (find-next num-pred wal)]
-                (zip/edit pos + r)
-                wal)]
-      (zip/root war))
-    data))
+(defn exploding-node [zn]
+  (and (= 4 (count (zip/path zn)))
+       (zip/branch? zn)))
 
-(defn split [data]
-  (if-let [z (find-next (fn [x]
-                          (let [n (zip/node x)]
-                            (and (number? n)
-                                 (>= n 10))))
-                        (zip/vector-zip data))]
-    (-> z
-        (zip/edit (fn [n]
-                    [(int (Math/floor (/ n 2)))
-                     (int (Math/ceil (/ n 2)))]))
-        zip/root)
-    data))
+(defn split-node [zn]
+  (let [n (zip/node zn)]
+    (and (number? n)
+         (>= n 10))))
 
-(assert (= (explode [[[[[9,8],1],2],3],4])
+(defn explode [z]
+  (let [[l r] (zip/node z)
+        nz (zip/replace z 0)
+        num-pred (comp number? zip/node)
+        wal (if-let [pos (find-prev num-pred nz)]
+              (find-next num-pred (zip/edit pos + l))
+              nz)
+        war (if-let [pos (find-next num-pred wal)]
+              (find-prev num-pred (zip/edit pos + r))
+              wal)]
+    war))
+
+(defn split [z]
+  (zip/edit z (fn [n]
+                [(int (Math/floor (/ n 2)))
+                 (int (Math/ceil (/ n 2)))])))
+
+(defn exp-test [data]
+  (->> (zip/vector-zip data)
+       (find-next exploding-node)
+       explode
+       zip/root))
+
+(assert (= (exp-test [[[[[9,8],1],2],3],4])
            [[[[0,9],2],3],4]))
 
-(assert (= (explode [7,[6,[5,[4,[3,2]]]]])
+(assert (= (exp-test [7,[6,[5,[4,[3,2]]]]])
            [7,[6,[5,[7,0]]]]))
 
-(assert (= (explode [[6,[5,[4,[3,2]]]],1])
+(assert (= (exp-test [[6,[5,[4,[3,2]]]],1])
            [[6,[5,[7,0]]],3]))
 
-(assert (= (explode [[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]])
+(assert (= (exp-test [[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]])
            [[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]]))
 
-(assert (= (explode [[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]])
+(assert (= (exp-test [[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]])
            [[3,[2,[8,0]]],[9,[5,[7,0]]]]))
 
 (defn repeatedly-apply [f xs]
-  (let [nxs (f xs)]
-    (if (= nxs xs)
-      nxs (recur f nxs))))
+  (when xs
+    (if-let [nxs (f xs)]
+      (recur f nxs)
+      xs)))
 
-(assert (= (split [[[[0,7],4],[15,[0,13]]],[1,1]])
+(defn split-test [data]
+  (->> (zip/vector-zip data)
+       (find-next split-node)
+       split
+       zip/root))
+
+(assert (= (split-test [[[[0,7],4],[15,[0,13]]],[1,1]])
            [[[[0,7],4],[[7,8],[0,13]]],[1,1]]))
 
-(assert (= (repeatedly-apply split [[[[0,7],4],[15,[0,13]]],[1,1]])
+(assert (= (loop [z (zip/vector-zip [[[[0,7],4],[15,[0,13]]],[1,1]])]
+             (if-let [nz (find-next split-node z)]
+               (recur (repeatedly-apply zip/up (split nz)))
+               (zip/root z)))
            [[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]]))
 
-(defn reduce-snailnum [xs]
-  (let [nxs (->> xs (repeatedly-apply explode) split)]
-    (if (= xs nxs)
-      nxs (recur nxs))))
+(defn reduce-snailnum [z]
+  (if-let [nz (find-next exploding-node z)]
+    (recur (repeatedly-apply zip/up (explode nz)))
+    (if-let [nz (find-next split-node z)]
+      (recur (repeatedly-apply zip/up (split nz)))
+      (zip/root z))))
 
 (defn add [xs1 xs2]
-  (reduce-snailnum [xs1 xs2]))
+  (reduce-snailnum (zip/vector-zip [xs1 xs2])))
 
 (assert (= (add [[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]] [7,[[[3,7],[4,3]],[[6,3],[8,8]]]])
            [[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]))
@@ -118,5 +132,5 @@
                  (map read-string)))
   (time (= 3756 (magnitude (reduce add data))))
   (time (= 4585 (max-magnitude data)))
-  ;
+  ;;
   )
