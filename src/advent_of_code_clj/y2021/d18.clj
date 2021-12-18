@@ -3,48 +3,47 @@
             [clojure.string :as str]
             [clojure.walk :as walk]))
 
-(defn branches [nest-level z]
-  (if (= nest-level 0) [z]
-      (let [children (take-while some? (iterate zip/right (zip/down z)))]
-        (->> children
-             (remove (comp number? zip/node))
-             (mapcat (partial branches (dec nest-level)))))))
+(defn find-node [pred zipper]
+  (cond (zip/end? zipper) nil
+        (pred zipper) zipper
+        :else (recur pred (zip/next zipper))))
 
-(defn go-until-number [fn z]
-  (let [nz (fn z)]
+(defn apply-until [f pred z]
+  (let [nz (f z)]
     (cond
       (or (nil? nz) (zip/end? nz)) nil
-      (number? (zip/node nz)) nz
-      :else (recur fn nz))))
+      (pred nz) nz
+      :else (recur f pred nz))))
 
 (defn explode [data]
-  (if-let [xp (first (branches 4 (zip/vector-zip data)))]
+  (if-let [xp (find-node (fn [x]
+                           (and (= 4 (count (zip/path x)))
+                                (zip/branch? x)))
+                         (zip/vector-zip data))]
     (let [[l r] (zip/node xp)
           nz (zip/replace xp 0)
-          wal (if-let [pos (go-until-number zip/prev nz)]
-                (go-until-number zip/next (zip/edit pos + l))
+          num-pred (comp number? zip/node)
+          wal (if-let [pos (apply-until zip/prev num-pred nz)]
+                (apply-until zip/next num-pred (zip/edit pos + l))
                 nz)
-          war (if-let [pos (go-until-number zip/next wal)]
+          war (if-let [pos (apply-until zip/next num-pred wal)]
                 (zip/edit pos + r)
                 wal)]
       (zip/root war))
     data))
 
-(defn split-pos-if-num [z]
-  (let [n (zip/node z)]
-    (if (and (number? n)
-             (>= n 10))
-      (zip/replace z [(int (Math/floor (/ n 2)))
-                      (int (Math/ceil (/ n 2)))])
-      z)))
-
 (defn split [data]
-  (loop [z (zip/vector-zip data)]
-    (let [nz (split-pos-if-num z)]
-      (if (or (zip/end? z)
-              (not= z nz))
-        (zip/root nz)
-        (recur (zip/next z))))))
+  (if-let [z (find-node (fn [x]
+                          (let [n (zip/node x)]
+                            (and (number? n)
+                                 (>= n 10))))
+                        (zip/vector-zip data))]
+    (-> z
+        (zip/edit (fn [n]
+                    [(int (Math/floor (/ n 2)))
+                     (int (Math/ceil (/ n 2)))]))
+        zip/root)
+    data))
 
 (assert (= (explode [[[[[9,8],1],2],3],4])
            [[[[0,9],2],3],4]))
@@ -83,6 +82,7 @@
 (assert (= (add [[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]] [7,[[[3,7],[4,3]],[[6,3],[8,8]]]])
            [[[[4,0],[5,4]],[[7,7],[6,0]]],[[8,[7,7]],[[7,9],[5,0]]]]))
 
+;; Can also recursively walk downwards; not much efficiency gain
 (defn magnitude [xs]
   (walk/postwalk (fn [x]
                    (if (and (coll? x)
@@ -106,20 +106,19 @@
                   [[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]])
 
 (defn max-magnitude [data]
-  (apply max (reduce (fn [acc x]
-                       (concat acc (mapcat (fn [y]
-                                             (if (= x y) []
-                                                 (map (comp magnitude (partial apply add))
-                                                      [[x y] [y x]]))) data)))
-                     [] data)))
+  (->> (for [x data
+             y data
+             :when (not= x y)]
+         (magnitude (add x y)))
+       (apply max)))
 
-(assert (= 3993 (max-magnitude test-part-2)))
+(time (assert (= 3993 (max-magnitude test-part-2))))
 
 (comment
   (def data (->> (slurp "input/y2021/18.txt")
                  str/split-lines
                  (map read-string)))
-  (time (= 3756 (magnitude (reduce (completing add identity) data))))
+  (time (= 3756 (magnitude (reduce add data))))
   (time (= 4585 (max-magnitude data)))
   ;
   )
