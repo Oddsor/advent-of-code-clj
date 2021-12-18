@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag4
+(ns advent-of-code-clj.y2021.d04
   (:require [clojure.string :as str]
             [com.rpl.specter :as s]
             [clojure.core.matrix :as m]))
@@ -62,7 +62,7 @@
                                       (:boards (parse test-data)))))))
 
 (comment
-  (= 74320 (:score (first (apply scores ((juxt :draw-seq :boards) (parse (slurp "input/y2021/day4-input.txt")))))))
-  (= 17884 (:score (last (apply scores ((juxt :draw-seq :boards) (parse (slurp "input/y2021/day4-input.txt")))))))
+  (= 74320 (:score (first (apply scores ((juxt :draw-seq :boards) (parse (slurp "input/y2021/04.txt")))))))
+  (= 17884 (:score (last (apply scores ((juxt :draw-seq :boards) (parse (slurp "input/y2021/04.txt")))))))
   ;;
   )

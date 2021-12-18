@@ -1,9 +1,9 @@
-(ns advent-of-code-clj.y2020.dag1
+(ns advent-of-code-clj.y2020.d01
   (:require [clojure.string :as str]))
 
 (comment
   (def liste-av-tall (map #(Integer/parseInt %)
-                          (str/split-lines (slurp "input/y2020/day1-input.txt"))))
+                          (str/split-lines (slurp "input/y2020/01.txt"))))
 
   ; Multipliser to tall som i sum er lik 2020
   (loop [[x & resten :as listen] liste-av-tall]

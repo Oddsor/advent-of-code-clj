@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag16
+(ns advent-of-code-clj.y2021.d16
   (:require [clojure.string :as str]))
 
 (def xform-rules "0 = 0000

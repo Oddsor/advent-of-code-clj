@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2020.dag7
+(ns advent-of-code-clj.y2020.d07
   (:require [clojure.string :as str]
             [meander.epsilon :as m]
             [meander.strategy.epsilon :as r]
@@ -96,8 +96,8 @@ dotted black bags contain no other bags.")
 (assert (= 32 (count-bags-that-shiny-holds (parse test-data))))
 
 (comment
-  (count (bags-that-hold-shiny (parse (slurp "input/y2020/day7-input.txt"))))
-  (count-bags-that-shiny-holds (parse (slurp "input/y2020/day7-input.txt")))
+  (count (bags-that-hold-shiny (parse (slurp "input/y2020/07.txt"))))
+  (count-bags-that-shiny-holds (parse (slurp "input/y2020/07.txt")))
   )
 
 (comment

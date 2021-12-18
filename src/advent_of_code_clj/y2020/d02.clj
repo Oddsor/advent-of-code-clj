@@ -1,11 +1,11 @@
-(ns advent-of-code-clj.y2020.dag2
+(ns advent-of-code-clj.y2020.d02
   (:require [clojure.string :as str]))
 
 (def testinput "1-3 a: abcde
 1-3 b: cdefg
 2-9 c: ccccccccc")
 
-(def data (slurp "input/y2020/day2-input.txt"))
+(def data (slurp "input/y2020/02.txt"))
 
 ; Ønsker en regex som "[x]{1,3}"
 

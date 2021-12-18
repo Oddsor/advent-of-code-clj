@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag8
+(ns advent-of-code-clj.y2021.d08
   (:require [clojure.string :as str]
             [clojure.set :as set]))
 
@@ -60,11 +60,11 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 
 (comment
   (= 479
-     (->> (parse (slurp "input/y2021/day8-input.txt"))
+     (->> (parse (slurp "input/y2021/08.txt"))
           (map process-line)
           count-simple-nums))
   (= 1041746
-     (->> (parse (slurp "input/y2021/day8-input.txt"))
+     (->> (parse (slurp "input/y2021/08.txt"))
           (map (comp xs->number process-line))
           (apply +)))
   ;;

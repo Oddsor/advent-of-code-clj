@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag2
+(ns advent-of-code-clj.y2021.d02
   (:require [clojure.string :as str]))
 
 (def test-data "forward 5
@@ -42,11 +42,11 @@ forward 2")
 
 (comment
   ;; Part 1
-  (multiply-positions (navigate-1 (parse (slurp "input/y2021/day2-input.txt")))))
+  (multiply-positions (navigate-1 (parse (slurp "input/y2021/02.txt")))))
 
 (comment
   ;; Part 2
-  (multiply-positions (navigate-2 (parse (slurp "input/y2021/day2-input.txt")))))
+  (multiply-positions (navigate-2 (parse (slurp "input/y2021/02.txt")))))
 
 ;; Asserts
 (assert (= {:depth 10 :h-pos 15}

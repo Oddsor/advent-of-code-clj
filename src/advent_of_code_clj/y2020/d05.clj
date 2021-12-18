@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2020.dag5
+(ns advent-of-code-clj.y2020.d05
   (:require [clojure.string :as str]
             [com.rpl.specter :refer :all #_[srange-dynamic subselect ALL FIRST select-one]]))
 
@@ -45,14 +45,14 @@
 
 (comment
   ;Høyeste registrerte boarding pass
-  (->> (slurp "input/y2020/day5-input.txt")
+  (->> (slurp "input/y2020/05.txt")
        (str/split-lines)
        (map (comp :seat-id seat-info))
        (apply max)))
 
 (comment
   ; Ledige seter som eksisterer
-  (let [registrerte-sete-ider (->> (slurp "input/y2020/day5-input.txt")
+  (let [registrerte-sete-ider (->> (slurp "input/y2020/05.txt")
                                    (str/split-lines)
                                    (map (comp :seat-id seat-info))
                                    set)

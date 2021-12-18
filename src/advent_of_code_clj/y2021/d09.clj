@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag9
+(ns advent-of-code-clj.y2021.d09
   (:require [clojure.string :as str]))
 
 (defn parse-nums [text]
@@ -68,13 +68,13 @@
 
 (comment
   ;; Part 1
-  (->> (parse-lines (slurp "input/y2021/day9-input.txt"))
+  (->> (parse-lines (slurp "input/y2021/09.txt"))
        find-minima
        (map last)
        (apply +)
        (= 444))
   ;; Part 2
-  (let [data (parse-lines (slurp "input/y2021/day9-input.txt"))]
+  (let [data (parse-lines (slurp "input/y2021/09.txt"))]
     (->> data
          find-minima
          (map (fn [plot]

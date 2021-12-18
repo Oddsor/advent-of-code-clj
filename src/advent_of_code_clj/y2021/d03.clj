@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag3
+(ns advent-of-code-clj.y2021.d03
   (:require [clojure.core.matrix :as m]))
 
 (def test-data "00100
@@ -31,7 +31,7 @@
 
 (assert (= 198 (calculate-power-consumption (parse test-data))))
 (comment
-  (= 3901196 (calculate-power-consumption (parse (slurp "input/y2021/day3-input.txt")))))
+  (= 3901196 (calculate-power-consumption (parse (slurp "input/y2021/03.txt")))))
 
 (defn narrow-bits-by-fn [fun data]
   (reduce (fn [data idx]
@@ -56,6 +56,6 @@
                     (first (narrow-bits-by-fn < data))))))
 
 (comment
-  (let [data (parse (slurp "input/y2021/day3-input.txt"))]
-    (= 4412188 (* (bit-str-to-dec (first (narrow-bits-by-fn > data)))
-                  (bit-str-to-dec (first (narrow-bits-by-fn < data)))))))
+  (let [data (parse (slurp "input/y2021/03.txt"))]
+    (= 4412188 (* (first (narrow-bits-by-fn > data))
+                  (first (narrow-bits-by-fn < data))))))

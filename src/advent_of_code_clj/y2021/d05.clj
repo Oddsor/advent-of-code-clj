@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag5
+(ns advent-of-code-clj.y2021.d05
   (:require [clojure.string :as str]
             [com.rpl.specter :as s]))
 
@@ -65,14 +65,14 @@
               (filter (fn [[[x1 y1] [x2 y2]]]
                         (or (= x1 x2)
                             (= y1 y2)))
-                      (parse (slurp "input/y2021/day5-input.txt"))))))
+                      (parse (slurp "input/y2021/05.txt"))))))
 
   ;; Part 2
   (= 22116
      (intersecting-points
       (reduce apply-plot
               (init-grid 1000)
-              (parse (slurp "input/y2021/day5-input.txt")))))
+              (parse (slurp "input/y2021/05.txt")))))
   ;;
   )
 

@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag10
+(ns advent-of-code-clj.y2021.d10
   (:require [clojure.string :as str]))
 
 (defn parse [t]
@@ -70,14 +70,14 @@
              (= 288957)))
 
 (comment
-  (->> (parse (slurp "input/y2021/day10-input.txt"))
+  (->> (parse (slurp "input/y2021/10.txt"))
        (map process-line)
        (keep :char)
        (map bad-scores)
        (apply +)
        (= 168417))
 
-  (->> (parse (slurp "input/y2021/day10-input.txt"))
+  (->> (parse (slurp "input/y2021/10.txt"))
        (map process-line)
        (remove :char)
        (map calc-incomplete-score)

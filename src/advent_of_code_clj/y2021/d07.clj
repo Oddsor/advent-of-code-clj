@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag7)
+(ns advent-of-code-clj.y2021.d07)
 (defn parse [text]
   (map read-string (re-seq #"\d+" text)))
 (def test-data (parse "16,1,2,0,4,2,7,1,2,14"))
@@ -48,7 +48,7 @@
 (assert (= 168 (find-min-distance test-data)))
 
 (comment
-  (def data (parse (slurp "input/y2021/day7-input.txt")))
+  (def data (parse (slurp "input/y2021/07.txt")))
 
   (= 328262 (calc-min-f distance data))
   (= 90040997 (calc-min-f (comp triangle distance) data))

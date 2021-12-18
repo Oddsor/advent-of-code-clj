@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag12)
+(ns advent-of-code-clj.y2021.d12)
 
 (defn text->pairs [t]
   (partition 2 (re-seq #"\w+" t)))
@@ -50,7 +50,7 @@ b-end"))
 (assert (= 36 (count (paths can-visit-2? test-data))))
 
 (comment
-  (def data (parse (slurp "input/y2021/day12-input.txt")))
+  (def data (parse (slurp "input/y2021/12.txt")))
   (time (= 3738 (count (paths small-cave-visited? data))))
 
   (time (= 120506 (count (paths can-visit-2? data)))))

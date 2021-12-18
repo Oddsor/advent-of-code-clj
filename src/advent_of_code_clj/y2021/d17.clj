@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag17
+(ns advent-of-code-clj.y2021.d17
   (:require [clojure.core.matrix :as m]))
 
 (defn parse [t]

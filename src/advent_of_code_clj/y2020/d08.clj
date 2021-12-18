@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2020.dag8
+(ns advent-of-code-clj.y2020.d08
   (:require [clojure.string :as str]
             [com.rpl.specter :as s]))
 
@@ -47,7 +47,7 @@ acc +6")
 (assert (= [:halt 5] (process-instructions (parse-instructions test-data))))
 
 (comment
-  (process-instructions (parse-instructions (slurp "input/y2020/day8-input.txt")))
+  (process-instructions (parse-instructions (slurp "input/y2020/08.txt")))
   )
 
 (def flip-op {:jmp :nop
@@ -74,5 +74,5 @@ acc +6")
 (assert (= [[:ok 8]] (valid-results (parse-instructions test-data))))
 
 (comment
-  (valid-results (parse-instructions (slurp "input/y2020/day8-input.txt")))
+  (valid-results (parse-instructions (slurp "input/y2020/08.txt")))
   )

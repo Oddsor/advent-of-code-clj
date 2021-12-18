@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag13
+(ns advent-of-code-clj.y2021.d13
   (:require [clojure.string :as str]))
 
 (defn parse [t]

@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag15
+(ns advent-of-code-clj.y2021.d15
   (:require [clojure.string :as str]
             [advent-of-code-clj.utils :as u]
             [ubergraph.alg :as ua]))

@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag9-map
+(ns advent-of-code-clj.y2021.d09-map
   (:require [clojure.string :as str]
             [clojure.core.reducers :as r]))
 
@@ -74,7 +74,7 @@
                      (apply *))))
 
 (comment
-  (time (let [data (parse-lines (slurp "input/y2021/day9-input.txt"))
+  (time (let [data (parse-lines (slurp "input/y2021/09.txt"))
               minima (find-minima data)]
           [(->> minima
                 (map (comp inc val))

@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag2min)
+(ns advent-of-code-clj.y2021.d02min)
 
 (def test-data "forward 5
 down 5
@@ -23,11 +23,11 @@ forward 2")
 
 (comment
   ;; Part 1
-  (->> (parse (slurp "input/y2021/day2-input.txt")) (apply map +) (apply *)))
+  (->> (parse (slurp "input/y2021/02.txt")) (apply map +) (apply *)))
 
 (comment
   ;; Part 2
-  (->> (parse (slurp "input/y2021/day2-input.txt"))
+  (->> (parse (slurp "input/y2021/02.txt"))
        (reduce update-position-with-aim [0 0 0])
        (take 2)
        (apply *)))
@@ -54,7 +54,7 @@ forward 2")
                    \u [0 (- x)]
                    \d [0 x]
                    \f [x 0]))
-               (partition 2 (read-string (str "[" (slurp "input/y2021/day2-input.txt") "]"))))
+               (partition 2 (read-string (str "[" (slurp "input/y2021/02.txt") "]"))))
         a apply]
     (prn (a * (a map + x)) (a * (take 2 (reduce (fn [[h d a] [x y]] [(+ h x) (+ d (* x a)) (+ a y)]) [0 0 0] x)))))
   )

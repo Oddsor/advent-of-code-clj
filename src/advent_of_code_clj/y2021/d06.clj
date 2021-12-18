@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag6)
+(ns advent-of-code-clj.y2021.d06)
 
 (def test-data (map read-string (re-seq #"\d+" "3,4,3,1,2")))
 
@@ -46,7 +46,7 @@
 (assert (= 26984457539 (apply + (vals (last (take 257 (iterate update-fishmap (as-fishmap test-data))))))))
 
 (comment
-  (def data (map read-string (re-seq #"\d+" (slurp "input/y2021/day6-input.txt"))))
+  (def data (map read-string (re-seq #"\d+" (slurp "input/y2021/06.txt"))))
   (= 377263 (count (last (take 81 (iterate step data)))))
   (= 1695929023803 (apply + (vals (last (take 257 (iterate update-fishmap (as-fishmap data)))))))
   ;
@@ -54,7 +54,7 @@
 
 (comment
   ;; "Oneliner", eller "onethreader"
-  (->> (slurp "input/y2021/day6-input.txt")
+  (->> (slurp "input/y2021/06.txt")
        (re-seq #"\d+")
        (map read-string)
        frequencies

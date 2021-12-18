@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag11
+(ns advent-of-code-clj.y2021.d11
   (:require [clojure.string :as str]
             [com.rpl.specter :as s]
             [advent-of-code-clj.utils :as u]))
@@ -82,7 +82,7 @@
              (= 195)))
 
 (comment
-  (def data (parse (slurp "input/y2021/day11-input.txt")))
+  (def data (parse (slurp "input/y2021/11.txt")))
   ;; Part 1
   (->> (iterate step data)
        (take 101)

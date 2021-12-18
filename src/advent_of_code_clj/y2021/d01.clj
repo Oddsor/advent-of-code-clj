@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2021.dag1
+(ns advent-of-code-clj.y2021.d01
   (:require [clojure.string :as str]))
 
 (def test-data "199
@@ -35,7 +35,7 @@
               (parse test-data))))
 
 (comment
-  (measurements-higher-than-previous (parse (slurp "input/y2021/day1-input.txt")))
+  (measurements-higher-than-previous (parse (slurp "input/y2021/01.txt")))
   )
 
 (defn sliding-sum [measurements]
@@ -49,7 +49,7 @@
                  measurements-higher-than-previous)))
 
 (comment
-  (-> (slurp "input/y2021/day1-input.txt")
+  (-> (slurp "input/y2021/01.txt")
       parse
       sliding-sum
       measurements-higher-than-previous)
