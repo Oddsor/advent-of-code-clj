@@ -15,7 +15,7 @@ acc +6")
 (defn parse-instructions [text]
   (mapv (comp (fn [[op v]]
                 {:op (keyword op)
-                 :value (Integer/parseInt v)}) #(str/split % #"\s"))
+                 :value (parse-long v)}) #(str/split % #"\s"))
         (str/split-lines text)))
 
 (defn process-instructions [instruction-set]

@@ -29,20 +29,14 @@ iyr:2011 ecl:brn hgt:59in")
                   [(keyword k) v])))
          (into {}))))
 
-(defn parse-number [num-str]
-  (try
-    (Integer/parseInt num-str)
-    (catch Exception e
-      nil)))
-
 (defn num-in-range [num-str min-range max-range]
-  (if-let [num (parse-number num-str)]
+  (if-let [num (parse-long num-str)]
     (< (dec min-range) num (inc max-range))
     false))
 
 (defn valid-height [height-str]
   (let [[_ height-val-str unit] (first (re-seq #"(\d*)(cm|in)" height-str))
-        height (parse-number height-val-str)]
+        height (parse-long height-val-str)]
     (if (some? height)
       (cond
         (#{"in"} unit) (< (dec 59) height (inc 76))

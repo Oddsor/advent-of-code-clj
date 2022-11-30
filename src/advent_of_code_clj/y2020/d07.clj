@@ -23,7 +23,7 @@ dotted black bags contain no other bags.")
 
 (defn bagvec [bagnum]
   (let [[bagcount-str bagname] (str/split bagnum #"\s" 2)
-        bagcount (try (Integer/parseInt bagcount-str) (catch Exception _ nil))]
+        bagcount (parse-long bagcount-str)]
     (if bagcount
       (repeat bagcount (singular-name bagname))
       [])))

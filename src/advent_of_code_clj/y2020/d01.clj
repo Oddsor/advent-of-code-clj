@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]))
 
 (comment
-  (def liste-av-tall (map #(Integer/parseInt %)
+  (def liste-av-tall (map parse-long
                           (str/split-lines (slurp "input/y2020/01.txt"))))
 
   ; Multipliser to tall som i sum er lik 2020

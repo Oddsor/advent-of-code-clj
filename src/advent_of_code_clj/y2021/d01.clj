@@ -13,7 +13,7 @@
 263")
 
 (defn parse [text]
-  (map #(Integer/parseInt %) (str/split-lines text)))
+  (map parse-long (str/split-lines text)))
 
 (defn part-1-recursive [text]
   (loop [[h & t] (parse text)

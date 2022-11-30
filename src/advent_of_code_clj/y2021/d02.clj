@@ -13,7 +13,7 @@ forward 2")
   (map (fn [line]
          (let [[op amount] (str/split line #"\s")]
            {:op (keyword op)
-            :amount (Integer/parseInt amount)}))
+            :amount (parse-long amount)}))
        (str/split-lines text)))
 
 (defn update-position

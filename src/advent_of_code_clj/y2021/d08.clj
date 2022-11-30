@@ -52,7 +52,7 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
                    count-simple-nums)))
 
 (defn xs->number [xs]
-  (Integer/parseInt (apply str xs)))
+  (parse-long (apply str xs)))
 
 (assert (= 61229 (->> test-data
                       (map (comp xs->number process-line))
