@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.utils 
+(ns advent-of-code-clj.utils
   (:require [clojure.string :as str]))
 
 (defn coord-map [xs-of-xses]
@@ -23,7 +23,7 @@
    [(dec x) y]                   [(inc x) y]
    [(dec x) (inc y)] [x (inc y)] [(inc x) (inc y)]])
 
-(defn partition-parse 
+(defn partition-parse
   ([text]
    (partition-parse identity text))
   ([line-parsing-fn text]

@@ -1,17 +1,6 @@
 (ns advent-of-code-clj.y2021.d01
   (:require [clojure.string :as str]))
 
-(def test-data "199
-200
-208
-210
-200
-207
-240
-269
-260
-263")
-
 (defn parse [text]
   (map parse-long (str/split-lines text)))
 
@@ -30,30 +19,19 @@
        (filter (partial apply <))
        count))
 
-(assert (= 7 (part-1-recursive test-data)))
-(assert (= 7 (measurements-higher-than-previous
-              (parse test-data))))
-
-(comment
-  (measurements-higher-than-previous (parse (slurp "input/y2021/01.txt")))
-  )
-
 (defn sliding-sum [measurements]
   (->> measurements
        (partition 3 1)
        (map (partial apply +))))
 
-(assert (= 5 (-> test-data
-                 parse
-                 sliding-sum
-                 measurements-higher-than-previous)))
-
 (comment
+  ;; Part 1
+  (measurements-higher-than-previous (parse (slurp "input/y2021/01.txt")))
+  ;; Part 2
   (-> (slurp "input/y2021/01.txt")
       parse
       sliding-sum
-      measurements-higher-than-previous)
-  )
+      measurements-higher-than-previous))
 
 (comment
   ;; Minimal versjon

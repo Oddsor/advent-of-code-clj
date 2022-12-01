@@ -1,20 +1,12 @@
-(ns advent-of-code-clj.y2021.d02
-  (:require [clojure.string :as str]))
+(ns advent-of-code-clj.y2021.d02)
 
-(def test-data "forward 5
-down 5
-forward 8
-up 3
-down 8
-forward 2")
-
-(defn parse
-  [text]
-  (map (fn [line]
-         (let [[op amount] (str/split line #"\s")]
-           {:op (keyword op)
-            :amount (parse-long amount)}))
-       (str/split-lines text)))
+(defn parse [text]
+  (->> text
+       (re-seq #"\w+")
+       (partition 2)
+       (map (fn [[op amount]]
+              {:op (keyword op)
+               :amount (parse-long amount)}))))
 
 (defn update-position
   [{:keys [depth h-pos] :as state} {:keys [op amount]}]
@@ -42,18 +34,6 @@ forward 2")
 
 (comment
   ;; Part 1
-  (multiply-positions (navigate-1 (parse (slurp "input/y2021/02.txt")))))
-
-(comment
+  (multiply-positions (navigate-1 (parse (slurp "input/y2021/02.txt"))))
   ;; Part 2
   (multiply-positions (navigate-2 (parse (slurp "input/y2021/02.txt")))))
-
-;; Asserts
-(assert (= {:depth 10 :h-pos 15}
-           (navigate-1 (parse test-data))))
-(assert (= 150 (multiply-positions
-                (navigate-1 (parse test-data)))))
-(assert (= {:depth 60, :h-pos 15, :aim 10}
-           (navigate-2 (parse test-data))))
-(assert (= 900 (multiply-positions
-                (navigate-2 (parse test-data)))))
