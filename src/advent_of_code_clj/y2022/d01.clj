@@ -16,43 +16,31 @@
 
 10000")
 
-(defn sum [xs]
-  (reduce + xs))
+(defn sum [xs] (reduce + xs))
+(def sort-desc (partial sort >))
 
 (defn parse-data [text]
-  (->> text
-       str/split-lines
-       (map parse-long)
-       (partition-by nil?)
-       (remove #{'(nil)})))
-
-(defn sum-calories-per-elf [data]
-  (map sum data))
+  (->> (str/split text #"\n\n") 
+       (map (comp #(map parse-long %) str/split-lines))))
 
 (defn sorted-calories [data]
-  (-> data sum-calories-per-elf sort))
+  (->> data (map sum) sort-desc))
 
 ;; Part 1 - find the maximum calories carried by one elf
 ;; Could use "(apply max ...)" instead of sorting, but part 2
 ;; needs the maximum 3 calorie counts
 (defn max-calories [data]
-  (->> data 
-       sorted-calories
-       last))
+  (->> data sorted-calories first))
 
 (assert (= 24000 (max-calories (parse-data test-data))))
 
 (comment (-> (slurp "input/2022/01.txt")
              parse-data
-             max-calories)
-         )
+             max-calories))
 
 ;; Part 2 - find the amount of calories carried by the "top 3" elves
 (defn sum-of-max-3-calories [data]
-  (->> data 
-       sorted-calories
-       (take-last 3)
-       sum))
+  (->> data sorted-calories (take 3) sum))
 
 (assert (= 45000 (sum-of-max-3-calories (parse-data test-data))))
 
