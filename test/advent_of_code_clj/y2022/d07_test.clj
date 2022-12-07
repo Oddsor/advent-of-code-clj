@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d07-test 
+(ns advent-of-code-clj.y2022.d07-test
   (:require [advent-of-code-clj.y2022.d07 :refer [part-1 part-2]]
             [clojure.test :refer [deftest is]]))
 
@@ -30,4 +30,4 @@ $ ls
   (is (= 95437 (part-1 test-data))))
 
 (deftest part-2-test
-  (is (= 24933642 (part-2 test-data)))) 
+  (is (= 24933642 (part-2 test-data))))
