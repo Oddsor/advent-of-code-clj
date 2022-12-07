@@ -4,15 +4,15 @@
             [clojure.walk :as walk]))
 
 (defn process-line [pwd tree line]
-  (if (str/starts-with? line "$")
-    (let [[command argument] (str/split (subs line 2) #"\s")]
-      {:tree tree
-       :pwd (if (= command "cd")
-              (cond
-                (= "/" argument) []
-                (= ".." argument) (vec (butlast pwd))
-                :else (conj pwd argument))
-              pwd)})
+  (if-let [[command argument] (and (str/starts-with? line "$")
+                                   (str/split (subs line 2) #"\s"))]
+    {:tree tree
+     :pwd (if (= command "cd")
+            (cond
+              (= "/" argument) []
+              (= ".." argument) (vec (butlast pwd))
+              :else (conj pwd argument))
+            pwd)}
     (let [[size filename] (str/split line #"\s")]
       {:tree (if-let [size-n (parse-long size)]
                (assoc-in tree (filterv some? (conj pwd filename)) size-n)
@@ -26,7 +26,7 @@
                {:pwd [] :tree {}})
        :tree))
 
-(defn metadata-to-tree [tree]
+(defn assign-size-to-directories [tree]
   (walk/postwalk (fif map? (fn [node]
                              {:size (reduce + (concat
                                                (filter number? (vals node))
@@ -38,11 +38,11 @@
   (keep :size (tree-seq map? vals tree-with-sizes)))
 
 (defn part-1 [data]
-  (let [sizes (-> data build-tree metadata-to-tree directory-sizes)]
+  (let [sizes (-> data build-tree assign-size-to-directories directory-sizes)]
     (transduce (filter #(>= 100000  %)) + sizes)))
 
 (defn part-2 [data]
-  (let [tree-with-sizes (-> data build-tree metadata-to-tree)
+  (let [tree-with-sizes (-> data build-tree assign-size-to-directories)
         volume-to-delete (- 30000000 (- 70000000 (:size tree-with-sizes)))]
     (apply min (filter #(<= volume-to-delete  %) (directory-sizes tree-with-sizes)))))
 
