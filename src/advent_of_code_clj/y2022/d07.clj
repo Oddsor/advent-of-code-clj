@@ -1,5 +1,6 @@
 (ns advent-of-code-clj.y2022.d07
-  (:require [clojure.string :as str]
+  (:require [advent-of-code-clj.utils :refer [fif]]
+            [clojure.string :as str]
             [clojure.walk :as walk]))
 
 (defn process-line [pwd tree line]
@@ -26,14 +27,11 @@
        :tree))
 
 (defn metadata-to-tree [tree]
-  (walk/postwalk (fn [x]
-                   (if (map? x)
-                     (let [sum-size (reduce + (concat
-                                               (filter number? (vals x))
-                                               (map :size (filter map? (vals x)))))]
-                       {:size sum-size
-                        :children x})
-                     x))
+  (walk/postwalk (fif map? (fn [node]
+                             {:size (reduce + (concat
+                                               (filter number? (vals node))
+                                               (keep :size (vals node))))
+                              :children node}))
                  tree))
 
 (defn- directory-sizes [tree-with-sizes]

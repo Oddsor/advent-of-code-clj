@@ -30,3 +30,6 @@
    (->> (str/split text #"\n\n")
         (map str/split-lines)
         (map #(map line-parsing-fn %)))))
+
+(defn fif [pred fun]
+  #(if (pred %) (fun %) %))
