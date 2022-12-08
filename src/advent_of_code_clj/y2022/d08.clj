@@ -10,32 +10,32 @@
           (for [xp (range (inc x) width)] [y xp])
           (for [yp (range (inc y) height)] [yp x])))
 
-(defn part-1 [data]
-  (let [m (build-matrix data)
-        height (count m)
+(defn apply-to-nearby-trees [fun m]
+  (let [height (count m)
         width (count (first m))]
-    (->> (for [x (range height)
-               y (range width)
-               :let [tree (get-in m [y x])
-                     lower-tree? #(> tree (get-in m %))]]
-           (some #(every? lower-tree? %) (coordinates-from-point x y width height)))
-         (remove nil?)
-         count)))
+    (for [x (range height)
+          y (range width)]
+      (fun (get-in m [y x]) (mapv (partial mapv #(get-in m %)) (coordinates-from-point x y width height))))))
+
+(defn part-1 [data]
+  (->> (build-matrix data)
+       (apply-to-nearby-trees
+        (fn [tree coords]
+          (let [lower-tree? #(> tree %)]
+            (some #(every? lower-tree? %) coords))))
+       (remove nil?)
+       count))
 
 (defn part-2 [data]
-  (let [m (build-matrix data)
-        height (count m)
-        width (count (first m))]
-    (->> (for [x (range height)
-               y (range width)
-               :let [tree (get-in m [y x])
-                     add-if-visible (fn [acc coords]
-                                      (if (> tree (get-in m coords))
-                                        (inc acc)
-                                        (reduced (inc acc))))]]
-           (apply * (map #(reduce add-if-visible 0 %)
-                         (coordinates-from-point x y width height))))
-         (apply max))))
+  (->> (build-matrix data)
+       (apply-to-nearby-trees
+        (fn [tree coords]
+          (let [add-if-visible (fn [acc other-tree]
+                                 ((if (> tree other-tree)
+                                    identity
+                                    reduced) (inc acc)))]
+            (apply * (map #(reduce add-if-visible 0 %) coords)))))
+       (apply max)))
 
 (comment
   (part-1 (slurp "input/2022/08.txt"))
