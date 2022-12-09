@@ -1,19 +1,28 @@
 (ns advent-of-code-clj.y2022.d09)
 
 (defn parse [data]
-  (map (fn [[d n]] [(keyword d) (parse-long n)]) (partition 2 (re-seq #"\w+" data))))
+  (->> data
+       (re-seq #"\w+")
+       (partition 2)
+       (map (fn [[d n]]
+              [(keyword d) (parse-long n)]))))
 
 (defn movement-seq [moves]
   (mapcat (comp (partial apply repeat) reverse) moves))
 
 (defn- neighbouring? [[hx hy] [tx ty]]
-  (and (>= 1 (abs (- hx tx))) (>= 1 (abs (- hy ty)))))
+  (every? #(>= 1 (abs %)) [(- hx tx) (- hy ty)]))
+
+(defn- move-relative-to [x y]
+  ((condp apply [x y]
+     = identity
+     > inc
+     < dec) y))
 
 (defn move-towards-head [[hx hy] [tx ty]]
   (if (neighbouring? [hx hy] [tx ty])
     [tx ty]
-    [(if (= hx tx) tx ((if (neg-int? (- hx tx)) dec inc) tx))
-     (if (= hy ty) ty ((if (neg-int? (- hy ty)) dec inc) ty))]))
+    [(move-relative-to hx tx) (move-relative-to hy ty)]))
 
 (defn move-tail [new-head [thead & tail]]
   (lazy-seq
@@ -22,11 +31,8 @@
            (move-tail (move-towards-head new-head thead) tail)))))
 
 (defn move [[[hx hy] & tail] d]
-  (move-tail (case d
-               :R [(inc hx) hy]
-               :L [(dec hx) hy]
-               :U [hx (inc hy)]
-               :D [hx (dec hy)])
+  (move-tail [((case d :L dec :R inc identity) hx)
+              ((case d :U inc :D dec identity) hy)]
              tail))
 
 (defn build-chain [length]
