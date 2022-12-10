@@ -42,7 +42,9 @@
                  ;; x is the position of a sprite 3 pixels wide
                  ;; so if n is within the sprite, draw a #
                  (conj acc (if (>= (inc x) (mod n 40) (dec x))
-                             \# \.)))
+                             ;; Inspired by reddit to make 
+                             ;; the text way more readable
+                             \█ \space)))
                [])
        (partition 40)
        (interpose "\n")

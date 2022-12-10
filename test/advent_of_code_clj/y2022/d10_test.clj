@@ -1,7 +1,8 @@
 (ns advent-of-code-clj.y2022.d10-test
   (:require [advent-of-code-clj.y2022.d10 :refer [cycle-seq part-1 part-2
                                                   process-cycles]]
-            [clojure.test :refer [deftest is]]))
+            [clojure.test :refer [deftest is]]
+            [clojure.string :as str]))
 
 (def test-data "noop
 addx 3
@@ -162,10 +163,12 @@ noop")
   (is (= 13140 (part-1 larger-test-data))))
 
 (deftest part-2-test
-  (is (= "##..##..##..##..##..##..##..##..##..##..
+  (is (= (-> "##..##..##..##..##..##..##..##..##..##..
 ###...###...###...###...###...###...###.
 ####....####....####....####....####....
 #####.....#####.....#####.....#####.....
 ######......######......######......####
-#######.......#######.......#######....."
+#######.......#######.......#######....." 
+             (str/replace "#" "█")
+             (str/replace "." " "))
          (part-2 larger-test-data))))
