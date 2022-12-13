@@ -1,74 +1,33 @@
-(ns y2022.d13 
-  (:require [clojure.string :as str]
-            [clojure.zip :as zip]))
+(ns y2022.d13
+  (:require [clojure.edn :as edn]))
 
-(defn in-order? [lz rz]
-  (let [ln (zip/node lz)
-        rn (zip/node rz)] 
-    (cond (zip/end? lz)
-          true
-          (zip/end? rz)
-          false
-          (and (number? ln) (number? rn))
-          (if (= ln rn)
-            (cond 
-              (and (= lz (zip/rightmost lz)) 
-                   (not= rz (zip/rightmost rz)))
-              true
-              (and (= rz (zip/rightmost rz))
-                   (not= lz (zip/rightmost lz)))
-              false
-              :else (in-order? (zip/next lz) (zip/next rz)))
-            (< ln rn))
-          (and (number? rn) (coll? ln))
-          (in-order? lz (zip/edit rz vector))
-          (and (number? ln) (coll? rn))
-          (in-order? (zip/edit lz vector) rz)
-          :else (in-order? (zip/next lz) (zip/next rz)))))
+(defn in-order? [left right]
+  (cond (and (number? left) (number? right)) (compare left right)
+        (number? right) (in-order? left (vector right))
+        (number? left) (in-order? (vector left) right)
+        ;; This solution by @wevre was too good pass up
+        :else (or (->> (map in-order? left right) (drop-while zero?) first)
+                  (- (count left) (count right)))))
 
-(defn in-order-vec? [l r] 
-  (cond (and (number? l) (number? r))
-        (compare l r) 
-        (and (number? r) (coll? l))
-        (in-order-vec? l (vector r))
-        (and (number? l) (coll? r))
-        (in-order-vec? (vector l) r)
-        :else (loop [[lh & lt] l
-                     [rh & rt] r]
-                (cond
-                  (and (nil? lh) (nil? rh)) 0
-                  (nil? lh) -1
-                  (nil? rh) 1
-                  :else 
-                  (let [c (in-order-vec? lh rh)]
-                    (if (zero? c)
-                      (recur lt rt)
-                      c))))))
+(defn parse [data] (edn/read-string (str "[" data "]")))
 
 (defn part-1 [data]
-  (->> (str/split data #"\n\n")
-       (map #(map read-string (str/split-lines %)))
-       (map-indexed (fn [idx [l r]]
-                      [(inc idx) (neg-int? (in-order-vec? l r))]))
-       (reduce (fn [acc [idx in-order]]
-                 (cond-> acc
-                   in-order (+ idx))) 0)))
+  (->> (parse data)
+       (partition 2)
+       (keep-indexed (fn [idx [left right]]
+                       (when (neg-int? (in-order? left right)) (inc idx))))
+       (apply +)))
 
 (defn part-2 [data]
-  (let [dividers #{[[2]] [[6]]}
-        packets (->> (str/split data #"\n\n")
-                     (mapcat #(map read-string (str/split-lines %)))
-                     (concat dividers))]
-    (->> packets
-         (sort in-order-vec?)
-         (map-indexed (fn [idx packet]
-                            [(inc idx) packet]))
-         (keep (fn [[idx packet]]
-                 (when (dividers packet)
-                   idx)))
+  (let [dividers #{[[2]] [[6]]}]
+    (->> (parse data)
+         (concat dividers)
+         (sort in-order?)
+         (keep-indexed (fn [idx packet]
+                         (when (dividers packet)
+                           (inc idx))))
          (apply *))))
 
-
-(comment 
+(comment
   (part-1 (slurp "input/2022/13.txt"))
   (part-2 (slurp "input/2022/13.txt")))
