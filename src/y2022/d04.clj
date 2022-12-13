@@ -9,22 +9,14 @@
   (seq (set/intersection
         (set (range a (inc b)))
         (set (range c (inc d))))))
+(defn parse [data]
+  (->> data (re-seq #"\d+") (map parse-long) (partition 4)))
 
 (defn part-1 [data]
-  (->> data
-       (re-seq #"\d+")
-       (map parse-long)
-       (partition 4)
-       (filter overlaps)
-       count))
+  (->> (parse data) (filter overlaps) count))
 
 (defn part-2 [data]
-  (->> data
-       (re-seq #"\d+")
-       (map parse-long)
-       (partition 4)
-       (filter overlaps-at-all)
-       count))
+  (->> (parse data) (filter overlaps-at-all) count))
 
 (comment
   (part-1 (slurp "input/2022/04.txt"))
