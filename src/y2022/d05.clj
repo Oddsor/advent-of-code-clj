@@ -4,7 +4,7 @@
 (defn build-stacks [stack-str]
   (->> stack-str
        str/split-lines
-       (drop-last 1)
+       butlast
        (map #(take-nth 4 (rest %)))
        (apply mapv list)
        (mapv #(drop-while #{\space} %))))
@@ -14,23 +14,24 @@
          n move-amount]
     (if (zero? n)
       stacks
-      (let [popped (first (stacks (dec from)))]
-        (recur (-> stacks
-                   (update (dec from) rest)
-                   (update (dec to) conj popped))
-               (dec n))))))
+      (recur (-> stacks
+                 (update from rest)
+                 (update to conj (first (stacks from))))
+             (dec n)))))
 
 (defn operate-on-many [stacks [move-amount from to]]
-  (let [popped (take move-amount (stacks (dec from)))]
+  (let [popped (take move-amount (stacks from))]
     (-> stacks
-        (update (dec from) #(drop move-amount %))
-        (update (dec to) #(concat popped %)))))
+        (update from #(drop move-amount %))
+        (update to #(concat popped %)))))
 
 (defn find-phrase [operation data]
-  (let [[stack-str operations-str] (str/split data #"\n\n")
-        operations (partition 3 (map parse-long (re-seq #"\d+" operations-str)))
-        stack (build-stacks stack-str)]
-    (->> (reduce operation stack operations)
+  (let [[stack-str operations-str] (str/split data #"\n\n")]
+    (->> (re-seq #"\d+" operations-str)
+         (map parse-long)
+         (partition 3)
+         (map (fn [[move-amount from to]] [move-amount (dec from) (dec to)]))
+         (reduce operation (build-stacks stack-str))
          (map first)
          (apply str))))
 
