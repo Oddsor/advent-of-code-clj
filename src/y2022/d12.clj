@@ -11,36 +11,30 @@
                        [position [y x]]))]
     {:start (s&e \S)
      :end (s&e \E)
-     :map (mapv #(mapv int %) (-> m
-                                  (assoc-in (s&e \S) \a)
-                                  (assoc-in (s&e \E) \z)))}))
+     :map (mapv (fn [row] (mapv (comp int #({\S \a \E \z} % %)) row)) m)}))
 
 (defn valid-adjacents [[y x] data]
-  (let [height (get-in data [y x])]
-    (->> [[y (dec x)] [y (inc x)] [(dec y) x] [(inc y) x]]
-         (filter (fn [coord]
-                   (when-let [nearby-height (get-in data coord nil)]
-                     (>= (inc height) nearby-height)))))))
+  (->> [[y (dec x)] [y (inc x)] [(dec y) x] [(inc y) x]]
+       (filter (fn [coord]
+                 (when-let [nearby-height (get-in data coord nil)]
+                   (>= (inc (get-in data [y x])) nearby-height))))))
 
 (defn shortest-path [from to m]
   (:cost (ua/shortest-path (fn [node]
-                             (map (fn [coord]
-                                    {:dest coord}) (valid-adjacents node m)))
-                           {:start-node from
-                            :end-node to})))
+                             (map (fn [coord] {:dest coord}) (valid-adjacents node m)))
+                           {:start-node from :end-node to})))
 
 (defn part-1 [data]
-  (let [state (parse data)]
-    (shortest-path (:start state) (:end state) (:map state))))
+  (let [{s :start e :end m :map} (parse data)]
+    (shortest-path s e m)))
 
 (defn part-2 [data]
-  (let [state (parse data)
-        m (:map state)]
+  (let [{e :end m :map} (parse data)]
     (->> (for [y (range (count m))
                x (range (count (first m)))
                :when (= (int \a) (get-in m [y x]))]
            [y x])
-         (keep #(shortest-path % (:end state) m))
+         (keep #(shortest-path % e m))
          (apply min))))
 
 (comment (part-1 (slurp "input/2022/12.txt"))
