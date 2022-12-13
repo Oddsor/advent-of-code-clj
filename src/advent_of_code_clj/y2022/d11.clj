@@ -48,7 +48,7 @@
   (apply * (take-last 2 (sort (map (fn [[_ v]] (:inspected v)) monkeys)))))
 
 (defn part-1 [data]
-  (inspected-multiplication (nth (iterate (monkey-around (fn [x] (Math/floor (/ x 3)))) (parse data)) 20)))
+  (inspected-multiplication (nth (iterate (monkey-around (fn [x] (quot x 3))) (parse data)) 20)))
 
 (defn part-2 [data]
   (let [monkeys (parse data)
