@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d04
+(ns y2022.d04
   (:require [clojure.set :as set]))
 
 (defn overlaps [[a b c d]]

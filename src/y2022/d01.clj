@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d01
+(ns y2022.d01
   (:require [advent-of-code-clj.utils :refer [partition-parse]]))
 
 (defn- sum [xs] (reduce + xs))

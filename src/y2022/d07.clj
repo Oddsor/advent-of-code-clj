@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d07
+(ns y2022.d07
   (:require [advent-of-code-clj.utils :refer [fif]]
             [clojure.string :as str]
             [clojure.walk :as walk]))

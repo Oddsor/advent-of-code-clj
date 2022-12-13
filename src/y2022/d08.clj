@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d08
+(ns y2022.d08
   (:require [clojure.string :as str]))
 
 (defn- build-matrix [data]

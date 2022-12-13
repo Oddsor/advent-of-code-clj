@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d06
+(ns y2022.d06
   (:require [tech.v3.datatype.argops :as da]
             [tech.v3.datatype.rolling :as dr]
             [criterium.core :as crit]))

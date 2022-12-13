@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d10
+(ns y2022.d10
   (:require [clojure.string :as str]))
 
 (defn delay-operation [[op :as operation]]

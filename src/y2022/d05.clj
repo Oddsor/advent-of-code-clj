@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d05
+(ns y2022.d05
   (:require [clojure.string :as str]))
 
 (defn build-stacks [stack-str]

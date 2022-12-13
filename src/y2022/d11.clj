@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d11
+(ns y2022.d11
   (:require [clojure.string :as str]))
 
 (defn find-long [str]

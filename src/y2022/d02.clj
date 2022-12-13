@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d02
+(ns y2022.d02
   (:require [clojure.set :as set]
             [clojure.string :as str]))
 

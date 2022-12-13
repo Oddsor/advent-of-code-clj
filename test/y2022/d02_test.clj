@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d02-test
+(ns y2022.d02-test
   (:require [clojure.test :refer [deftest is]]
             [advent-of-code-clj.y2022.d02 :refer :all]))
 

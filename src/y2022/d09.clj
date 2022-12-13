@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d09)
+(ns y2022.d09)
 
 (defn parse [data]
   (->> data
