@@ -56,5 +56,4 @@ forward 2")
                    \f [x 0]))
                (partition 2 (read-string (str "[" (slurp "input/y2021/02.txt") "]"))))
         a apply]
-    (prn (a * (a map + x)) (a * (take 2 (reduce (fn [[h d a] [x y]] [(+ h x) (+ d (* x a)) (+ a y)]) [0 0 0] x)))))
-  )
+    (prn (a * (a map + x)) (a * (take 2 (reduce (fn [[h d a] [x y]] [(+ h x) (+ d (* x a)) (+ a y)]) [0 0 0] x))))))

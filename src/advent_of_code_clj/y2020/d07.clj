@@ -97,8 +97,7 @@ dotted black bags contain no other bags.")
 
 (comment
   (count (bags-that-hold-shiny (parse (slurp "input/y2020/07.txt"))))
-  (count-bags-that-shiny-holds (parse (slurp "input/y2020/07.txt")))
-  )
+  (count-bags-that-shiny-holds (parse (slurp "input/y2020/07.txt"))))
 
 (comment
   ;; Forsøk med Meander

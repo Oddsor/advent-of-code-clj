@@ -47,8 +47,7 @@ acc +6")
 (assert (= [:halt 5] (process-instructions (parse-instructions test-data))))
 
 (comment
-  (process-instructions (parse-instructions (slurp "input/y2020/08.txt")))
-  )
+  (process-instructions (parse-instructions (slurp "input/y2020/08.txt"))))
 
 (def flip-op {:jmp :nop
               :nop :jmp})
@@ -74,5 +73,4 @@ acc +6")
 (assert (= [[:ok 8]] (valid-results (parse-instructions test-data))))
 
 (comment
-  (valid-results (parse-instructions (slurp "input/y2020/08.txt")))
-  )
+  (valid-results (parse-instructions (slurp "input/y2020/08.txt"))))

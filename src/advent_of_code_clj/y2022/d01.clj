@@ -20,7 +20,6 @@
 (defn part-2 [data]
   (->> data parse-data sorted-calories (take 3) sum))
 
-
 (comment
   (part-1 (slurp "input/2022/01.txt"))
   (part-2 (slurp "input/2022/01.txt")))

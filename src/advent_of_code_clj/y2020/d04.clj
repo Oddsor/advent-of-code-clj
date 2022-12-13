@@ -64,8 +64,7 @@ iyr:2011 ecl:brn hgt:59in")
          ; ECL-sjekk
          (#{"amb" "blu" "brn" "gry" "grn" "hzl" "oth"} (:ecl passport))
          ; PID-sjekk
-         (re-seq #"^[\d]{9,9}$" (:pid passport))
-         )))
+         (re-seq #"^[\d]{9,9}$" (:pid passport)))))
 
 (def ugyldige-test-data "eyr:1972 cid:100
 hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926

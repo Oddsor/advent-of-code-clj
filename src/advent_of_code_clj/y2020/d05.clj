@@ -20,7 +20,7 @@
 
 (select-one (concat (map to-sym "BFFFBBFRRR")
                     [FIRST FIRST])
-                    seats)
+            seats)
 
 (defn seat-info [boarding-code]
   (let [{:keys [row-range col-range]}
@@ -41,7 +41,6 @@
     {:row row
      :col col
      :seat-id (+ (* row 8) col)}))
-
 
 (comment
   ;Høyeste registrerte boarding pass

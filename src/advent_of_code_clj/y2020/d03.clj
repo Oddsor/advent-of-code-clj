@@ -25,8 +25,7 @@
   ;; Kartet er lengre enn det er bredt, så man må bruke modulo bredde for å få rett svar
   (->> (slurp "input/y2020/03.txt")
        str/split-lines
-       (x-til-høyre 3))
-  )
+       (x-til-høyre 3)))
 
 (comment
   (let [kart (str/split-lines (slurp "input/y2020/03.txt"))]
@@ -34,5 +33,4 @@
        (x-til-høyre 3 kart)
        (x-til-høyre 5 kart)
        (x-til-høyre 7 kart)
-       (x-til-høyre 1 (take-nth 2 kart))))
-  )
+       (x-til-høyre 1 (take-nth 2 kart)))))

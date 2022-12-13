@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d11 
+(ns advent-of-code-clj.y2022.d11
   (:require [clojure.string :as str]))
 
 (defn find-long [str]
@@ -6,12 +6,12 @@
 (defn find-longs [str]
   (map parse-long (re-seq #"\d+" str)))
 
-(defn op-or-num [x] 
+(defn op-or-num [x]
   (if (re-matches #"\d+" x) (parse-long x) (symbol x)))
 
 (defn create-op [line]
   (let [[arg1 op arg2] (str/split (last (str/split line #" = ")) #" ")
-        ops (symbol op) arg1 (op-or-num arg1) arg2 (op-or-num arg2)] 
+        ops (symbol op) arg1 (op-or-num arg1) arg2 (op-or-num arg2)]
     (eval (list 'fn ['old] (list ops arg1 arg2)))))
 
 (defn parse [data]
@@ -52,7 +52,7 @@
 
 (defn part-2 [data]
   (let [monkeys (parse data)
-        common-modulo (apply * (map (comp :div-by val) monkeys))] 
+        common-modulo (apply * (map (comp :div-by val) monkeys))]
     (inspected-multiplication (nth (iterate (monkey-around (fn [x] (mod x common-modulo))) monkeys) 10000))))
 
 (comment (part-1 (slurp "input/2022/11.txt"))

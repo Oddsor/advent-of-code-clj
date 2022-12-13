@@ -61,21 +61,18 @@
                        (filter #{\#})
                        count))))
 
-
   (assert (= 3351 (let [{:keys [iha grid]} test-data]
                     (->> grid
                          (enhance-times 50 iha)
                          vals
                          (filter #{\#})
-                         count))))
-  )
+                         count)))))
 
 (comment
   (let [{:keys [iha grid]} test-data]
     (->> grid
          (enhance-times 2 iha)
-         print-image))
-  )
+         print-image)))
 
 (comment
   (let [{:keys [iha grid]} (->> "input/y2021/20.txt"

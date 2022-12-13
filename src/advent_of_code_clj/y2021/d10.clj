@@ -51,7 +51,7 @@
 (defn calc-incomplete-score [nesting]
   (reduce (fn [acc x]
             (+ (* 5 acc) x)) 0
-          (map (comp incomplete-scores pairs) 
+          (map (comp incomplete-scores pairs)
                (reverse nesting))))
 
 (assert (->> test-data

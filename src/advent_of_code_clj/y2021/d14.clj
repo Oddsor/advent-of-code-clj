@@ -62,7 +62,7 @@ CN -> C")
       (nth (iterate (partial expand (:inserts data))
                     (:freqs data)) 10)))
 
-  (time 
+  (time
    (= 2875665202438
       (max-minus-min
        (nth (iterate (partial expand (:inserts data))

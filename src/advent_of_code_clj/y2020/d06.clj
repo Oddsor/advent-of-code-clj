@@ -19,5 +19,4 @@
   (part-1 (slurp "input/y2020/06.txt"))
 
   ; Del 2
-  (part-2 (slurp "input/y2020/06.txt"))
-  )
+  (part-2 (slurp "input/y2020/06.txt")))

@@ -1,4 +1,4 @@
-(ns advent-of-code-clj.y2022.d04 
+(ns advent-of-code-clj.y2022.d04
   (:require [clojure.set :as set]))
 
 (defn overlaps [[a b c d]]
@@ -7,7 +7,7 @@
 
 (defn overlaps-at-all [[a b c d]]
   (seq (set/intersection
-        (set (range a (inc b))) 
+        (set (range a (inc b)))
         (set (range c (inc d))))))
 
 (defn part-1 [data]
@@ -26,6 +26,6 @@
        (filter overlaps-at-all)
        count))
 
-(comment 
+(comment
   (part-1 (slurp "input/2022/04.txt"))
   (part-2 (slurp "input/2022/04.txt")))

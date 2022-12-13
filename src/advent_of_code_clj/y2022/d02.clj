@@ -15,12 +15,12 @@
                   :paper 2
                   :scissors 3})
 (def loses-to {:paper :rock
-               :scissors :paper 
+               :scissors :paper
                :rock :scissors})
 (def wins-to (set/map-invert loses-to))
 
 (defn decide-outcome [{:keys [player opponent]}]
-  (cond 
+  (cond
     (= player opponent) :draw
     (= opponent (wins-to player)) :opponent-wins
     (= opponent (loses-to player)) :player-wins))

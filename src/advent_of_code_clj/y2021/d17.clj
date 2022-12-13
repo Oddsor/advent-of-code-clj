@@ -23,18 +23,18 @@
     n))
 
 (defn find-hits [[x1 x2 y1 y2 :as data]]
-(->> (for [vy (range (min y1 y2) 100)
-           vx (range 0 (inc (max x1 x2)))]
-       [vx vy])
-     (reduce (fn [acc [vx vy]]
-               (let [points (take-while #(>= (nth % 1) (min y1 y2))
-                                        (iterate (partial apply step)
-                                                 [0 0 vx vy]))]
-                 (if (some #(= 0 (distance-from-area? % data))
-                           (reverse points))
-                   (conj acc [vx vy (apply max (map second points))])
-                   acc)))
-             [])))
+  (->> (for [vy (range (min y1 y2) 100)
+             vx (range 0 (inc (max x1 x2)))]
+         [vx vy])
+       (reduce (fn [acc [vx vy]]
+                 (let [points (take-while #(>= (nth % 1) (min y1 y2))
+                                          (iterate (partial apply step)
+                                                   [0 0 vx vy]))]
+                   (if (some #(= 0 (distance-from-area? % data))
+                             (reverse points))
+                     (conj acc [vx vy (apply max (map second points))])
+                     acc)))
+               [])))
 
 (defn find-highest-y [data]
   (->> (find-hits data)
