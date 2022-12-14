@@ -1,5 +1,6 @@
 (ns y2022.d14
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [criterium.core :as crit]))
 
 (def test-data "498,4 -> 498,6 -> 496,6
 503,4 -> 502,4 -> 502,9 -> 494,9")
@@ -11,18 +12,24 @@
   (apply max (mapcat #(map second %) lines)))
 
 (defn line->coordinates [line]
-  (distinct
-   (mapcat (fn [[[ax ay] [bx by]]]
-             (cond
-               (= ax bx) (for [y (range (min ay by) (inc (max ay by)))]
-                           [ax y])
-               (= ay by) (for [x (range (min ax bx) (inc (max ax bx)))]
-                           [x ay])))
-           (partition 2 1 line))))
+  (->> (partition 2 1 line)
+       (mapcat (fn [[[ax ay] [bx by]]]
+                 (cond
+                   (= ax bx) (for [y (range (min ay by) (inc (max ay by)))]
+                               [ax y])
+                   (= ay by) (for [x (range (min ax bx) (inc (max ax bx)))]
+                               [x ay]))))
+       distinct))
 
 (defn place-rocks [lines]
-  (reduce (fn [acc line]
-            (into acc (map vector (line->coordinates line) (repeat :rock)))) {} lines))
+  (->> lines 
+       (mapcat line->coordinates)
+       (reduce #(assoc %1 %2 :rock) {})))
+
+(defn place-floor [max-y]
+  (let [floor-length (* max-y 6)]
+    (into {} (for [dx (range floor-length)]
+               [[(+ (- 500 (/ floor-length 2)) dx) max-y] :floor]))))
 
 (defn next-position [[x y] m]
   (cond
@@ -43,35 +50,32 @@
           (recur npos))
         pos))))
 
+(defn place-sand [max-y state]
+  (lazy-seq
+   (cons state
+         (let [sp (next-sand-position max-y state)
+               ns (cond-> state sp (assoc sp :sand))]
+           (when-not (or (= (last sp) max-y) (= ns state))
+             (place-sand max-y ns))))))
+
 (defn part-1 [data]
-  (let [lines (parse data)
-        initial-map (place-rocks lines)
-        max-y (max-y lines)]
-    (->> (loop [m initial-map]
-           (let [sp (next-sand-position max-y m)
-                 nm (cond-> m sp (assoc sp :sand))]
-             (cond
-               (= (last sp) max-y) m
-               (= nm m) nm
-               :else (recur nm))))
-         vals
-         (filter #{:sand})
-         count)))
+  (let [lines (parse data)]
+    (->> (place-rocks lines)
+         (place-sand (max-y lines))
+         count
+         dec)))
 
 (defn part-2 [data]
   (let [lines (parse data)
-        initial-map (place-rocks lines)
-        max-y (inc (max-y lines))]
-    (->> (loop [m initial-map]
-           (if-let [sp (next-sand-position max-y m)]
-             (recur (assoc m sp :sand))
-             m))
-         vals
-         (filter #{:sand})
-         count)))
+        max-y (+ (max-y lines) 2)]
+    (->> (merge (place-rocks lines)
+                (place-floor max-y))
+         (place-sand max-y)
+         count
+         dec)))
 
 (assert (= 24 (part-1 test-data)))
 (assert (= 93 (part-2 test-data)))
 (comment
-  (part-1 (slurp "input/2022/14.txt"))
-  (part-2 (slurp "input/2022/14.txt")))
+  (crit/quick-bench (part-1 (slurp "input/2022/14.txt")))
+  (crit/quick-bench (part-2 (slurp "input/2022/14.txt"))))
