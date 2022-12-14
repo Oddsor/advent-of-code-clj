@@ -7,12 +7,8 @@
 (defn parse [data]
   (map #(partition 2 (map parse-long (re-seq #"\d+" %))) (str/split-lines data)))
 
-(defn map-dimensions [lines]
-  (let [y-min 0
-        y-max (apply max (mapcat #(map second %) lines))
-        x-min (dec (apply min (mapcat #(map first %) lines)))
-        x-max (inc (apply max (mapcat #(map first %) lines)))]
-    [y-min y-max x-min x-max]))
+(defn max-y [lines]
+  (apply max (mapcat #(map second %) lines)))
 
 (defn line->coordinates [line]
   (distinct
@@ -29,34 +25,53 @@
             (into acc (map vector (line->coordinates line) (repeat :rock)))) {} lines))
 
 (defn next-position [[x y] m]
-  (let [possible-positions (remove #(m %) [[x (inc y)] [(dec x) (inc y)] [(inc x) (inc y)]])]
-    (if (empty? possible-positions)
-      [x y]
-      (first possible-positions))))
+  (cond
+    (nil? (m [x (inc y)])) [x (inc y)]
+    (nil? (m [(dec x) (inc y)])) [(dec x) (inc y)]
+    (nil? (m [(inc x) (inc y)])) [(inc x) (inc y)]
+    :else nil)
+  ;; Better performance than this?
+  #_(first (remove #(m %) [[x (inc y)] [(dec x) (inc y)] [(inc x) (inc y)]])))
 
-(defn place-sand [max-y m]
-  (loop [pos [500 0]]
-    (if-let [[_ y :as npos] (next-position pos m)]
-      (if (or (= npos pos) (= max-y y))
-        (assoc m npos :sand)
-        (recur npos))
-      m)))
+(defn next-sand-position [max-y m]
+  (if (m [500 0])
+    nil ;; Starting position is obstructed, don't place anything
+    (loop [pos [500 0]]
+      (if-let [[_ y :as npos] (next-position pos m)]
+        (if (or (nil? npos) (= max-y y))
+          npos
+          (recur npos))
+        pos))))
 
 (defn part-1 [data]
   (let [lines (parse data)
         initial-map (place-rocks lines)
-        [_ max-y _ _] (map-dimensions lines)]
+        max-y (max-y lines)]
     (->> (loop [m initial-map]
-           (let [nm (place-sand max-y m)]
-             (if (or (= nm m)
-                     (some (fn [[[_ y] v]]
-                             (and (= :sand v)
-                                  (= max-y y))) nm))
-               nm
-               (recur nm))))
+           (let [sp (next-sand-position max-y m)
+                 nm (cond-> m sp (assoc sp :sand))]
+             (cond
+               (= (last sp) max-y) m
+               (= nm m) nm
+               :else (recur nm))))
          vals
          (filter #{:sand})
-         count dec)))
+         count)))
 
-;; Map with coordinate->rock
-(place-rocks (parse test-data))
+(defn part-2 [data]
+  (let [lines (parse data)
+        initial-map (place-rocks lines)
+        max-y (inc (max-y lines))]
+    (->> (loop [m initial-map]
+           (if-let [sp (next-sand-position max-y m)]
+             (recur (assoc m sp :sand))
+             m))
+         vals
+         (filter #{:sand})
+         count)))
+
+(assert (= 24 (part-1 test-data)))
+(assert (= 93 (part-2 test-data)))
+(comment
+  (part-1 (slurp "input/2022/14.txt"))
+  (part-2 (slurp "input/2022/14.txt")))
