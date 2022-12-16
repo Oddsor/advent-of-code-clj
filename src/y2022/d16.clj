@@ -1,6 +1,8 @@
-(ns y2022.d16 
+(ns y2022.d16
   (:require [clojure.string :as str]
-            [ubergraph.alg :as ua]))
+            [ubergraph.alg :as ua]
+            [clojure.set :as set]
+            [clojure.math.combinatorics :as c]))
 
 (def test-data "Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
 Valve BB has flow rate=13; tunnels lead to valves CC, AA
@@ -13,7 +15,7 @@ Valve HH has flow rate=22; tunnel leads to valve GG
 Valve II has flow rate=0; tunnels lead to valves AA, JJ
 Valve JJ has flow rate=21; tunnel leads to valve II")
 
-(defn parse [data] 
+(defn parse [data]
   (->> data
        str/split-lines
        (map (fn [line]
@@ -28,42 +30,43 @@ Valve JJ has flow rate=21; tunnel leads to valve II")
                         :pressure pressure}])))
        (into {})))
 
-(defn determine-next-route [start-pos elapsed-time already-opened data]
-  (letfn [(gain-at [x]
-            (* (:pressure ((:end x) data)) (- (- 30 elapsed-time) (:cost x))))]
-    (->> (keys data)
-         (remove #(or (= start-pos %)
-                      (already-opened %)
-                      (zero? (:pressure (% data)))))
-         (map (fn [end]
-                (let [path (ua/shortest-path (fn [coord] (map (fn [x]
-                                                                {:dest x})
-                                                              (:next (coord data))))
-                                             {:start-node start-pos
-                                              :end-node end})]
-                  (assoc path :gain (gain-at path)))))
-         (sort #(> (:gain %1) (:gain %2)))
-         (#(doto % clojure.pprint/pprint))
-         first :list-of-edges deref
-         (map second))))
+(defn shortest-path [start-pos end-pos data]
+  (ua/shortest-path (fn [coord]
+                      (map (fn [x] {:dest x})
+                           (:next (coord data))))
+                    {:start-node start-pos
+                     :end-node end-pos}))
 
-(defn simulation [data {:keys [position move-to opened-valves elapsed-time pressure]}] 
-  (tap> [(next move-to) (> (:pressure ((or (first move-to) position) data)) 0)])
-  (let [npos (or (first move-to) position)
-        next-moves (next move-to)
-        opening-valve? (and (nil? next-moves)
-                            (nil? (opened-valves npos))
-                            (> (:pressure (npos data)) 0)) 
-        nopened (if opening-valve? (conj opened-valves npos) opened-valves)] 
-    {:position npos
-     :move-to (or next-moves (when opening-valve? '()) (determine-next-route npos elapsed-time nopened data))
-     :opened-valves nopened
-     :elapsed-time (inc elapsed-time)
-     :pressure (apply + pressure (map (comp :pressure data) opened-valves))}))
+(defn part-1 [data]
+  (let [d (parse data)
+        sp (memoize shortest-path)
+        op (set (remove (fn [valve] (zero? (:pressure (valve d)))) (keys d)))
+        start :AA
+        calc-pressure (fn [path]
+                        (reduce (fn [acc [valve activated-at]]
+                                  (if (pos-int? (- 30 activated-at))
+                                    (+ acc (* (:pressure (valve d)) (- 30 activated-at)))
+                                    acc))
+                                0 (map vector (:visited path) (:step path))))]
+    (loop [n 30
+           paths [{:visited [start] :step [0]}]]
+      (let [np (mapcat (fn [path]
+                         (if (> (last (:step path)) 30)
+                           [path]
+                           (if-let [next-nodes (seq (set/difference op (set (:visited path))))]
+                             (map (fn [end]
+                                    (let [s (sp (last (:visited path)) end d)]
+                                      {:visited (conj (:visited path) end)
+                                       :step (conj (:step path) (+ (last (:step path))
+                                                                   (inc (:cost s))))}))
+                                  next-nodes)
+                             [path])))
+                       paths)]
+        (if (or (= np paths) (zero? n))
+          (apply max (map calc-pressure paths))
+          (recur (dec n)
+                 np))))))
 
-(defn part-1 [data] 
-  (take 10 (iterate (partial simulation (parse data)) {:position :AA :move-to nil :opened-valves #{} :elapsed-time 0 :pressure 0})))
-
-(= (list :CC :BB) (determine-next-route :DD 0 #{} (parse test-data)))
-
-#_(assert (= 1651 (part-1 test-data)))
+(assert (= 1651 (part-1 test-data)))
+(comment
+  (part-1 (slurp "input/2022/16.txt")))
