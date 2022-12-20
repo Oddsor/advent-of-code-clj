@@ -1,6 +1,5 @@
 (ns y2022.d10-test
-  (:require [advent-of-code-clj.y2022.d10 :refer [cycle-seq part-1 part-2
-                                                  process-cycles]]
+  (:require [y2022.d10 :refer [cycle-seq part-1 part-2 process-cycles]]
             [clojure.test :refer [deftest is]]
             [clojure.string :as str]))
 

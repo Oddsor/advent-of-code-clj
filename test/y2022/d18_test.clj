@@ -1,4 +1,4 @@
-(ns y2022.d18-test 
+(ns y2022.d18-test
   (:require [y2022.d18 :refer [part-1]]))
 
 (def test-data "2,2,2

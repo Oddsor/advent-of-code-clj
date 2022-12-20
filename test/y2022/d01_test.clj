@@ -1,6 +1,6 @@
 (ns y2022.d01-test
   (:require [clojure.test :refer :all]
-            [advent-of-code-clj.y2022.d01 :refer :all]))
+            [y2022.d01 :refer [part-1 part-2]]))
 
 (def test-data "1000
 2000

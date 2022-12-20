@@ -1,6 +1,6 @@
 (ns y2022.d03-test
   (:require [clojure.test :refer [deftest is]]
-            [advent-of-code-clj.y2022.d03 :refer :all]))
+            [y2022.d03 :refer [part-1 part-2]]))
 
 (def test-data "vJrwpWtwJgWrhcsFMMfFFhFp
 jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL

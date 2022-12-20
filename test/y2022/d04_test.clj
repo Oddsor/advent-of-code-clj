@@ -1,5 +1,5 @@
 (ns y2022.d04-test
-  (:require [advent-of-code-clj.y2022.d04 :refer [part-1 part-2]]
+  (:require [y2022.d04 :refer [part-1 part-2]]
             [clojure.test :refer [deftest is]]))
 
 (def test-data "2-4,6-8

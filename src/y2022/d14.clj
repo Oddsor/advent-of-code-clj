@@ -22,7 +22,7 @@
        distinct))
 
 (defn place-rocks [lines]
-  (->> lines 
+  (->> lines
        (mapcat line->coordinates)
        (reduce #(assoc %1 %2 :rock) {})))
 

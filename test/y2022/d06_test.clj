@@ -1,6 +1,5 @@
 (ns y2022.d06-test
-  (:require [advent-of-code-clj.y2022.d06 :refer [part-1 part-1-dt part-2
-                                                  part-2-dt]]
+  (:require [y2022.d06 :refer [part-1 part-1-dt part-2 part-2-dt]]
             [clojure.test :refer [deftest is]]))
 
 (def test-1 "mjqjpqmgbljsphdztnvjfqwrcgsmlb")

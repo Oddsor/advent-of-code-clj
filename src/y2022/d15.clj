@@ -32,7 +32,7 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3")
         beacon->distance (into {} (map (fn [[k v]] [k (distance k v)])) d)
         beacon-coords (set (vals d))
         min-x (apply min (map (fn [[[x _] v]] (- x v)) beacon->distance))
-        max-x (apply max (map (fn [[[x _] v]] (+ x v)) beacon->distance))] 
+        max-x (apply max (map (fn [[[x _] v]] (+ x v)) beacon->distance))]
     (count (remove beacon-coords
                    (keep (fn [x]
                            (when (some (fn [[sensor distance-to-nearest]]
@@ -52,7 +52,7 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3")
   (let [d (parse data)
         beacon-coords (set (vals d))
         beacon->radius (into {} (map (fn [[k v]] [k (distance k v)])) d)
-        [x y] (->> beacon->radius 
+        [x y] (->> beacon->radius
                    (reduce-kv (fn [visited sensor radius]
                                 (let [pnodes (perimeter sensor radius)]
                                   (if-let [found (some (fn [[x y]]
