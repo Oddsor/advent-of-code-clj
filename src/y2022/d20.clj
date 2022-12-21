@@ -1,7 +1,6 @@
 (ns y2022.d20
   (:require [clojure.edn :as edn]
-            [com.rpl.specter :refer [AFTER-ELEM before-index NONE nthpath
-                                     setval]])
+            [com.rpl.specter :refer [before-index NONE nthpath setval]])
   (:import (java.util ArrayList)))
 
 (defn parse [data]
@@ -23,9 +22,7 @@
                      new-idx (mod (+ idx n) (dec size))]
                  (->> acc
                       (setval [(nthpath idx)] NONE)
-                      (setval [(if (zero? new-idx)
-                                 AFTER-ELEM
-                                 (before-index new-idx))] entry))))) with-ids)
+                      (setval [(before-index new-idx)] entry))))) with-ids)
           (mapv :number)))))
 
 (defn reorder-fast
@@ -44,8 +41,7 @@
                      new-idx (mod (+ idx n) (dec size))]
                  (doto acc
                    (.remove ^int idx)
-                   (.add (if (zero? new-idx)
-                           (dec size) new-idx) entry))))) (ArrayList. with-ids))
+                   (.add new-idx entry))))) (ArrayList. with-ids))
           (mapv :number)))))
 
 (defn compute [xs]
@@ -64,7 +60,7 @@
                          compute))
 
 (comment
-  (time (part-1 (slurp "input/2022/20.txt")))
-  (time (part-2 (slurp "input/2022/20.txt")))
+  (part-1 (slurp "input/2022/20.txt"))
+  (part-2 (slurp "input/2022/20.txt"))
   (with-bindings {#'*reorder-function* reorder-fast} (part-1 (slurp "input/2022/20.txt")))
   (with-bindings {#'*reorder-function* reorder-fast} (part-2 (slurp "input/2022/20.txt"))))
