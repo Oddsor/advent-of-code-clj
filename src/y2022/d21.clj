@@ -26,8 +26,7 @@ hmdt: 32")
                                  (if (= 1 (count right-side))
                                    (parse-long (first right-side))
                                    (let [[ls x rs] right-side]
-                                     {:op (symbol x)
-                                      :rhs [(symbol ls) (symbol rs)]}))})))]
+                                     (map symbol (list x ls rs))))})))]
     (into {} expressions)))
 
 (defn split-resolved-syms [expressions]
@@ -37,13 +36,12 @@ hmdt: 32")
                       (number? v)) expressions))])
 
 (defn replace-known-symbols [known-syms expressions]
-  (into {} (map (fn [[lhs {:keys [op rhs] :as exp}]]
+  (into {} (map (fn [[lhs [op & rhs]]]
                   {lhs
                    (let [rhs (map (fn [x] (known-syms x x)) rhs)]
                      (if (every? number? rhs)
                        (apply (resolve op) rhs)
-                       (assoc exp
-                              :rhs rhs)))}) expressions)))
+                       (apply list op rhs)))}) expressions)))
 
 (defn resolv
   ([expressions]
@@ -56,8 +54,22 @@ hmdt: 32")
 
 (defn part-1 [data]
   (let [expressions (parse data)]
-    ((last (resolv expressions)) 'root)))
+    (-> (resolv expressions) last (get 'root))))
+
 (assert (= 152 (part-1 test-data)))
 
 (comment
   (part-1 (slurp "input/2022/21.txt")))
+
+(defn test-number [expressions number]
+  (let [new-expressions (-> expressions
+                            (update 'root (fn [[_ & rest]] (apply list 'compare rest)))
+                            (assoc 'humn number))]
+    (-> new-expressions resolv last (get 'root) (= 0))))
+
+(defn part-2 [data]
+  (let [expressions (parse data)]
+    (first (filter (partial test-number expressions) (range -10000 100000)))))
+
+(assert (= 301 (part-2 test-data)))
+(comment (part-2 (slurp "input/2022/21.txt")))
