@@ -1,6 +1,7 @@
 (ns y2022.d21
   (:require [clojure.string :as str]
-            [clojure.walk :as walk]))
+            [clojure.walk :as walk]
+            [criterium.core :as crit]))
 
 (def test-data "root: pppw + sjmn
 dbpl: 5
@@ -95,9 +96,22 @@ hmdt: 32")
             (recur (if (= result-mid result-lower) upper-bound test-num)
                    (if (= result-mid result-upper) lower-bound test-num)))))))
 
+(defn part-2-mathy
+  "Since the expression is a tree, the expression is apparently linear given
+   'humn', so we can perform math magic"
+  [data]
+  (let [exp (build-expression 'root (-> (parse data)
+                                        (dissoc 'humn)
+                                        (update 'root (fn [[_ & args]]
+                                                        (apply list '- args)))))]
+    (/ (simplify {'humn 0} exp)
+       (- (simplify {'humn 0} exp) (simplify {'humn 1} exp)))))
+
 (assert (= 152 (part-1 test-data)))
-(assert (= 301 (part-2 test-data)))
+(assert (= 301 (crit/quick-bench (part-2 test-data))))
+(assert (= 301 (crit/quick-bench (part-2-mathy test-data))))
 
 (comment
   (part-1 (slurp "input/2022/21.txt"))
-  (part-2 (slurp "input/2022/21.txt")))
+  (part-2 (slurp "input/2022/21.txt"))
+  (part-2-mathy (slurp "input/2022/21.txt")))
