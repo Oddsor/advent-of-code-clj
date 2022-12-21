@@ -1,6 +1,5 @@
 (ns y2022.d21
-  (:require [clojure.string :as str]
-            [numeric.expresso.core :refer [solve ex]]))
+  (:require [clojure.string :as str]))
 
 (def test-data "root: pppw + sjmn
 dbpl: 5
@@ -18,21 +17,46 @@ lgvd: ljgn * ptdq
 drzm: hmdt - zczc
 hmdt: 32")
 
-(defn expresso-parse [data]
+(defn parse [data]
   (let [expressions (->> data
                          str/split-lines
                          (map (partial re-seq #"[\+\-\*/\w]+"))
                          (map (fn [[left-side & right-side]]
-                                (list 'ex (list '=
-                                                (symbol left-side)
-                                                (if (= 1 (count right-side))
-                                                  (parse-long (first right-side))
-                                                  (let [[ls x rs] right-side]
-                                                    (list (symbol x) (symbol ls) (symbol rs)))))))))]
-    (apply list 'solve (quote (quote root)) expressions)))
+                                {(symbol left-side)
+                                 (if (= 1 (count right-side))
+                                   (parse-long (first right-side))
+                                   (let [[ls x rs] right-side]
+                                     {:op (symbol x)
+                                      :rhs [(symbol ls) (symbol rs)]}))})))]
+    (into {} expressions)))
+
+(defn split-resolved-syms [expressions]
+  [(into {} (filter (fn [[_ v]]
+                      (number? v)) expressions))
+   (into {} (remove (fn [[_ v]]
+                      (number? v)) expressions))])
+
+(defn replace-known-symbols [known-syms expressions]
+  (into {} (map (fn [[lhs {:keys [op rhs] :as exp}]]
+                  {lhs
+                   (let [rhs (map (fn [x] (known-syms x x)) rhs)]
+                     (if (every? number? rhs)
+                       (apply (resolve op) rhs)
+                       (assoc exp
+                              :rhs rhs)))}) expressions)))
+
+(defn resolv
+  ([expressions]
+   (resolv {} expressions))
+  ([syms exps]
+   (lazy-seq
+    (cons exps (let [[s e] (split-resolved-syms exps)]
+                 (if (empty? e) nil
+                     (resolv s (replace-known-symbols (merge syms s) e))))))))
 
 (defn part-1 [data]
-  (val (ffirst (eval (expresso-parse data)))))
+  (let [expressions (parse data)]
+    ((last (resolv expressions)) 'root)))
 (assert (= 152 (part-1 test-data)))
 
 (comment
