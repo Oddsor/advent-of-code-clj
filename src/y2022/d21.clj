@@ -30,31 +30,39 @@ hmdt: 32")
                                      (map symbol (list x ls rs))))})))]
     (into {} expressions)))
 
-(defn build-tree
+(defn build-expression
   "Given a starting symbol, construct the expression given by a map of symbols->expressions"
   [from-symbol expressions]
   (let [exp (get expressions from-symbol)]
     (if (or (number? exp) (nil? exp)) (or exp from-symbol)
         (let [[op & rest] exp]
-          (apply list op (map #(build-tree % expressions) rest))))))
+          (apply list op (map #(build-expression % expressions) rest))))))
 (comment
-  (build-tree 'root (parse test-data))
+  (build-expression 'root (parse test-data))
   ;; (+ (/ (+ 4 (* 2 (- 5 3))) 4) (* (- 32 2) 5))
   )
 
 (defn simplify
   "Simplify an expression down to its simplest form by evaluating
-   any expressions consisting entirely of numbers."
-  [expression]
-  (walk/postwalk (fn [x]
-                   (if (and (list? x) (every? number? (rest x)))
-                     (apply (resolve (first x)) (rest x))
-                     x)) expression))
+   any expressions consisting entirely of numbers.
+   
+   Can also accept a map of known symbols. Used when testing a value
+   in the expression."
+  ([expression] (simplify {} expression))
+  ([known-syms expression]
+   (walk/postwalk (fn [x]
+                    (cond
+                      (and (list? x) (every? number? (rest x)))
+                      (apply (resolve (first x)) (rest x))
+                      (symbol? x) (known-syms x x)
+                      :else x)) expression)))
 (comment
-  (simplify (build-tree 'root (parse test-data)))
+  (simplify (build-expression 'root (parse test-data)))
   ;; 152
-  (simplify (build-tree 'root (dissoc (parse test-data) 'humn)))
+  (simplify (build-expression 'root (dissoc (parse test-data) 'humn)))
   ;; (+ (/ (+ 4 (* 2 (- humn 3))) 4) 150)
+  (simplify {'humn 5} (build-expression 'root (dissoc (parse test-data) 'humn)))
+  ;; 152
   )
 
 (defn test-number
@@ -62,32 +70,30 @@ hmdt: 32")
    for 'humn' is replaced by the test number, and the operator for
    'root' is replaced with the compare function. This allows us to
    estimate which direction to go when testing the next number."
-  [test-number expressions]
-  (let [expressions (-> expressions
-                        (assoc 'humn test-number)
-                        (update 'root (fn [[_ & args]]
-                                        (apply list 'compare args))))]
-    (simplify (build-tree 'root expressions))))
+  [test-number expression]
+  (simplify {'humn test-number} expression))
 
 (defn part-1 [data]
-  (simplify (build-tree 'root (parse data))))
+  (simplify (build-expression 'root (parse data))))
 
 (defn part-2
   "Given a high upper and lower number, test each extreme value
    and the value in between to narrow down the search area.
    Repeat until we find the correct number for the expression."
   [data]
-  (let [p (parse data)]
-    (loop [n 1000 ;; Loop failsafe
-           upper-bound 10000000000000
+  (let [exp (build-expression 'root (-> (parse data)
+                                        (dissoc 'humn)
+                                        (update 'root (fn [[_ & args]]
+                                                        (apply list 'compare args)))))]
+    (loop [upper-bound 10000000000000
            lower-bound -10000000000000]
       (let [test-num (long (/ (+ upper-bound lower-bound) 2))
-            result-upper (test-number upper-bound p)
-            result-lower (test-number lower-bound p)
-            result-mid (test-number test-num p)]
-        (cond (or (zero? n) (zero? result-mid)) test-num
-              (= result-mid result-lower) (recur (dec n) upper-bound test-num)
-              (= result-mid result-upper) (recur (dec n) test-num lower-bound))))))
+            result-upper (test-number upper-bound exp)
+            result-lower (test-number lower-bound exp)
+            result-mid (test-number test-num exp)]
+        (if (zero? result-mid) test-num
+            (recur (if (= result-mid result-lower) upper-bound test-num)
+                   (if (= result-mid result-upper) lower-bound test-num)))))))
 
 (assert (= 152 (part-1 test-data)))
 (assert (= 301 (part-2 test-data)))
