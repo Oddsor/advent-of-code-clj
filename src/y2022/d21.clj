@@ -1,23 +1,6 @@
 (ns y2022.d21
   (:require [clojure.string :as str]
-            [clojure.walk :as walk]
-            [criterium.core :as crit]))
-
-(def test-data "root: pppw + sjmn
-dbpl: 5
-cczh: sllz + lgvd
-zczc: 2
-ptdq: humn - dvpt
-dvpt: 3
-lfqf: 4
-humn: 5
-ljgn: 2
-sjmn: drzm * dbpl
-sllz: 4
-pppw: cczh / lfqf
-lgvd: ljgn * ptdq
-drzm: hmdt - zczc
-hmdt: 32")
+            [clojure.walk :as walk]))
 
 (defn parse [data]
   (let [expressions (->> data
@@ -107,11 +90,7 @@ hmdt: 32")
     (/ (simplify {'humn 0} exp)
        (- (simplify {'humn 0} exp) (simplify {'humn 1} exp)))))
 
-(assert (= 152 (part-1 test-data)))
-(assert (= 301 (crit/quick-bench (part-2 test-data))))
-(assert (= 301 (crit/quick-bench (part-2-mathy test-data))))
-
 (comment
-  (part-1 (slurp "input/2022/21.txt"))
-  (part-2 (slurp "input/2022/21.txt"))
-  (part-2-mathy (slurp "input/2022/21.txt")))
+  (= 83056452926300 (part-1 (slurp "input/2022/21.txt")))
+  (= 3469704905529 (part-2 (slurp "input/2022/21.txt")))
+  (= 3469704905529 (part-2-mathy (slurp "input/2022/21.txt"))))
