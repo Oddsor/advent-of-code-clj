@@ -23,13 +23,13 @@
    [(dec x) y]                   [(inc x) y]
    [(dec x) (inc y)] [x (inc y)] [(inc x) (inc y)]])
 
-(defn partition-parse
-  ([text]
-   (partition-parse identity text))
-  ([line-parsing-fn text]
-   (->> (str/split text #"\n\n")
-        (map str/split-lines)
-        (map #(map line-parsing-fn %)))))
+(defn split-newline [text]
+  (str/split text #"\n\n"))
+
+(defn emap [fun xs]
+  (if (coll? xs)
+    (into (empty xs) (map #(emap fun %)) xs)
+    (fun xs)))
 
 (defn fif [pred fun]
   #(if (pred %) (fun %) %))
