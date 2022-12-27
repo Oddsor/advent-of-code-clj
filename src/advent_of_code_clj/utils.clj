@@ -9,6 +9,9 @@
                                    xs)))
        (transduce cat merge)))
 
+(defn text->matrix [text]
+  (mapv vec (str/split-lines text)))
+
 (defn adjacent-hv
   "Find adjacent coordinates, without diagonals"
   [x y]

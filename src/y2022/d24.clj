@@ -1,20 +1,21 @@
 (ns y2022.d24
-  (:require [clojure.string :as str]))
+  (:require [advent-of-code-clj.utils :refer [coord-map text->matrix]]
+            [medley.core :as m]))
 
 (defn parse [data]
-  (let [m (mapv vec (str/split-lines data))
+  (let [m (text->matrix data)
         max-y (dec (count m))
         max-x (dec (count (first m)))]
     {:max-y max-y
      :max-x max-x
-     :blizzards (for [y (range 1 (inc max-y))
-                      x (range 1 (inc max-x))
-                      :let [at-coord (get-in m [y x])]
-                      :when (#{\< \> \^ \v} at-coord)]
-                  [({\< [-1 0]
-                     \> [1 0]
-                     \^ [0 -1]
-                     \v [0 1]} at-coord) x y])}))
+     :blizzards (->> m
+                     coord-map
+                     (m/filter-vals #{\< \> \^ \v})
+                     (map (fn [[[x y] v]]
+                            [({\< [-1 0]
+                               \> [1 0]
+                               \^ [0 -1]
+                               \v [0 1]} v) x y])))}))
 
 (defn move-blizzard [max-x max-y [d x y]]
   (let [[dx dy] d

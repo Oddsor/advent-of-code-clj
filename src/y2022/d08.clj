@@ -1,8 +1,8 @@
 (ns y2022.d08
-  (:require [clojure.string :as str]))
+  (:require [advent-of-code-clj.utils :refer [emap text->matrix]]))
 
 (defn- build-matrix [data]
-  (->> data str/split-lines (mapv #(mapv parse-long (re-seq #"\d" %)))))
+  (->> data text->matrix (emap (comp parse-long str))))
 
 (defn coordinates-from-point [x y width height]
   (vector (for [xn (range (dec x) -1 -1)] [y xn])

@@ -1,5 +1,6 @@
 (ns y2022.d10
-  (:require [clojure.string :as str]))
+  (:require [advent-of-code-clj.utils :refer [sum]]
+            [clojure.string :as str]))
 
 (defn delay-operation [[op :as operation]]
   (condp = op
@@ -29,7 +30,7 @@
   (let [x-values (map :X (process-cycles (cycle-seq data)))]
     (->> [20 60 100 140 180 220]
          (map (fn [x] (* x (nth x-values x))))
-         (reduce +))))
+         sum)))
 
 (defn part-2 [data]
   (->> data

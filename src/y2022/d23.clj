@@ -1,5 +1,6 @@
 (ns y2022.d23
-  (:require [clojure.string :as str]))
+  (:require [advent-of-code-clj.utils :refer [coord-map text->matrix]]
+            [medley.core :as m]))
 
 (def test-data "....#..
 ..###.#
@@ -10,11 +11,12 @@
 .#..#..")
 
 (defn parse [data]
-  (let [m (mapv vec (str/split-lines data))]
-    (set (for [y (range (count m))
-               x (range (count (first m)))
-               :when (= \# (get-in m [y x]))]
-           [x y]))))
+  (->> data
+       text->matrix
+       coord-map
+       (m/filter-vals #{\#})
+       keys
+       set))
 
 (defn adjacent
   ([[x y] directions]

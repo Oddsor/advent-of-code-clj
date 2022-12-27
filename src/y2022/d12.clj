@@ -1,9 +1,9 @@
 (ns y2022.d12
-  (:require [clojure.string :as str]
+  (:require [advent-of-code-clj.utils :refer [emap text->matrix]]
             [ubergraph.alg :as ua]))
 
 (defn parse [data]
-  (let [m (->> data str/split-lines (mapv vec))
+  (let [m (text->matrix data)
         s&e (into {} (for [y (range (count m))
                            x (range (count (first m)))
                            :let [position (get-in m [y x])]
@@ -11,7 +11,7 @@
                        [position [y x]]))]
     {:start (s&e \S)
      :end (s&e \E)
-     :map (mapv (fn [row] (mapv (comp int #({\S \a \E \z} % %)) row)) m)}))
+     :map (emap (comp int #({\S \a \E \z} % %)) m)}))
 
 (defn valid-adjacents [[y x] data]
   (->> [[y (dec x)] [y (inc x)] [(dec y) x] [(inc y) x]]

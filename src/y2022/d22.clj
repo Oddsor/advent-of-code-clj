@@ -1,5 +1,5 @@
-(ns y2022.d22 
-  (:require [clojure.string :as str]))
+(ns y2022.d22
+  (:require [advent-of-code-clj.utils :refer [emap split-newline text->matrix]]))
 
 (def test-data "        ...#
         .#..
@@ -16,18 +16,14 @@
 
 10R5L5R10L4R5L5")
 
-(defn mmapv [fun xs] (mapv (partial mapv fun) xs))
-
 (defn parse [data]
-  (let [[map directions] (str/split data #"\n\n")
-        mapvec (mmapv {\space :_ \# :# \. :.}
-                      (mapv vec (str/split-lines map)))
+  (let [[map directions] (split-newline data)
+        mapvec (->> map text->matrix (emap {\space :_ \# :# \. :.}))
         operations (mapv (fn [x]
                            (if-let [xn (parse-long x)]
                              xn
                              ({"R" :R "L" :L} x)))
-                         (re-seq #"[LR]|\d+" directions))
-        ]
+                         (re-seq #"[LR]|\d+" directions))]
     [{:pos [(first (for [i (range (count (first mapvec)))
                          :when (= :. (nth (first mapvec) i))]
                      i)) 0]
@@ -36,8 +32,8 @@
      operations]))
 
 (defn wrap-around [m [x y] d]
-  (cond 
-    (#{:L :R} d) 
+  (cond
+    (#{:L :R} d)
     (let [row (get m y)
           relevant-indexes (for [i (range (count row))
                                  :when (not= :_ (get row i :_))]
@@ -46,7 +42,7 @@
     (#{:U :D} d)
     (let [relevant-indexes (for [i (range (count m))
                                  :when (not= :_ (get-in m [i x] :_))]
-                             i)] 
+                             i)]
       [x (if (= :U d) (last relevant-indexes) (first relevant-indexes))])))
 
 (defn next-coord [m [x y] d]
@@ -57,10 +53,10 @@
              (= :D d) inc
              (= :U d) dec)
         p (get-in m [ny nx] nil)]
-    (cond 
+    (cond
       (= p :.) [nx ny]
       (= p :#) [x y]
-      (or (nil? p) (= :_ p)) 
+      (or (nil? p) (= :_ p))
       (let [[px py] (wrap-around m [x y] d)]
         (if (= :# (get-in m [py px]))
           [x y]
@@ -92,11 +88,11 @@
                   (assoc s :dir (new-dir [d op])))) state ops))
 
 (defn part-1 [data]
-  (let [[state m ops] (parse data)] 
+  (let [[state m ops] (parse data)]
     (calculate (last (walk-map state m ops)))))
 
 (assert (= 6032 (part-1 test-data)))
 
-(comment (part-1 (slurp "input/2022/22.txt"))
+(comment (= 123046 (part-1 (slurp "input/2022/22.txt")))
          (apply walk-map (parse test-data))
          (apply walk-map (parse (slurp "input/2022/22.txt"))))

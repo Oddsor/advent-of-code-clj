@@ -1,5 +1,5 @@
 (ns y2022.d07
-  (:require [advent-of-code-clj.utils :refer [fif]]
+  (:require [advent-of-code-clj.utils :refer [fif sum]]
             [clojure.string :as str]
             [clojure.walk :as walk]))
 
@@ -28,9 +28,9 @@
 
 (defn assign-size-to-directories [tree]
   (walk/postwalk (fif map? (fn [node]
-                             {:size (reduce + (concat
-                                               (filter number? (vals node))
-                                               (keep :size (vals node))))
+                             {:size (sum (concat
+                                          (filter number? (vals node))
+                                          (keep :size (vals node))))
                               :children node}))
                  tree))
 
