@@ -33,3 +33,7 @@
 
 (defn fif [pred fun]
   #(if (pred %) (fun %) %))
+
+(defn sum [xs] (reduce + xs))
+
+(def sort- (partial sort >))

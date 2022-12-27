@@ -1,6 +1,7 @@
 (ns y2022.d03
-  (:require [clojure.string :as str]
-            [clojure.set :as set]))
+  (:require [advent-of-code-clj.utils :refer [sum]]
+            [clojure.set :as set]
+            [clojure.string :as str]))
 
 (defn compartmentalize-backpack [items]
   (split-at (/ (count items) 2) items))
@@ -17,7 +18,7 @@
 (defn sum-of-item-priorities [data]
   (->> data common-items
        (map char-to-priority)
-       (reduce +)))
+       sum))
 
 (defn part-1 [data]
   (->> data

@@ -1,5 +1,6 @@
 (ns y2022.d02
-  (:require [clojure.set :as set]
+  (:require [advent-of-code-clj.utils :refer [sum]]
+            [clojure.set :as set]
             [clojure.string :as str]))
 
 (def opponent-strategy {\A :rock
@@ -33,7 +34,7 @@
   (letfn [(parse-line [line]
             {:opponent (opponent-strategy (first line))
              :player (player-strategy (last line))})]
-    (apply + (map (comp calculate-score parse-line) (str/split-lines data)))))
+    (sum (map (comp calculate-score parse-line) (str/split-lines data)))))
 
 (def desired-outcome {\X :lose
                       \Y :draw
@@ -49,7 +50,7 @@
             (let [opponent-hand (opponent-strategy (first line))]
               {:opponent opponent-hand
                :player (decide-hand opponent-hand (desired-outcome (last line)))}))]
-    (apply + (map (comp calculate-score parse-line) (str/split-lines data)))))
+    (sum (map (comp calculate-score parse-line) (str/split-lines data)))))
 
 (comment
   (= 11767 (part-1 (slurp "input/2022/02.txt")))
