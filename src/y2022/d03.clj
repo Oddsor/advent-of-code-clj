@@ -32,5 +32,5 @@
        sum-of-item-priorities))
 
 (comment
-  (part-1 (slurp "input/2022/03.txt"))
-  (part-2 (slurp "input/2022/03.txt")))
+  (= 7817 (part-1 (slurp "input/2022/03.txt")))
+  (= 2444 (part-2 (slurp "input/2022/03.txt"))))

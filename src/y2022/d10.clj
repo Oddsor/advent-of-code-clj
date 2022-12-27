@@ -51,5 +51,12 @@
        flatten
        (apply str)))
 
-(comment (part-1 (slurp "input/2022/10.txt"))
-         (println (part-2 (slurp "input/2022/10.txt"))))
+(comment
+  (= 17380 (part-1 (slurp "input/2022/10.txt")))
+  (= "████  ██   ██  █  █ ████ ███  ████  ██  
+█    █  █ █  █ █  █    █ █  █ █    █  █ 
+███  █    █    █  █   █  █  █ ███  █    
+█    █ ██ █    █  █  █   ███  █    █    
+█    █  █ █  █ █  █ █    █ █  █    █  █ 
+█     ███  ██   ██  ████ █  █ ████  ██  "
+     (doto (part-2 (slurp "input/2022/10.txt")) println)))

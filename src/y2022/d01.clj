@@ -21,5 +21,5 @@
   (->> data parse-data sorted-calories (take 3) sum))
 
 (comment
-  (part-1 (slurp "input/2022/01.txt"))
-  (part-2 (slurp "input/2022/01.txt")))
+  (= 66186 (part-1 (slurp "input/2022/01.txt")))
+  (= 196804 (part-2 (slurp "input/2022/01.txt"))))

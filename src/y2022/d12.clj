@@ -37,5 +37,6 @@
          (keep #(shortest-path % e m))
          (apply min))))
 
-(comment (part-1 (slurp "input/2022/12.txt"))
-         (part-2 (slurp "input/2022/12.txt")))
+(comment
+  (= 380 (part-1 (slurp "input/2022/12.txt")))
+  (= 375 (part-2 (slurp "input/2022/12.txt"))))

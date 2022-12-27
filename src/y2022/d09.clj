@@ -51,5 +51,5 @@
   (find-unique-tail-positions 10 (parse data)))
 
 (comment
-  (part-1 (slurp "input/2022/09.txt"))
-  (part-2 (slurp "input/2022/09.txt")))
+  (= 6044 (part-1 (slurp "input/2022/09.txt")))
+  (= 2384 (part-2 (slurp "input/2022/09.txt"))))

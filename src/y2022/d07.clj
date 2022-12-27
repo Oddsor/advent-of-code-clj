@@ -47,5 +47,5 @@
     (apply min (filter #(<= volume-to-delete  %) (directory-sizes tree-with-sizes)))))
 
 (comment
-  (part-1 (slurp "input/2022/07.txt"))
-  (part-2 (slurp "input/2022/07.txt")))
+  (= 1778099 (part-1 (slurp "input/2022/07.txt")))
+  (= 1623571 (part-2 (slurp "input/2022/07.txt"))))

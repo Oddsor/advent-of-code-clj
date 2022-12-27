@@ -9,15 +9,17 @@
        (take-while (partial apply (complement distinct?)))
        count (+ length)))
 
+(def ^:dynamic *unique-sequence-end-index-fn* unique-sequence-end-index)
+
 (defn part-1 [data]
-  (unique-sequence-end-index 4 data))
+  (*unique-sequence-end-index-fn* 4 data))
 
 (defn part-2 [data]
-  (unique-sequence-end-index 14 data))
+  (*unique-sequence-end-index-fn* 14 data))
 
-(comment (part-1 (slurp "input/2022/06.txt"))
+(comment (= 1651 (part-1 (slurp "input/2022/06.txt")))
          (crit/quick-bench
-          (part-2 (slurp "input/2022/06.txt")))
+          (= 3837 (part-2 (slurp "input/2022/06.txt"))))
          ;; Execution time mean : 10,199115 ms
          )
 (defn unique-sequence-end-index-2 [length data]
@@ -28,15 +30,11 @@
       (da/index-of true)
       (+ length)))
 
-(defn part-1-dt [data]
-  (unique-sequence-end-index-2 4 data))
-
-(defn part-2-dt [data]
-  (unique-sequence-end-index-2 14 data))
-
 (comment
-  (part-1-dt (slurp "input/2022/06.txt"))
+  (with-bindings {#'*unique-sequence-end-index-fn* unique-sequence-end-index-2}
+    (= 1651 (part-1 (slurp "input/2022/06.txt"))))
   (crit/quick-bench
-   (part-2-dt (slurp "input/2022/06.txt")))
+   (with-bindings {#'*unique-sequence-end-index-fn* unique-sequence-end-index-2}
+     (= 3837 (part-2 (slurp "input/2022/06.txt")))))
   ;; Execution time mean : 5,866074 ms
   )

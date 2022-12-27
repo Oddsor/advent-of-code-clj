@@ -38,5 +38,5 @@
        (apply max)))
 
 (comment
-  (part-1 (slurp "input/2022/08.txt"))
-  (part-2 (slurp "input/2022/08.txt")))
+  (= 1776 (part-1 (slurp "input/2022/08.txt")))
+  (= 234416 (part-2 (slurp "input/2022/08.txt"))))

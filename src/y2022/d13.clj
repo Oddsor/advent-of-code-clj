@@ -29,5 +29,5 @@
          (apply *))))
 
 (comment
-  (part-1 (slurp "input/2022/13.txt"))
-  (part-2 (slurp "input/2022/13.txt")))
+  (= 6187 (part-1 (slurp "input/2022/13.txt")))
+  (= 23520 (part-2 (slurp "input/2022/13.txt"))))

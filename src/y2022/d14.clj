@@ -1,9 +1,5 @@
 (ns y2022.d14
-  (:require [clojure.string :as str]
-            [criterium.core :as crit]))
-
-(def test-data "498,4 -> 498,6 -> 496,6
-503,4 -> 502,4 -> 502,9 -> 494,9")
+  (:require [clojure.string :as str]))
 
 (defn parse [data]
   (map #(partition 2 (map parse-long (re-seq #"\d+" %))) (str/split-lines data)))
@@ -74,8 +70,6 @@
          count
          dec)))
 
-(assert (= 24 (part-1 test-data)))
-(assert (= 93 (part-2 test-data)))
 (comment
-  (crit/quick-bench (part-1 (slurp "input/2022/14.txt")))
-  (crit/quick-bench (part-2 (slurp "input/2022/14.txt"))))
+  (= 692 (part-1 (slurp "input/2022/14.txt")))
+  (= 31706 (part-2 (slurp "input/2022/14.txt"))))

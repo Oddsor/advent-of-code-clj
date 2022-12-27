@@ -55,5 +55,6 @@
         common-modulo (apply * (map (comp :div-by val) monkeys))]
     (inspected-multiplication (nth (iterate (monkey-around (fn [x] (mod x common-modulo))) monkeys) 10000))))
 
-(comment (part-1 (slurp "input/2022/11.txt"))
-         (part-2 (slurp "input/2022/11.txt")))
+(comment
+  (= 113220 (part-1 (slurp "input/2022/11.txt")))
+  (= 30599555965 (part-2 (slurp "input/2022/11.txt"))))

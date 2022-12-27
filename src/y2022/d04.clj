@@ -19,5 +19,5 @@
   (->> (parse data) (filter overlaps-at-all) count))
 
 (comment
-  (part-1 (slurp "input/2022/04.txt"))
-  (part-2 (slurp "input/2022/04.txt")))
+  (= 453 (part-1 (slurp "input/2022/04.txt")))
+  (= 919 (part-2 (slurp "input/2022/04.txt"))))

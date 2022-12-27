@@ -42,5 +42,5 @@
   (find-phrase operate-on-many data))
 
 (comment
-  (part-1 (slurp "input/2022/05.txt"))
-  (part-2 (slurp "input/2022/05.txt")))
+  (= "CFFHVVHNC" (part-1 (slurp "input/2022/05.txt")))
+  (= "FSZWBPTBG" (part-2 (slurp "input/2022/05.txt"))))

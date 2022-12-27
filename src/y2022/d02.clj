@@ -52,5 +52,5 @@
     (apply + (map (comp calculate-score parse-line) (str/split-lines data)))))
 
 (comment
-  (part-1 (slurp "input/2022/02.txt"))
-  (part-2 (slurp "input/2022/02.txt")))
+  (= 11767 (part-1 (slurp "input/2022/02.txt")))
+  (= 13886 (part-2 (slurp "input/2022/02.txt"))))
