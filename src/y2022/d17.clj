@@ -4,7 +4,7 @@
 (def test-data ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>")
 
 (defn jet-seq [data]
-  (cycle (keep {\> 1 \< -1} (seq data))))
+  (keep {\> 1 \< -1} (seq data)))
 (def rock-cycle (cycle [:- :+ :J :| :.]))
 
 (defn get-rock [rock-type current-height]
@@ -32,23 +32,26 @@
       [:falling fall]
       [:resting ns])))
 
+(defn print-board [y-min y-max nodes]
+  (println (str/join "\n" (reverse (map (fn [y]
+                                          (apply str (map (fn [x] (if (nodes [x y]) \# \.)) (range 7))))
+                                        (range y-min y-max))))))
+
 (defn get-state-after [num-rocks data]
-  (loop [n 100000000
-         [jet & jets] (jet-seq data)
+  (loop [[jet & jets] (cycle (jet-seq data))
          resting-rocks 0
          current-height 0
          rock (get-rock (first rock-cycle) 0)
          rock-cycle (next rock-cycle)
          visited #{}]
-    (if (or (zero? n) (= resting-rocks num-rocks))
+    (if (= resting-rocks num-rocks)
       {:rested visited :next rock :height (inc current-height)}
       (let [[state moved-rock] (move-rock rock jet visited)
             rock-stuck? (= :resting state)
             new-height (if rock-stuck?
                          (max current-height (apply max (map second moved-rock)))
                          current-height)]
-        (recur (dec n)
-               jets
+        (recur jets
                (if rock-stuck? (inc resting-rocks) resting-rocks)
                new-height
                (if rock-stuck?
@@ -60,17 +63,7 @@
 (defn part-1 [num-rocks data]
   (:height (get-state-after num-rocks data)))
 
-(defn print-board [nodes]
-  (let [max-y (apply max (map second nodes))]
-    (println (str/join "\n" (reverse (map (fn [y]
-                                            (apply str (map (fn [x] (if (nodes [x y]) \# \.)) (range 7))))
-                                          (range (inc max-y))))))))
-
 (assert (= 3068 (part-1 2022 test-data)))
 
 (comment
-  (let [{:keys [rested next]} (get-state-after 10 test-data)]
-    (print-board (into rested next)))
-  ;; Impossible with naive solution
-  (= 1514285714288 (part-1 1000000000000 test-data))
-  (part-1 2022 (slurp "input/2022/17.txt")))
+  (part-1 50455 (slurp "input/2022/17.txt")))
