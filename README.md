@@ -2,10 +2,25 @@
 
 Collection of solutions for advent of code
 
-## Installatio
+## Installation
 
 ## Usage
 
 ## Options
 
-## Examples
+## Building the notebooks
+
+This command will build notebooks as html into the `public`-folder
+```
+clojure -Xbuildnotebooks
+```
+
+## Outdated dependencies:
+To see outdated dependencies:
+```
+clojure -M:outdated
+```
+To upgrade:
+```
+clojure -Tantq outdated :check-clojure-tools true :upgrade true
+```

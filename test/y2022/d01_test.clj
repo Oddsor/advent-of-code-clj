@@ -1,5 +1,5 @@
 (ns y2022.d01-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.test :refer [deftest is]]
             [y2022.d01 :refer [part-1 part-2]]))
 
 (def test-data "1000

@@ -1,7 +1,8 @@
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2022.d02
-  (:require [advent-of-code-clj.utils :refer [sum]]
-            [clojure.set :as set]
-            [clojure.string :as str]))
+  (:require [clojure.set :as set]
+            [clojure.string :as str]
+            [nextjournal.clerk :as clerk]))
 
 (def opponent-strategy {\A :rock
                         \B :paper
@@ -20,38 +21,48 @@
                :rock :scissors})
 (def wins-to (set/map-invert loses-to))
 
+^{::clerk/visibility {:result :hide}}
 (defn decide-outcome [{:keys [player opponent]}]
   (cond
     (= player opponent) :draw
     (= opponent (wins-to player)) :opponent-wins
     (= opponent (loses-to player)) :player-wins))
 
+^{::clerk/visibility {:result :hide}}
 (defn calculate-score [{:keys [player] :as game}]
   (+ (outcome-points (decide-outcome game))
      (hand-points player)))
 
+^{::clerk/visibility {:result :hide}}
 (defn part-1 [data]
-  (letfn [(parse-line [line]
-            {:opponent (opponent-strategy (first line))
-             :player (player-strategy (last line))})]
-    (sum (map (comp calculate-score parse-line) (str/split-lines data)))))
+  (letfn [(calculate [line]
+            (calculate-score
+             {:opponent (opponent-strategy (first line))
+              :player (player-strategy (last line))}))]
+    (transduce (map (comp calculate)) +
+               (str/split-lines data))))
 
 (def desired-outcome {\X :lose
                       \Y :draw
                       \Z :win})
+^{::clerk/visibility {:result :hide}}
 (defn decide-hand [opponent desired-outcome]
   (case desired-outcome
     :draw opponent
     :win (wins-to opponent)
     :lose (loses-to opponent)))
 
+^{::clerk/visibility {:result :hide}}
 (defn part-2 [data]
-  (letfn [(parse-line [line]
+  (letfn [(calculate [line]
             (let [opponent-hand (opponent-strategy (first line))]
-              {:opponent opponent-hand
-               :player (decide-hand opponent-hand (desired-outcome (last line)))}))]
-    (sum (map (comp calculate-score parse-line) (str/split-lines data)))))
+              (calculate-score
+               {:opponent opponent-hand
+                :player (decide-hand opponent-hand (desired-outcome (last line)))})))]
+    (transduce (map (comp calculate)) +
+               (str/split-lines data))))
 
-(comment
+^{::clerk/visibility {:code :hide}}
+(clerk/example
   (= 11767 (part-1 (slurp "input/2022/02.txt")))
   (= 13886 (part-2 (slurp "input/2022/02.txt"))))
