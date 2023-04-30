@@ -19,7 +19,8 @@
         dev.weavejester/medley {:mvn/version "1.7.0"}
         com.taoensso/tufte {:mvn/version "2.4.5"}
         io.github.nextjournal/clerk {:mvn/version "0.13.842"}
-        com.cnuernber/ham-fisted {:mvn/version "1.000-beta-98"}}
+        com.cnuernber/ham-fisted {:mvn/version "1.000-beta-98"}
+        io.github.mentat-collective/emmy {:git/sha "072c2971f371dff0680caf9f0a40f554c766c1b1"}}
  :jvm-opts ["-Djdk.attach.allowAttachSelf"]
  :aliases
  {:outdated {:deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
