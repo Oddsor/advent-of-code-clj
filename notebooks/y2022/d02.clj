@@ -63,6 +63,6 @@
                (str/split-lines data))))
 
 ^{::clerk/visibility {:code :hide}}
-(clerk/example
-  (= 11767 (part-1 (slurp "input/2022/02.txt")))
-  (= 13886 (part-2 (slurp "input/2022/02.txt"))))
+(clerk/code '(= 11767 (part-1 (slurp "input/2022/02.txt"))))
+^{::clerk/visibility {:code :hide}}
+(clerk/code '(= 13886 (part-2 (slurp "input/2022/02.txt"))))
