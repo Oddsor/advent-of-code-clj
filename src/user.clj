@@ -1,7 +1,7 @@
 (ns user
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [nextjournal.clerk :as clerk]) 
+            [nextjournal.clerk :as clerk])
   (:import [java.io File]))
 
 (set! *warn-on-reflection* true)
@@ -15,8 +15,8 @@
   (clerk/serve! {:watch-paths ["notebooks" "src"]})
 
   ;; start with watcher and show filter function to enable notebook pinning
-  (clerk/serve! {:watch-paths ["notebooks" "src"] :show-filter-fn #(str/starts-with? % "notebooks")})
-  )
+  (clerk/serve! {:watch-paths ["notebooks" "src"] :show-filter-fn #(str/starts-with? % "notebooks")}))
+
 (defn build-notebooks! [_]
   ;; Build a html file from the given notebook notebooks.
   ;; See the docstring for more options.
@@ -24,4 +24,5 @@
                              (tree-seq #(.isDirectory ^File %) #(.listFiles ^File %))
                              (remove #(.isDirectory ^File %))
                              (map #(.toString ^File %))
-                             sort)}))
+                             sort)
+                 :out-path "_site"}))
