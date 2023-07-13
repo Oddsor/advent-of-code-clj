@@ -23,7 +23,7 @@ jobs:
         with:
           cli: 1.11.1.1347
       - name: Build notebooks
-        run: clj -X:buildnotebooks
+        run: clojure -X:buildnotebooks
           
       # Optional step:
       - name: Cache clojure dependencies
