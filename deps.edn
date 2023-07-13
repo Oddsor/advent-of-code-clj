@@ -6,28 +6,29 @@
         net.mikera/core.matrix {:mvn/version "0.63.0"}
         ubergraph/ubergraph {:mvn/version "0.8.2"}
         criterium/criterium {:mvn/version "0.4.6"}
-        com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.3"}
+        com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.4"}
         pangloss/pattern {:git/url "https://github.com/pangloss/pattern"
-                          :sha "5aadd38012ccab348d3124b795549f83cc78734b"}
+                          :git/sha "1148123a14159cb310ce6f947709f790bb9adf63"}
         techascent/tech.ml.dataset {:mvn/version "6.104"}
         org.flatland/ordered {:mvn/version "1.15.11"}
-        com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.2.3"}
-        djblue/portal {:mvn/version "0.40.0"}
+        com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.3.0"}
+        djblue/portal {:mvn/version "0.42.1"}
         org.clojure/math.combinatorics {:mvn/version "0.2.0"}
         org.clojure/math.numeric-tower {:mvn/version "0.0.5"}
         expresso/expresso {:mvn/version "0.2.4"}
         dev.weavejester/medley {:mvn/version "1.7.0"}
-        com.taoensso/tufte {:mvn/version "2.4.5"}
-        io.github.nextjournal/clerk {:mvn/version "0.13.842"}
+        com.taoensso/tufte {:mvn/version "2.5.0"}
+        io.github.nextjournal/clerk {:mvn/version "0.14.919"}
         com.cnuernber/ham-fisted {:mvn/version "1.000-beta-98"}
-        io.github.mentat-collective/emmy {:git/sha "072c2971f371dff0680caf9f0a40f554c766c1b1"}}
+        io.github.mentat-collective/emmy {:git/url "https://github.com/mentat-collective/emmy"
+                                          :git/sha "f6c3e9c17b1d4631fac22eff112c70d031393ac0"}}
  :jvm-opts ["-Djdk.attach.allowAttachSelf"]
  :aliases
- {:outdated {:deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
+ {:outdated {:deps {com.github.liquidz/antq {:mvn/version "RELEASE"}
+                    io.github.nextjournal/clerk {:mvn/version "0.13.842"}}
              :main-opts ["-m" "antq.core"]}
 
   :buildnotebooks {:exec-fn user/build-notebooks!}
-
   :test ;; added by neil
   {:extra-paths ["test"]
    :extra-deps {io.github.cognitect-labs/test-runner
