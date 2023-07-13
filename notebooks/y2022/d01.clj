@@ -32,23 +32,34 @@
 (defn- parse [text]
   (->> text split-newline (map str/split-lines) (emap parse-long)))
 
-(defn sorted-calories [data]
-  (->> data (map sum) sort-))
+^{::clerk/visibility {:code :hide :result :show}}
+(clerk/example
+ (parse test-data))
 
 {::clerk/visibility {:code :show :result :show}}
 
 ;; ## Part 1
-;; find the maximum calories carried by one elf
+;; > find the maximum calories carried by one elf
+
 ;; Could use "(apply max ...)" instead of sorting, but part 2
 ;; needs the maximum 3 calorie counts, so a sorted list is more useful
+
+^{::clerk/visibility {:result :hide}}
+(defn sorted-calories [data]
+  (->> data (map sum) sort-))
 
 ^{::clerk/visibility {:result :hide}}
 (defn part-1 [data]
   (->> data parse sorted-calories first))
 (part-1 test-data)
 
+;; This yields the expected result, so we apply it to our input:
+^{::clerk/visibility {:code :hide}}
+(clerk/code
+ '(= 66186 (part-1 (slurp "input/2022/01.txt"))))
+
 ;; ## Part 2
-;; find the amount of calories carried by the "top 3" elves
+;; > find the amount of calories carried by the "top 3" elves
 
 ^{::clerk/visibility {:result :hide}}
 (defn part-2 [data]
@@ -58,6 +69,5 @@
 ;; Test output looks ok, so let's apply it to the read input
 
 ^{::clerk/visibility {:code :hide}}
-(clerk/example
- (= 66186 (part-1 (slurp "input/2022/01.txt")))
-(= 196804 (part-2 (slurp "input/2022/01.txt"))))
+(clerk/code
+ '(= 196804 (part-2 (slurp "input/2022/01.txt"))))
