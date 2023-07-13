@@ -25,4 +25,4 @@
                              (remove #(.isDirectory ^File %))
                              (map #(.toString ^File %))
                              sort)
-                 :out-path "__site"}))
+                 :out-path "_site"}))
