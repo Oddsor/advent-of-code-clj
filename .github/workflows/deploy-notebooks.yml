@@ -3,7 +3,7 @@ name: Bygg og deploy dev
 on:
   push:
     branches:
-      - 'master' 
+      - 'test-notebook-deploy' 
     
 jobs:
   # Build job
@@ -22,6 +22,8 @@ jobs:
         uses: DeLaGuardo/setup-clojure@11.0
         with:
           cli: 1.11.1.1347
+      - name: Build notebooks
+        run: clj -X:buildnotebooks
           
       # Optional step:
       - name: Cache clojure dependencies
