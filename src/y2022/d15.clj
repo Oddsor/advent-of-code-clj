@@ -67,8 +67,8 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3")
                               #{}))]
     (+ (* 4000000 x) y)))
 
-(comment
-  (part-1 2000000 (slurp "input/2022/15.txt")))
 (assert (= 56000011 (part-2 20 test-data)))
+
 (comment
-  (time (part-2 4000000 (slurp "input/2022/15.txt"))))
+  (= 5144286 (part-1 2000000 (slurp "input/2022/15.txt")))
+  (= 10229191267339 (part-2 4000000 (slurp "input/2022/15.txt"))))
