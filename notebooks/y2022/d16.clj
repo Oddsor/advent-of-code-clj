@@ -74,6 +74,7 @@ Valve JJ has flow rate=21; tunnel leads to valve II")
 ;; Once refactored and shrunk down, this function ended up being almost
 ;; a copy-paste of [@volesen's solution](https://github.com/volesen/aoc2022/blob/main/day16/day16.clj#L48C10-L48C10)
 
+^{::clerk/visibility {:result :hide}}
 (defn max-pressure [time-remaining start non-zero-valves elephant? data]
   (let [next-nodes* (keep (fn [node]
                             (let [time-to-open (inc (:cost (shortest-path start node data)))]
@@ -100,7 +101,7 @@ Valve JJ has flow rate=21; tunnel leads to valve II")
 (clerk/example (= 1651 (part-1 test-data)))
 
 ;; Applying it to our input we get:
-
+^{::clerk/visibility {:code :hide}}
 (clerk/code
  '(= 1896 (part-1 (slurp "input/2022/16.txt"))))
 
@@ -114,6 +115,6 @@ Valve JJ has flow rate=21; tunnel leads to valve II")
 (clerk/example (= 1707 (part-2 test-data)))
 
 ;; Applying it to our input we get:
-
+^{::clerk/visibility {:code :hide}}
 (clerk/code
  '(= 2576 (part-2 (slurp "input/2022/16.txt"))))
