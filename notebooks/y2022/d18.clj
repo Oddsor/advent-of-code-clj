@@ -1,6 +1,11 @@
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2022.d18
-  (:require [clojure.core.matrix :as m]
-            [nextjournal.clerk :as clerk]))
+  (:require [nextjournal.clerk :as clerk]
+            [clojure.core.matrix :as m]
+            [clojure.set :as set]
+            [advent-of-code-clj.utils :as u]))
+
+;; # Year 2022 - Day 18
 
 ^{::clerk/visibility {:result :hide}}
 (def test-data "2,2,2
@@ -17,31 +22,94 @@
 2,1,5
 2,3,5")
 
-^{::clerk/visibility {:result :hide}}
+{::clerk/visibility {:result :hide}}
+
+(require '[clojure.core.matrix :as m])
+
 (defn parse [data]
   (mapv m/to-vector (partition 3 (map parse-long (re-seq #"\d+" data)))))
 
-^{::clerk/visibility {:result :hide}}
 (defn neighbours [[head & points]]
   (lazy-cat
    (keep (fn [point] (when (>= 1.0 (m/distance head point))
-                       [head point])) points)
+                       [head point]))
+         points)
    (when (seq points) (neighbours points))))
 
-^{::clerk/visibility {:result :hide}}
 (defn part-1 [data]
   (let [points (parse data)
-        ;; Each point has two sides!
+        ;; Each point has six sides!
         total-sides (* (count points) 6)]
     (- total-sides
        ;; For every immediate neighbour we lose two sides
        (* (count (neighbours points)) 2))))
 
-{::clerk/visibility {:code :hide}}
+{::clerk/visibility {:result :show}}
+
+^{::clerk/visibility {:code :hide}}
 (clerk/example
  (= 64 (part-1 test-data)))
+
+;; Applying the function to our input data we get:
 
 (clerk/code
  '(= 4302 (part-1 (slurp "input/2022/18.txt"))))
 
-#_(= 58 (part-2 test-data))
+{::clerk/visibility {:result :hide}}
+
+(defn adjacents [[x y z]]
+  (set (u/adjacent-hv x y z)))
+
+(defn find-valid-neighbours [blocked visited position]
+  (for [coord (adjacents position)
+        :when (and (not (visited coord))
+                   (not (blocked coord)))]
+    coord))
+
+(defn fill-area [blocked visited positions]
+  (let [n (distinct (mapcat (partial find-valid-neighbours blocked visited) positions))]
+    (lazy-cat positions (when (not-empty n)
+                          (fill-area blocked (into visited n) n)))))
+
+(defn add-walls [min-x max-x min-y max-y min-z max-z]
+  (set (concat (for [x [min-x max-x]
+                     y (range min-y (inc max-y))
+                     z (range min-z (inc max-z))]
+                 [x y z])
+               (for [x (range min-x (inc max-x))
+                     y [min-y max-y]
+                     z (range min-z (inc max-z))]
+                 [x y z])
+               (for [x (range min-x (inc max-x))
+                     y (range min-y (inc max-y))
+                     z [min-z max-z]]
+                 [x y z]))))
+
+(defn part-2 [data]
+  (let [d (set (parse data))
+        [[min-x max-x] [min-y max-y] [min-z max-z] :as a]
+        (mapv (juxt m/minimum m/maximum) (apply mapv vector d))
+        filled (set (fill-area (set/union (add-walls (- min-x 2) (+ max-x 2)
+                                                     (- min-y 2) (+ max-y 2)
+                                                     (-  min-z 2) (+ max-z 2))
+                                          d)
+                               #{[(dec min-x) (dec min-y) (dec min-z)]}
+                               [[(dec min-x) (dec min-y) (dec min-z)]]))
+        max-fill (set (fill-area (add-walls (- min-x 2) (+ max-x 2)
+                                            (- min-y 2) (+ max-y 2)
+                                            (-  min-z 2) (+ max-z 2))
+                                 #{[(dec min-x) (dec min-y) (dec min-z)]}
+                                 [[(dec min-x) (dec min-y) (dec min-z)]]))
+        diff (set/difference max-fill filled)
+        total-sides (* (count diff) 6)]
+    (- total-sides
+           ;; For every immediate neighbour we lose two sides
+       (* (count (neighbours diff)) 2))))
+
+{::clerk/visibility {:result :show}}
+
+(clerk/example
+ (= 58 (part-2 test-data)))
+
+(comment 
+  (= 2492 (part-2 (slurp "input/2022/18.txt"))))

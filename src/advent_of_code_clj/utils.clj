@@ -14,10 +14,14 @@
 
 (defn adjacent-hv
   "Find adjacent coordinates, without diagonals"
-  [x y]
-  [[x (dec y)]
-   [(dec x) y] [(inc x) y]
-   [x (inc y)]])
+  ([x y]
+   [[x (dec y)]
+    [(dec x) y] [(inc x) y]
+    [x (inc y)]])
+  ([x y z]
+   [[(dec x) y z] [(inc x) y z]
+    [x (dec y) z]  [x (inc y) z]
+    [x y (dec z)] [x y (inc z)]]))
 
 (defn adjacent
   "Find adjacent coordinates"
