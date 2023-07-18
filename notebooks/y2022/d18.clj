@@ -1,9 +1,6 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2022.d18
-  (:require [nextjournal.clerk :as clerk]
-            [clojure.core.matrix :as m]
-            [clojure.set :as set]
-            [advent-of-code-clj.utils :as u]))
+  (:require [nextjournal.clerk :as clerk]))
 
 ;; # Year 2022 - Day 18
 
@@ -24,10 +21,12 @@
 
 {::clerk/visibility {:result :hide}}
 
-(require '[clojure.core.matrix :as m])
+(require '[advent-of-code-clj.utils :as u]
+         '[clojure.core.matrix :as m]
+         '[clojure.set :as set])
 
 (defn parse [data]
-  (mapv m/to-vector (partition 3 (map parse-long (re-seq #"\d+" data)))))
+  (m/to-nested-vectors (partition 3 (map parse-long (re-seq #"\d+" data)))))
 
 (defn neighbours [[head & points]]
   (lazy-cat
@@ -66,10 +65,13 @@
                    (not (blocked coord)))]
     coord))
 
-(defn fill-area [blocked visited positions]
-  (let [n (distinct (mapcat (partial find-valid-neighbours blocked visited) positions))]
-    (lazy-cat positions (when (not-empty n)
-                          (fill-area blocked (into visited n) n)))))
+(defn fill-area [blocked positions]
+  (letfn [(fill-area* [blocked visited positions]
+            (let [n-visited (into visited positions)
+                  n (distinct (mapcat (partial find-valid-neighbours blocked n-visited) positions))]
+              (lazy-cat positions (when (not-empty n)
+                                    (fill-area* blocked n-visited n)))))]
+    (fill-area* blocked #{} positions)))
 
 (defn add-walls [min-x max-x min-y max-y min-z max-z]
   (set (concat (for [x [min-x max-x]
@@ -87,18 +89,16 @@
 
 (defn part-2 [data]
   (let [d (set (parse data))
-        [[min-x max-x] [min-y max-y] [min-z max-z] :as a]
+        [[min-x max-x] [min-y max-y] [min-z max-z]]
         (mapv (juxt m/minimum m/maximum) (apply mapv vector d))
         filled (set (fill-area (set/union (add-walls (- min-x 2) (+ max-x 2)
                                                      (- min-y 2) (+ max-y 2)
                                                      (-  min-z 2) (+ max-z 2))
                                           d)
-                               #{[(dec min-x) (dec min-y) (dec min-z)]}
-                               [[(dec min-x) (dec min-y) (dec min-z)]]))
+                               [[(dec min-x) (dec min-y) (dec min-z)]])) 
         max-fill (set (fill-area (add-walls (- min-x 2) (+ max-x 2)
                                             (- min-y 2) (+ max-y 2)
-                                            (-  min-z 2) (+ max-z 2))
-                                 #{[(dec min-x) (dec min-y) (dec min-z)]}
+                                            (-  min-z 2) (+ max-z 2)) 
                                  [[(dec min-x) (dec min-y) (dec min-z)]]))
         diff (set/difference max-fill filled)
         total-sides (* (count diff) 6)]
@@ -108,8 +108,9 @@
 
 {::clerk/visibility {:result :show}}
 
+{::clerk/visibility {:code :hide}}
 (clerk/example
  (= 58 (part-2 test-data)))
 
-(comment 
-  (= 2492 (part-2 (slurp "input/2022/18.txt"))))
+(clerk/code
+  '(= 2492 (part-2 (slurp "input/2022/18.txt"))))
