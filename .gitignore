@@ -18,4 +18,5 @@ pom.xml.asc
 .lsp/
 .cpcache/
 .clerk/
+.portal/
 __site/
