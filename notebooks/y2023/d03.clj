@@ -31,8 +31,7 @@
            grouping (loop [[py px] fst
                            [[ny nx :as n] & xrs] xss
                            acc [fst]]
-                      (if (and (= py ny)
-                               (= (dec nx) px))
+                      (if (and (= py ny) (= (dec nx) px))
                         (recur n xrs (conj acc n))
                         acc))]
        (cons grouping (group-number-coordinates (drop (count grouping) coords)))))))
