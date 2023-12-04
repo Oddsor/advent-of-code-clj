@@ -43,7 +43,6 @@
        (cons grouping (group-number-coordinates (drop (count grouping) coords)))))))
 
 (->> test-data text->matrix digit-coordinates group-number-coordinates)
-(->> (slurp "input/2023/d03.txt") text->matrix digit-coordinates group-number-coordinates)
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn symbol-coordinates [matrix]
