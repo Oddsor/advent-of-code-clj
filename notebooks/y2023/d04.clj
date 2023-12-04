@@ -1,5 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns y2023.d04 
+(ns y2023.d04
   (:require [clojure.set :as set]
             [clojure.string :as str]))
 
@@ -21,20 +21,24 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11")
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn card->winning-numbers [line]
-  (let [[card winning-number-string drawn-number-string] (str/split line #"[:\|]")
-        winning-numbers (set (map parse-long (re-seq #"\d+" winning-number-string)))
-        drawn-numbers (set (map parse-long (re-seq #"\d+" drawn-number-string)))]
-    {(parse-long (re-find #"\d+" card))
-     (count (set/intersection winning-numbers drawn-numbers))}))
+  (let [[card-number winning-numbers drawn-numbers]
+        (map #(map parse-long (re-seq #"\d+" %)) (str/split line #"[:\|]"))]
+    {(first card-number)
+     (count (set/intersection (set winning-numbers) (set drawn-numbers)))}))
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn text->winning-numbers-by-cards [data]
+  (into {} (map card->winning-numbers) (str/split-lines data)))
+
+(text->winning-numbers-by-cards test-data)
 
 ;; Part 1 is fairly simple; find the number of winning cards, then calculate
 ;; the number of points for each card. We can use the iterator above for this:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-1 [data]
-  (->> data 
-       str/split-lines
-       (into {} (map card->winning-numbers))
+  (->> data
+       text->winning-numbers-by-cards
        vals
        (map #(nth card-points %))
        (apply +)))
@@ -54,9 +58,7 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11")
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-2 [data]
-  (let [card->matches (->> data
-                           str/split-lines
-                           (into {} (map card->winning-numbers)))
+  (let [card->matches (text->winning-numbers-by-cards data)
         max-card (->> card->matches keys (apply max))]
     (->> (sort (keys card->matches))
          (reduce
