@@ -3,6 +3,14 @@
   (:require [clojure.set :as set]
             [clojure.string :as str]))
 
+;; # Year 2023, day 4
+
+;; This time we are given a bunch of scratchcards, with a list of
+;; winning numbers and a list of drawn numbers.
+;; For example, for card 1, the matching numbers are: 83, 86, 17 and 48,
+;; yielding 4 matches. Turns out the number of matches for each card is
+;; the relevant metric for this task.
+
 (def test-data "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
 Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
 Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
@@ -32,6 +40,8 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11")
 
 (text->winning-numbers-by-cards test-data)
 
+;; ## Part 1
+
 ;; Part 1 is fairly simple; find the number of winning cards, then calculate
 ;; the number of points for each card. We can use the iterator above for this:
 
@@ -48,6 +58,8 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11")
 (comment
   (= 22674 (part-1 (slurp "input/2023/d04.txt"))))
 
+;; ## Part 2
+
 ;; Part 2 is fairly simple too (once you get rid of off-by-one-errors!). We model
 ;; this as a reduction over the card-numbers, and for each card we get the number of
 ;; winning cards, then add new cards based on that amount.
@@ -56,20 +68,33 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11")
 ;; This means that we can simply increase the X next cards by the current amount of cards
 ;; of that type.
 
+;; To see this in action, we can generate a list of "reductions", where we see how the
+;; copies are generated as we scratch each card:
+
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(defn part-2 [data]
+(defn generate-copies [data]
   (let [card->matches (text->winning-numbers-by-cards data)
         max-card (->> card->matches keys (apply max))]
-    (->> (sort (keys card->matches))
-         (reduce
+    (->> (sort (keys card->matches)) ;; Make sure to process cards in order
+         butlast ;; Last card won't affect the count anyway
+         (reductions
           (fn [acc card-num]
             (->> (zipmap (range (inc card-num)
                                 (inc (min max-card (+ card-num (card->matches card-num)))))
                          (repeat (acc card-num)))
                  (merge-with + acc)))
-          (zipmap (keys card->matches) (repeat 1)))
-         vals
-         (apply +))))
+          (zipmap (keys card->matches) (repeat 1))))))
+
+(generate-copies test-data)
+
+;; Part 2 is then solved by simply taking the last reduction and summing up the values:
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn part-2 [data]
+  (->> (generate-copies data)
+       last
+       vals
+       (apply +)))
 
 (= 30 (part-2 test-data))
 ^{:nextjournal.clerk/visibility {:result :hide}}
