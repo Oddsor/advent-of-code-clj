@@ -1,3 +1,4 @@
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2023.d03
   (:require [clojure.string :as str]
             [clojure.core.matrix :as m]
@@ -14,16 +15,21 @@
 ...$.*....
 .664.598..")
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn text->matrix [text]
   (->> text str/split-lines (mapv #(str/split % #""))))
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn is-symbol? [x] (re-matches #"[^\d\.]" x))
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn is-digit? [character] (re-matches #"\d" character))
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn digit-coordinates [matrix]
   (filter #(is-digit? (get-in matrix %)) (m/index-seq matrix)))
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn group-number-coordinates [coords]
   (when-let [xs (seq coords)]
     (lazy-seq
@@ -39,6 +45,7 @@
 (->> test-data text->matrix digit-coordinates group-number-coordinates)
 (->> (slurp "input/2023/d03.txt") text->matrix digit-coordinates group-number-coordinates)
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn symbol-coordinates [matrix]
   (into {} (for [y (range (count matrix))
                  x (range (count (get matrix y)))
@@ -46,6 +53,7 @@
                  :when (is-symbol? s)]
              {[y x] s})))
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn adjacent-symbol? [symbol-coords [y x]]
   (some symbol-coords (u/adjacent y x)))
 
@@ -54,15 +62,18 @@
   [(adjacent-symbol? symbol-coords [3 7])
    (adjacent-symbol? symbol-coords [3 8])])
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn filter-number-coords [symbol-coords coords]
   (filter #(some (partial adjacent-symbol? symbol-coords) %) coords))
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn coords->numbers
   ([matrix]
    (map (partial map #(get-in matrix %))))
   ([matrix coords]
    (map (partial map #(get-in matrix %)) coords)))
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-1 [data]
   (let [matrix (-> data text->matrix)
         symbol-coords (symbol-coordinates matrix)]
@@ -76,9 +87,11 @@
          (apply +))))
 
 (= 4361 (part-1 test-data))
+^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
   (= 544433 (part-1 (slurp "input/2023/d03.txt"))))
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-2 [data]
   (let [matrix (-> data text->matrix)
         asterisk-coords (into {} (filter (comp #{"*"} val)) (symbol-coordinates matrix))
@@ -98,5 +111,6 @@
          (apply +))))
 
 (= 467835 (part-2 test-data))
+^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
   (= 76314915 (part-2 (slurp "input/2023/d03.txt"))))
