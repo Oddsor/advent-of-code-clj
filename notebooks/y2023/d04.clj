@@ -72,9 +72,8 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11")
 ;; copies are generated as we scratch each card:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(defn generate-copies [data]
-  (let [card->matches (text->winning-numbers-by-cards data)
-        max-card (->> card->matches keys (apply max))]
+(defn generate-copies [card->matches]
+  (let [max-card (->> card->matches keys (apply max))]
     (->> (sort (keys card->matches)) ;; Make sure to process cards in order
          butlast ;; Last card won't affect the count anyway
          (reductions
@@ -85,13 +84,15 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11")
                  (merge-with + acc)))
           (zipmap (keys card->matches) (repeat 1))))))
 
-(generate-copies test-data)
+(->> test-data text->winning-numbers-by-cards generate-copies)
 
 ;; Part 2 is then solved by simply taking the last reduction and summing up the values:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-2 [data]
-  (->> (generate-copies data)
+  (->> data
+       text->winning-numbers-by-cards
+       generate-copies
        last
        vals
        (apply +)))
