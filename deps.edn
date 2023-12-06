@@ -2,26 +2,26 @@
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         com.rpl/specter {:mvn/version "1.1.4"}
         meander/epsilon {:mvn/version "0.0.650"}
-        datascript/datascript {:mvn/version "1.4.2"}
+        datascript/datascript {:mvn/version "1.5.4"}
         net.mikera/core.matrix {:mvn/version "0.63.0"}
         ubergraph/ubergraph {:mvn/version "0.8.2"}
         criterium/criterium {:mvn/version "0.4.6"}
-        com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.0.4"}
+        com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.1.1"}
         pangloss/pattern {:git/url "https://github.com/pangloss/pattern"
-                          :git/sha "1148123a14159cb310ce6f947709f790bb9adf63"}
-        techascent/tech.ml.dataset {:mvn/version "6.104"}
+                          :git/sha "018f3523d1b8b831911b726277986bd2c82429e5"}
+        techascent/tech.ml.dataset {:mvn/version "7.021"}
         org.flatland/ordered {:mvn/version "1.15.11"}
         com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.3.0"}
-        djblue/portal {:mvn/version "0.42.1"}
+        djblue/portal {:mvn/version "0.50.0"}
         org.clojure/math.combinatorics {:mvn/version "0.2.0"}
         org.clojure/math.numeric-tower {:mvn/version "0.0.5"}
         expresso/expresso {:mvn/version "0.2.4"}
         dev.weavejester/medley {:mvn/version "1.7.0"}
-        com.taoensso/tufte {:mvn/version "2.5.0"}
-        io.github.nextjournal/clerk {:mvn/version "0.14.919"}
-        com.cnuernber/ham-fisted {:mvn/version "1.000-beta-98"}
+        com.taoensso/tufte {:mvn/version "2.6.3"}
+        io.github.nextjournal/clerk {:mvn/version "0.15.957"}
+        com.cnuernber/ham-fisted {:mvn/version "2.013"}
         io.github.mentat-collective/emmy {:git/url "https://github.com/mentat-collective/emmy"
-                                          :git/sha "f6c3e9c17b1d4631fac22eff112c70d031393ac0"}} 
+                                          :git/sha "e674ac501af546198376aa443b95187012de4076"}} 
  :aliases
  {:outdated {:deps {com.github.liquidz/antq {:mvn/version "RELEASE"}
                     io.github.nextjournal/clerk {:mvn/version "0.13.842"}}
