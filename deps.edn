@@ -21,11 +21,14 @@
         io.github.nextjournal/clerk {:mvn/version "0.15.957"}
         com.cnuernber/ham-fisted {:mvn/version "2.013"}
         io.github.mentat-collective/emmy {:git/url "https://github.com/mentat-collective/emmy"
-                                          :git/sha "e674ac501af546198376aa443b95187012de4076"}} 
+                                          :git/sha "89f75a79d8bf57a771129485bb5fc8899edea1d3"}}
  :aliases
  {:outdated {:deps {com.github.liquidz/antq {:mvn/version "RELEASE"}
-                    io.github.nextjournal/clerk {:mvn/version "0.13.842"}}
+                    io.github.nextjournal/clerk {:mvn/version "0.15.957"}}
              :main-opts ["-m" "antq.core"]}
+  :update {:deps {com.github.liquidz/antq {:mvn/version "RELEASE"}
+                  io.github.nextjournal/clerk {:mvn/version "0.15.957"}}
+           :main-opts ["-m" "antq.core" "--check-clojure-tools" "true" "--upgrade" "true"]}
 
   :buildnotebooks {:exec-fn user/build-notebooks!}
   :test ;; added by neil

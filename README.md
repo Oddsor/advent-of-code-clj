@@ -22,5 +22,5 @@ clojure -M:outdated
 ```
 To upgrade:
 ```
-clojure -Tantq outdated :check-clojure-tools true :upgrade true
+clojure -M:update
 ```
