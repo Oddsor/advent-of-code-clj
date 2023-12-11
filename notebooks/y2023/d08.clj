@@ -40,7 +40,8 @@ ZZZ = (ZZZ, ZZZ)")
 
 (= 2 (part-1 test-data))
 (= 6 (part-1 test-data-2))
-(= 18727 (part-1 (slurp "input/2023/d08.txt")))
+(comment
+  (= 18727 (part-1 (slurp "input/2023/d08.txt"))))
 
 (def test-data-3 "LR
 
