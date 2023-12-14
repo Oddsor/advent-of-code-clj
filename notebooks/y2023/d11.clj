@@ -1,7 +1,7 @@
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2023.d11
   (:require [clojure.string :as str]
-            [advent-of-code-clj.utils :as u]
-            [clojure.walk :as walk]))
+            [clojure.math.combinatorics :as combinatorics]))
 
 ;; # Year 2023; Day 11
 
@@ -21,6 +21,14 @@
 
 ;; ## Part 1
 
+;; Find all the galaxy-coordinates:
+
+(defn galaxy-coords [text]
+  (let [lines (mapv vec (str/split-lines text))]
+    (for [y (range (count lines))
+          x (range (count (first lines)))
+          :when (= \# (get (lines y) x))]
+      [x y])))
 ;; We can repeat empty lines by X to add extra rows, then transpose the list of strings so that adding extra
 ;; lines instead add columns (then transpose back). Not the most elegant solution, but it should work!
 
@@ -38,18 +46,6 @@
         transposed-again (apply mapv vector horizontal-expansion)]
     (str/join "\n" (map str/join transposed-again))))
 
-;; Here we build a set of pairs out of the coordinates. Postwalk is used to convert sets back to vectors;
-;; (sets cause issues with destructuring later)
-
-^{:nextjournal.clerk/visibility {:result :hide}}
-(defn pairs [coords]
-  (walk/postwalk (u/fif set? vec)
-                 (set (for [x coords
-                            y coords
-                            :let [xy (set [x y])]
-                            :when (= 2 (count xy))]
-                        xy))))
-
 ;; The distance between galaxies is just the absolute x-distance plus the absolute y-distance:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
@@ -63,10 +59,8 @@
 (defn part-1 [data]
   (->> data
        expand
-       str/split-lines
-       u/coord-map
-       (keep (fn [[k v]] (when (= \# v) k)))
-       pairs
+       galaxy-coords
+       (#(combinatorics/combinations % 2))
        (map (partial apply galaxy-distance))
        (apply +)))
 
@@ -78,7 +72,7 @@
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
-  (= 9509330 (->> (slurp "input/2023/d11.txt") expand str/split-lines u/coord-map (keep (fn [[k v]] (when (= \# v) k))) pairs (map (partial apply galaxy-distance)) (apply +))))
+  (= 9509330 (part-1 (slurp "input/2023/d11.txt"))))
 
 ;; ## Part 2
 
@@ -110,10 +104,9 @@
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-2 [n data]
-  (->> (str/split-lines data)
-       u/coord-map
-       (keep (fn [[k v]] (when (= \# v) k)))
-       pairs
+  (->> data
+       galaxy-coords
+       (#(combinatorics/combinations % 2))
        (map (partial expanded-distance (empty-rows-and-cols data) n))
        (apply +)))
 
