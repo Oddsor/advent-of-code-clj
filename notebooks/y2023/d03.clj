@@ -91,10 +91,10 @@
 
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (let [matrix (-> test-data text->matrix)
-       symbol-coords (symbol-coordinates matrix)]
-   (clerk/example 
-    (adjacent-symbol? symbol-coords [3 7])
-    (adjacent-symbol? symbol-coords [3 8])))
+      symbol-coords (symbol-coordinates matrix)]
+  (clerk/example
+   (adjacent-symbol? symbol-coords [3 7])
+   (adjacent-symbol? symbol-coords [3 8])))
 
 ;; Now we can generate a filtering function that only finds numbers that
 ;; are near a symbol, given a list of symbol-coordinates

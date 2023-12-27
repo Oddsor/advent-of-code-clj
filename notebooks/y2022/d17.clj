@@ -166,7 +166,7 @@
           cycles (long (/ (- num-rocks rocks) cycle-size))
           remainder (- num-rocks (+ (* cycles cycle-size) rocks))]
       (transduce
-       (comp 
+       (comp
         (take remainder)
         (map combo-height))
        +

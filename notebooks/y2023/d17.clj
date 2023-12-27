@@ -66,7 +66,7 @@
                                        1
                                        (inc dirn))} :weight (m nc)}))])))
 
-(defn calc-cost 
+(defn calc-cost
   ([movement-algorithm data]
    (calc-cost movement-algorithm 0 data))
   ([movement-algorithm min-n data]

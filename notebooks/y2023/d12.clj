@@ -1,4 +1,4 @@
-(ns y2023.d12 
+(ns y2023.d12
   (:require [clojure.string :as str]))
 
 ;; Year 2023; Day 12
@@ -20,7 +20,7 @@
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn combinations [xs]
   (loop [acc []
-         [x & rx] xs] 
+         [x & rx] xs]
     (if x
       (let [nx (if (= \? x) [\. \#] [x])]
         (recur (if (seq acc)

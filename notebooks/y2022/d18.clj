@@ -95,10 +95,10 @@
                                                      (- min-y 2) (+ max-y 2)
                                                      (-  min-z 2) (+ max-z 2))
                                           d)
-                               [[(dec min-x) (dec min-y) (dec min-z)]])) 
+                               [[(dec min-x) (dec min-y) (dec min-z)]]))
         max-fill (set (fill-area (add-walls (- min-x 2) (+ max-x 2)
                                             (- min-y 2) (+ max-y 2)
-                                            (-  min-z 2) (+ max-z 2)) 
+                                            (-  min-z 2) (+ max-z 2))
                                  [[(dec min-x) (dec min-y) (dec min-z)]]))
         diff (set/difference max-fill filled)
         total-sides (* (count diff) 6)]
@@ -113,4 +113,4 @@
  (= 58 (part-2 test-data)))
 
 (clerk/code
-  '(= 2492 (part-2 (slurp "input/2022/18.txt"))))
+ '(= 2492 (part-2 (slurp "input/2022/18.txt"))))

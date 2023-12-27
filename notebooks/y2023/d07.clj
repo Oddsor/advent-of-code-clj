@@ -1,4 +1,4 @@
-(ns y2023.d07 
+(ns y2023.d07
   (:require [clojure.string :as str]))
 
 (def test-data "32T3K 765
