@@ -2,7 +2,7 @@
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         com.rpl/specter {:mvn/version "1.1.4"}
         meander/epsilon {:mvn/version "0.0.650"}
-        datascript/datascript {:mvn/version "1.5.4"}
+        datascript/datascript {:mvn/version "1.6.1"}
         net.mikera/core.matrix {:mvn/version "0.63.0"}
         ubergraph/ubergraph {:mvn/version "0.8.2"}
         criterium/criterium {:mvn/version "0.4.6"}
@@ -12,7 +12,7 @@
         techascent/tech.ml.dataset {:mvn/version "7.021"}
         org.flatland/ordered {:mvn/version "1.15.11"}
         com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.3.0"}
-        djblue/portal {:mvn/version "0.50.0"}
+        djblue/portal {:mvn/version "0.51.0"}
         org.clojure/math.combinatorics {:mvn/version "0.2.0"}
         org.clojure/math.numeric-tower {:mvn/version "0.0.5"}
         expresso/expresso {:mvn/version "0.2.4"}
@@ -20,7 +20,9 @@
         com.taoensso/tufte {:mvn/version "2.6.3"}
         io.github.nextjournal/clerk {:mvn/version "0.15.957"}
         io.github.mentat-collective/emmy {:git/url "https://github.com/mentat-collective/emmy"
-                                          :git/sha "89f75a79d8bf57a771129485bb5fc8899edea1d3"}}
+                                          :git/sha "13dda79d30e520c91951d32005be3ce819e35d4b"}
+        instaparse/instaparse {:mvn/version "1.4.12"}
+        org.clojure/core.match {:mvn/version "1.0.1"}}
  :aliases
  {:outdated {:deps {com.github.liquidz/antq {:mvn/version "RELEASE"}
                     io.github.nextjournal/clerk {:mvn/version "0.15.957"}}
