@@ -2,7 +2,9 @@
 (ns y2023.d19
   (:require [clojure.string :as str]
             [instaparse.core :as instaparse]
-            [clojure.core.match :as m]))
+            [clojure.core.match :as m]
+            [criterium.core :as crit]
+            [clojure.walk :as walk]))
 
 ;; # Year 2023, day 19
 
@@ -36,7 +38,7 @@ hdj{m>838:A,pv}
 
 (def workflow-parser
   (instaparse/parser
-   "LINE = word <'{'> expression+ <'}'>
+   "workflow = word <'{'> expression <'}'>
     operand = '<'|'>'
     word = #'[a-zA-Z]+'
     number = #'-?[0-9]+'
@@ -53,7 +55,7 @@ hdj{m>838:A,pv}
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn line->workflow [line]
   (m/match (workflow-parser line)
-    [:LINE [:word k] v] [k v]))
+    [:workflow [:word k] v] [k v]))
 
 (line->workflow "px{a<2006:qkq,m>2090:A,rfg}")
 
@@ -112,4 +114,49 @@ hdj{m>838:A,pv}
 
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (comment
-  (= 353553 (part-1 (slurp "input/2023/d19.txt"))))
+  (crit/quick-bench (= 353553 (part-1 (slurp "input/2023/d19.txt")))))
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn reduce-workflows [workflows step]
+  (m/match step
+    [:expression pred b1 b2]
+    (list 'if (reduce-workflows workflows pred)
+          (reduce-workflows workflows b1)
+          (reduce-workflows workflows b2))
+    [:predicate a [:operand op] b]
+    (list (symbol op) (reduce-workflows workflows a) (reduce-workflows workflows b))
+    [:word "A"] true
+    [:word "R"] false
+    [:word w] (if-let [nw (workflows w)]
+                (reduce-workflows workflows nw)
+                w)
+    [:number n] (parse-long n)))
+
+(defn simplify [x]
+  (walk/postwalk (fn [y]
+                   (if (seq? y)
+                     (m/match y
+                       (['if _ true true] :seq) true
+                       (['if _ false false] :seq) false
+                       (['if (['< a b] :seq) false true] :seq) (list '>= a b)
+                       (['if (['> a b] :seq) false true] :seq) (list '<= a b)
+                       (['if (['< a b] :seq) true false] :seq) (list '< a b)
+                       (['if (['> a b] :seq) true false] :seq) (list '> a b)
+                       :else y)
+                     y))
+                 x))
+
+(let [[workflow-str rating-str] (str/split test-data #"\n\n")
+      workflows (into {} (map line->workflow) (str/split-lines workflow-str))]
+  (simplify (reduce-workflows workflows (workflows "in"))))
+
+(comment
+  (let [[workflow-str rating-str] (str/split (slurp "input/2023/d19.txt") #"\n\n")
+        workflows (into {} (map line->workflow) (str/split-lines workflow-str))]
+    (simplify (reduce-workflows workflows (workflows "in")))))
+
+(defn part-2 [data]
+  167409079868000)
+
+(comment
+  (= 167409079868000 (part-2 test-data)))
