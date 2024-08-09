@@ -66,4 +66,4 @@
                      :end-node [(dec (apply max (map first (keys cm))))
                                 (apply max (map second (keys cm)))]}))
 
-(map (fn [x] (mapv + x [1 1])) (keys (u/coord-map (str/split-lines (slurp "input/2023/d23.txt")))))
+#_(map (fn [x] (mapv + x [1 1])) (keys (u/coord-map (str/split-lines (slurp "input/2023/d23.txt")))))
