@@ -1,7 +1,6 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2022.d16
-  (:require [nextjournal.clerk :as clerk]
-            [taoensso.tufte :as t]))
+  (:require [nextjournal.clerk :as clerk]))
 
 ;; # [Day 16: Proboscidea Volcanium](https://adventofcode.com/2022/day/16)
 
