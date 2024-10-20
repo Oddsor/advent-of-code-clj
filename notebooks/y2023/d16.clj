@@ -22,6 +22,12 @@
 .|....-|.\\
 ..//.|....")
 
+;; ## Old implementation
+
+;; Originally I attempted to run a simulation "point by point",
+;; but this ended up being very inefficient. This was done using
+;; these move-functions:
+
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn new-dir [op dir]
   (condp = op
@@ -64,11 +70,67 @@
         (recur (into prev-positions new-positions) new-positions
                (inc i))))))
 
+;; ## New implementation
+
+;; To speed up the algorithm, we instead create "beams" that
+;; have an entry and exit position, as well as all highlighted
+;; areas in the path. This should allow for better deduplication.
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn new-dirs [sym dir]
+  (case [sym dir]
+    ([\- [1 0]] [\\ [0 1]] [\/ [0 -1]] [\. [1 0]])
+    [[1 0]]
+    ([\- [-1 0]] [\\ [0 -1]] [\/ [0 1]] [\. [-1 0]])
+    [[-1 0]]
+    ([\| [1 0]] [\| [-1 0]])
+    [[0 1] [0 -1]]
+    ([\- [0 1]] [\- [0 -1]])
+    [[1 0] [-1 0]]
+    ([\| [0 -1]] [\\ [-1 0]] [\/ [1 0]] [\. [0 -1]])
+    [[0 -1]]
+    ([\| [0 1]] [\\ [1 0]] [\/ [-1 0]] [\. [0 1]])
+    [[0 1]]))
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn calc-beam [coord-map {:keys [dir coord] :as start}]
+  (loop [positions [coord]
+         current-pos coord]
+    (let [new-coord (mapv + current-pos dir)
+          new-positions (conj positions new-coord)]
+      (case (coord-map new-coord)
+        \. (recur new-positions new-coord)
+        nil [{:start start
+              :end nil
+              :positions positions}]
+        (mapv (fn [d]
+                {:start start
+                 :end {:dir d
+                       :coord new-coord}
+                 :positions new-positions})
+              (new-dirs (coord-map new-coord) dir))))))
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn find-positions-2 [coord-map {start-coord :coord start-dir :dir}]
+  (let [memo-calc (memoize calc-beam)
+        starting-beams (mapcat (fn [d]
+                                 (memo-calc coord-map {:dir d :coord start-coord}))
+                               (new-dirs (coord-map start-coord) start-dir))]
+    (loop [visited-beams (set starting-beams)
+           current-beams starting-beams]
+      (let [new-beams (mapcat (fn [{:keys [end]}]
+                                (when end
+                                  (memo-calc coord-map end)))
+                              current-beams)]
+        (if (every? visited-beams new-beams)
+          visited-beams
+          (recur (into visited-beams new-beams) new-beams))))))
+
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn energized-from-position [position coord-map]
   (count (into #{}
-               (comp (map :coord) (filter coord-map))
-               (find-positions coord-map [position]))))
+               (mapcat :positions)
+               (find-positions-2 coord-map position))))
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-1 [data]
@@ -77,20 +139,17 @@
                   :coord [0 0]}]
     (energized-from-position position cm)))
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (clojure.repl.deps/add-lib)
-  (require '[criterium.core :as crit])
-  (crit/quick-bench (part-1 test-data)))
-
 (= 46 (part-1 test-data))
+
+;; This implementation is still not great, but at least runs at a
+;; decent 900 milliseconds.
 
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
 (comment
-  (require '[clj-async-profiler.core :as prof])
-  (prof/profile (part-1 (slurp "input/2023/d16.txt")))
-  (prof/serve-ui 8080)
   (time (= 7608 (part-1 (slurp "input/2023/d16.txt")))))
+
+;; For part 2, we run the same algorithm across several threads using
+;; `pmap`, and build a list of starting positions to test.
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-2 [data]
@@ -112,6 +171,7 @@
 
 (= 51 (part-2 test-data))
 
+;; This runs at a fairly slow 2 minutes, but at least we get our answer.
+
 (comment
-  (crit/quick-bench (part-2 test-data))
-  (time (= 7608 (part-2 (slurp "input/2023/d16.txt")))))
+  (time (= 8221 (part-2 (slurp "input/2023/d16.txt")))))
