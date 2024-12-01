@@ -26,7 +26,7 @@
 (defn get-lists [input]
   (->> (re-seq #"\d+" input)
        (map parse-long)
-       (partitionv 2)
+       (partition 2)
        (apply mapv vector)))
 
 (get-lists test-data)
