@@ -22,12 +22,10 @@
 ; Vi kan starte med å få tak i listene:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(require '[clojure.string :as str])
-^{:nextjournal.clerk/visibility {:result :hide}}
 (defn get-lists [input]
-  (->> (str/split-lines input)
-       (mapv (fn [line]
-               (mapv parse-long (re-seq #"\d+" line))))
+  (->> (re-seq #"\d+" input)
+       (map parse-long)
+       (partitionv 2)
        (apply mapv vector)))
 
 (get-lists test-data)
@@ -54,15 +52,16 @@
 ; listen dukker opp i den andre:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(defn similarity-score [input]
+(defn total-similarity-score [input]
   (let [[list-a list-b] (get-lists input)
-        freqs (frequencies list-b)]
-    (transduce (map (fn [x] (* x (freqs x 0))))
+        freqs (frequencies list-b)
+        similarity-score (fn [x] (* x (freqs x 0)))]
+    (transduce (map similarity-score)
                +
                list-a)))
 
-(= 31 (similarity-score test-data))
+(= 31 (total-similarity-score test-data))
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
-  (= 23117829 (similarity-score (slurp "input/2024/input1.txt"))))
+  (= 23117829 (total-similarity-score (slurp "input/2024/input1.txt"))))
