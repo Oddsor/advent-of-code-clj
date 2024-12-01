@@ -22,9 +22,9 @@
 (defn split-line
   ([line] (split-line 1 line))
   ([scale line]
-   (let [[pattern numbers] (String/.split line " ")]
+   (let [[pattern numbers] (.split line " ")]
      [(map parse-long (re-seq #"\d+" (String/join "," (repeat scale numbers))))
-      (String/.replaceAll
+      (.replaceAll
        (String/join "?" (repeat scale pattern))
        "\\.\\.+" ".")])))
 

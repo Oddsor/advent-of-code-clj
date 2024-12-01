@@ -37,7 +37,7 @@
 (defn difference [input]
   (->> (get-lists input)
        (map sort)
-       (apply map (comp Math/abs -))
+       (apply map (comp abs -))
        (reduce +)))
 
 (= 11 (difference test-data))
