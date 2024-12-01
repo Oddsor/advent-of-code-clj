@@ -16,35 +16,52 @@
 ????.######..#####. 1,6,5
 ?###???????? 3,2,1")
 
-;; This function takes a string and generates combinations:
-
-^{:nextjournal.clerk/visibility {:result :hide}}
-(defn combinations [xs]
-  (loop [acc []
-         [x & rx] xs]
-    (if x
-      (let [nx (if (= \? x) [\. \#] [x])]
-        (recur (if (seq acc)
-                 (mapcat (fn [x] (map #(str % x) acc)) nx)
-                 nx) rx))
-      acc)))
-
 ;; This function splits a line, generates a regex-pattern from the right hand part (numbers), and a list of
 ;; combinations from the right hand part. Then we find the list of combinations that match the pattern:
 
 (defn split-line
   ([line] (split-line 1 line))
   ([scale line]
-   (let [split (String/.split line " ")]
-     [(String/join "?" (repeat scale (aget split 0)))
-      (String/join "," (repeat scale (aget split 1)))])))
+   (let [[pattern numbers] (String/.split line " ")]
+     [(map parse-long (re-seq #"\d+" (String/join "," (repeat scale numbers))))
+      (String/.replaceAll
+       (String/join "?" (repeat scale pattern))
+       "\\.\\.+" ".")])))
+
+(split-line (second (str/split-lines test-data)))
+
+;; Mostly stolen from https://github.com/erdos/advent-of-code/blob/master/2023/day12.clj
+;; Key lesson for me is to not try to collect all combinations and then filter them later
+(defn valid-remainder [num s]
+  (for [i (range (inc (- (count s) num)))
+        :while (every? #{\. \?} (take i s))
+        :when (every? #{\# \?} (take num (drop i s)))
+        :when (not= \# (nth s (+ num i) \.))]
+    (drop (+ (inc i) num) s)))
+
+(assert (= [(list \? \. \# \# \#)
+            (list \. \# \# \#)
+            (list \# \# \#)]
+           (valid-remainder 1 "???.###")))
+(assert (= [[]]
+           (valid-remainder 3 "###")))
+(assert (= []
+           (valid-remainder 3 "##")))
+(assert (=
+         [(list \? \? \? \? \? \? \?)]
+         (valid-remainder 3 "?###????????")))
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(defn find-arrangements [[xs counts]]
-  (let [pattern (re-pattern (str "^\\.*" (String/join "\\.+" (map (fn [x]
-                                                                    (str "#{" x "}")) (re-seq #"\d+" counts)))
-                                 "\\.*$"))]
-    (count (keep (partial re-matches pattern) (combinations xs)))))
+(def find-arrangements
+  (memoize
+   (fn [[counts pattern]]
+     (if-let [[c & rst] (seq counts)]
+       (reduce +
+               (for [remaining-chars (valid-remainder c pattern)]
+                 (find-arrangements [rst remaining-chars])))
+       (if (every? #{\. \?} pattern)
+         1
+         0)))))
 
 (= 1 (find-arrangements (split-line "???.### 1,1,3")))
 (= 4 (find-arrangements (split-line ".??..??...?##. 1,1,3")))
@@ -52,26 +69,37 @@
 (= 10 (find-arrangements (split-line "?###???????? 3,2,1")))
 
 ;; ## Part 1
+
 ;; Solution for the test set:
 
-(= 21 (transduce (comp (map split-line)
-                       (map find-arrangements))
+(= 21 (transduce (comp
+                  (map split-line)
+                  (map find-arrangements))
                  + (str/split-lines test-data)))
 
 ;; This gives us the following solution for the input (use pmap to parallelize and speed things up):
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
-  (= 7771 (apply + (pmap (comp find-arrangements split-line) (str/split-lines (slurp "input/2023/d12.txt"))))))
+  (crit/quick-bench
+   (= 21 (transduce (comp (map split-line)
+                          (map find-arrangements))
+                    + (str/split-lines test-data))))
+  (crit/quick-bench
+   (= 7771 (apply + (map (comp find-arrangements split-line)
+                         (str/split-lines (slurp "input/2023/d12.txt")))))))
 
 ;; ## Part 2
 
 ;; Oops, we need to scale the problem 5x by repeating the patterns!
 
-(mapv #(split-line 5 %) (str/split-lines test-data))
-
 (comment
   (= 525152
-     (transduce (comp (map #(split-line 2 %))
+     (transduce (comp (map #(split-line 5 %))
                       (map find-arrangements))
-                + (str/split-lines test-data))))
+                + (str/split-lines test-data)))
+
+  (= 10861030975833
+     (transduce (comp (map #(split-line 5 %))
+                      (map find-arrangements))
+                + (str/split-lines (slurp "input/2023/d12.txt")))))
