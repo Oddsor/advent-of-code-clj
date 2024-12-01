@@ -7,6 +7,7 @@
 ; litt uvanlig i parsingen ettersom man har to lister som
 ; går vertikalt i inputten:
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (def test-data "3   4
 4   3
 2   5
