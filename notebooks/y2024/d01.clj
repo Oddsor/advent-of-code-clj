@@ -35,17 +35,20 @@
 ; mellom hvert siffer, og summere:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(defn difference [input]
+(defn difference [a b] (abs (- a b)))
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn total-difference [input]
   (->> (get-lists input)
        (map sort)
-       (apply map (comp abs -))
+       (apply map difference)
        (reduce +)))
 
-(= 11 (difference test-data))
+(= 11 (total-difference test-data))
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
-  (= 2756096 (difference (slurp "input/2024/input1.txt"))))
+  (= 2756096 (total-difference (slurp "input/2024/input1.txt"))))
 
 ; ## Del 2
 
