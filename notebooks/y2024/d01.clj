@@ -1,5 +1,8 @@
 ^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
-(ns y2024.d01)
+(ns y2024.d01
+  (:require
+   [nextjournal.clerk :as clerk]
+   [debux.core :as d]))
 
 ; # Y2024, D01
 
@@ -20,16 +23,40 @@
 ; Vi skal finne distansene mellom verdiene i hver liste,
 ; sortert fra lavest til høyest.
 
-; Vi kan starte med å få tak i listene:
+; Ettersom denne oppgaven er ganske enkel kan vi tillate oss å 
+; gå noen ekstra steg og legge til et debug-bibliotek slik at vi
+; kan printe stegene som utføres på testdataene:
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(require '[debux.core :as d])
+^{:nextjournal.clerk/visibility {:result :hide}}
+(d/set-debug-mode! false)
+
+; Så kan vi starte med å få tak i listene:
+
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn get-lists [input]
-  (->> (re-seq #"\d+" input)
-       (map parse-long)
-       (partition 2)
-       (apply mapv vector)))
+  (d/dbg
+   (->> (re-seq #"\d+" input)
+        (map parse-long)
+        (partition 2)
+        (apply mapv vector))
+   :level 2))
 
+; dbg-makroen lar oss inspisere hva som skjer i hvert steg
+; av get-lists-funksjonen:
+^{:nextjournal.clerk/visibility {:result :hide}}
 (get-lists test-data)
+^{:nextjournal.clerk/auto-expand-results? true
+  :nextjournal.clerk/visibility {:code :hide}}
+(nextjournal.clerk.viewer/with-viewer (dissoc nextjournal.clerk.viewer/string-viewer :page-size)
+  (do
+    (d/set-debug-mode! true)
+    (let [debug-output (with-out-str (get-lists test-data))]
+      (d/set-debug-mode! false)
+      debug-output)))
+
 
 ; Når vi har listene kan vi sortere og finne differansen
 ; mellom hvert siffer, og summere:
@@ -37,14 +64,34 @@
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn difference [a b] (abs (- a b)))
 
+^{:nextjournal.clerk/visibility {:code :hide}}
+(clerk/example
+ (difference 10 0)
+ (difference 0 10)
+ (difference 10 10))
+
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn total-difference [input]
-  (->> (get-lists input)
-       (map sort)
-       (apply map difference)
-       (reduce +)))
+  (d/dbg
+   (->> (get-lists input)
+        (map sort)
+        (apply map difference)
+        (reduce +))
+   :level 3))
 
-(= 11 (total-difference test-data))
+^{:nextjournal.clerk/visibility {:result :hide}}
+(total-difference test-data)
+^{:nextjournal.clerk/auto-expand-results? true
+  :nextjournal.clerk/visibility {:code :hide}}
+(nextjournal.clerk.viewer/with-viewer (dissoc nextjournal.clerk.viewer/string-viewer :page-size)
+  (do
+    (d/set-debug-mode! true)
+    (d/with-level 3
+      (let [debug-output (with-out-str (total-difference test-data))]
+        (d/set-debug-mode! false)
+        debug-output))))
+
+
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
@@ -60,11 +107,21 @@
   (let [[list-a list-b] (get-lists input)
         freqs (frequencies list-b)
         similarity-score (fn [x] (* x (freqs x 0)))]
-    (transduce (map similarity-score)
+    (transduce (d/dbgt (map similarity-score) :level 3 :locals)
                +
                list-a)))
 
-(= 31 (total-similarity-score test-data))
+^{:nextjournal.clerk/visibility {:result :hide}}
+(total-similarity-score test-data)
+^{:nextjournal.clerk/auto-expand-results? true
+  :nextjournal.clerk/visibility {:code :hide}}
+(nextjournal.clerk.viewer/with-viewer (dissoc nextjournal.clerk.viewer/string-viewer :page-size)
+  (do
+    (d/set-debug-mode! true)
+    (d/with-level 3
+      (let [debug-output (with-out-str (total-similarity-score test-data))]
+        (d/set-debug-mode! false)
+        debug-output))))
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (comment

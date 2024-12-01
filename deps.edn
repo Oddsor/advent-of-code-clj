@@ -22,7 +22,8 @@
                                           :git/sha "4471f873522df8a2997faccc9d3f5ea23527a956"}
         instaparse/instaparse {:mvn/version "1.5.0"}
         org.clojure/core.match {:mvn/version "1.1.0"}
-        com.github.flow-storm/flow-storm-dbg {:mvn/version "4.0.2"}}
+        com.github.flow-storm/flow-storm-dbg {:mvn/version "4.0.2"}
+        philoskim/debux {:mvn/version "0.9.1"}}
  :aliases
  {:profiler {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.5.1"}}
              :jvm-opts ["-Djdk.attach.allowAttachSelf"]}
