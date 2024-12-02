@@ -4,14 +4,24 @@
 
 ; ## Del 1
 
-; Relativt grei oppgave. Vet ikke om
+; Relativt grei oppgave. Definisjonen av en trygg rad hadde
+; et par kriterier, så algoritmen kan være vanskelig å få til
+; å bli elegant. Starter med å parse input:
 
-(def test-data "7 6 4 2 1
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn to-matrix
+  "Gjør om tekst til en matrise (liste med lister av tall)"
+  [input]
+  (for [line (.split input "\\n")
+        :let [numbers (.split line "\\s+")]]
+    (map parse-long numbers)))
+
+(def test-data (to-matrix "7 6 4 2 1
 1 2 7 8 9
 9 7 6 2 1
 1 3 2 4 5
 8 6 4 4 1
-1 3 6 7 9")
+1 3 6 7 9"))
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn row-safe?
@@ -25,15 +35,12 @@
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn safe-lines [input]
-  (->> (.split input "\\n")
-       (map (fn [line] (map parse-long (.split line "\\s+"))))
-       (filter row-safe?)
-       count))
+  (->> input (filter row-safe?) count))
 
 (safe-lines test-data)
 
 (comment
-  (= 314 (safe-lines (slurp "input/2024/input2.txt"))))
+  (= 314 (safe-lines (to-matrix (slurp "input/2024/input2.txt")))))
 
 ; ## Del 2
 
@@ -50,18 +57,21 @@
 
 (without-one-element [1 2 3 4 5 6])
 
+(defn safe-without-one-element? [unsafe-row]
+  (->> unsafe-row
+       without-one-element
+       (some row-safe?)))
+
 ; Så filtrerer vi ut de radene som allerede er trygge,
 ; og kjører de utrygge på nytt minus ett element:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn safeish-lines [input]
-  (let [rows (->> (.split input "\\n")
-                  (map (fn [line] (map parse-long (.split line "\\s+")))))
-        {safe true unsafe false} (group-by row-safe? rows)
-        safe-unsafe-rows (filter (fn [unsafe-row]
-                                   (->> (without-one-element unsafe-row)
-                                        (some row-safe?))) unsafe)]
-    (+ (count safe) (count safe-unsafe-rows))))
+  (let [{safe-rows true unsafe-rows false} (group-by row-safe? input)]
+    (->> unsafe-rows
+         (filter safe-without-one-element?)
+         count
+         (+ (count safe-rows)))))
 
 (safeish-lines test-data)
 
@@ -69,4 +79,4 @@
 ; inputten i dag, så vi slipper å optimalisere denne gangen
 
 (comment
-  (= 373 (safeish-lines (slurp "input/2024/input2.txt"))))
+  (= 373 (safeish-lines (to-matrix (slurp "input/2024/input2.txt")))))
