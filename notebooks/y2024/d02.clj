@@ -1,3 +1,4 @@
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2024.d02)
 
 ; # 2024, dag 2
