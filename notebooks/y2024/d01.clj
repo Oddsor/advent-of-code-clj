@@ -4,7 +4,7 @@
    [nextjournal.clerk :as clerk]
    [debux.core :as d]))
 
-; # Y2024, D01
+; # 2024, dag 1
 
 ; Denne oppgaven er relativt enkel, men ser ut til å være
 ; litt uvanlig i parsingen ettersom man har to lister som
