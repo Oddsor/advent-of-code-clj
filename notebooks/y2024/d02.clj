@@ -29,10 +29,10 @@
   "Hvis alle er positive eller negative,
    og hvis endringen er mellom 1 og 3, er alt bra!"
   [row]
-  (let [differences (map - row (rest row))]
-    (and (or (every? neg-int? differences)
-             (every? pos-int? differences))
-         (every? (fn [x] (>= 3 (abs x) 1)) differences))))
+  ; Credit https://github.com/RokLenarcic/ for the apply-trick!
+  (and (or (apply < row) (apply > row))
+       (every? (fn [x] (>= 3 (abs x) 1))
+               (map - row (rest row)))))
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn safe-lines [input]
