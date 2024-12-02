@@ -39,6 +39,7 @@
 
 (safe-lines test-data)
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
   (= 314 (safe-lines (to-matrix (slurp "input/2024/input2.txt")))))
 
@@ -78,5 +79,6 @@
 ; Brute-force-løsningen kjører heldigvis på beskjedne 17ms på
 ; inputten i dag, så vi slipper å optimalisere denne gangen
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
   (= 373 (safeish-lines (to-matrix (slurp "input/2024/input2.txt")))))
