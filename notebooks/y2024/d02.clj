@@ -58,6 +58,7 @@
 
 (without-one-element [1 2 3 4 5 6])
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn safe-without-one-element? [unsafe-row]
   (->> unsafe-row
        without-one-element
