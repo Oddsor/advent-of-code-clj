@@ -107,7 +107,9 @@
 (require '[lambdaisland.regal.parse :as rp])
 (rp/parse-pattern "(?s)don't\\(\\).*?(?:do\\(\\)|\\Z)")
 
-; Men det kan vi løse ved å legge til newline sammen med `any`-operatoren
+; Men det kan vi løse ved å legge til newline sammen med `any`-operatoren i stedet,
+; og bytte ut `\Z` med `$`, eller `:end` i 'regalsk':
+
 (def prep-pattern (regal/pattern [:cat
                                   "don't()"
                                   [:*? [:alt :any :newline]]
