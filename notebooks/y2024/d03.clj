@@ -99,8 +99,15 @@
 ; ## Del 2 igjen
 
 ; Etter å ha sett løsningen til https://github.com/zelark/, så kan
-; det være enklere å "preppe" inputten og gjenbruke funksjonen fra del 1:
+; det være enklere å "preppe" inputten og gjenbruke funksjonen fra del 1.
 
+; Det første vi ser er at regal ikke støtter enkelte operasjoner (`?s` som
+; gjør at `.` matcher newline, og `\Z` som gjør at vi matcher slutten av filen)
+
+(require '[lambdaisland.regal.parse :as rp])
+(rp/parse-pattern "(?s)don't\\(\\).*?(?:do\\(\\)|\\Z)")
+
+; Men det kan vi løse ved å legge til newline sammen med `any`-operatoren
 (def prep-pattern (regal/pattern [:cat
                                   "don't()"
                                   [:*? [:alt :any :newline]]
