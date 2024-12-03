@@ -20,7 +20,7 @@
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
-  (parse-and-multiply (slurp "input/2024/input3.txt")))
+  (= 173419328 (parse-and-multiply (slurp "input/2024/input3.txt"))))
 
 ; ## Del 2
 
@@ -41,9 +41,9 @@
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
-  (parse-and-multiply-when (slurp "input/2024/input3.txt")))
+  (= 98059175 (parse-and-multiply-when (slurp "input/2024/input3.txt"))))
 
-; Reell input ble regnet feil!? Da går vi dumt til verks.
+; Reell input ble regnet feil!! Da får vi gå dumt til verks.
 
 ; Hent alle operasjoner vi bryr oss om:
 
@@ -73,6 +73,25 @@
 
 (= 48 (process-operations (get-operations "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))")))
 
+; Fortsatt riktig på testdata, og nå blir det også riktig på inputten:
+
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
-  (process-operations (get-operations (slurp "input/2024/input3.txt"))))
+  (= 90669332 (process-operations (get-operations (slurp "input/2024/input3.txt")))))
+
+; ## Del 2 igjen
+
+; Etter å ha sett løsningen til https://github.com/zelark/, så kan
+; det være enklere å "preppe" inputten og gjenbruke funksjonen fra del 1:
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn prep-input [input]
+  ; ?s slik at `.` matcher newline også
+  ;`\Z` for å matche slutten av filen (fanger opp `don't` som ikke følges av en `do`)
+  (.replaceAll input "(?s)don't\\(\\).*?(?:do\\(\\)|\\Z)" ""))
+
+(prep-input "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?don't()mul(8,5))")
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(comment
+  (= 90669332 (parse-and-multiply (prep-input (slurp "input/2024/input3.txt")))))
