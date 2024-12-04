@@ -2,12 +2,15 @@
   (:require [clojure.string :as str]))
 
 (defn coord-map [xs-of-xses]
-  (->> xs-of-xses
-       (map-indexed (fn [idy xs]
-                      (map-indexed (fn [idx v]
-                                     [[idx idy] v])
-                                   xs)))
-       (transduce cat merge)))
+  (let [xs-of-xses (if (string? xs-of-xses)
+                     (mapv #(.split % "") (.split xs-of-xses "\n"))
+                     xs-of-xses)]
+    (->> xs-of-xses
+         (map-indexed (fn [idy xs]
+                        (map-indexed (fn [idx v]
+                                       [[idx idy] v])
+                                     xs)))
+         (transduce cat merge))))
 
 (defn text->matrix [text]
   (mapv vec (str/split-lines text)))
