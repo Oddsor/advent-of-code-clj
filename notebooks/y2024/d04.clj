@@ -1,8 +1,8 @@
 (ns y2024.d04
-  (:require
-   [advent-of-code-clj.utils :as utils]))
+  (:require [advent-of-code-clj.utils :as utils]
+            [clojure.core.matrix :as m]))
 
-(def test-data (utils/coord-map "MMMSXXMASM
+(def test-data (utils/coord-map (utils/text->matrix "MMMSXXMASM
 MSAMXMSMSA
 AMXSXMAAMM
 MSAMASMSMX
@@ -11,7 +11,7 @@ XXAMMXXAMA
 SMSMSASXSS
 SAXAMASAAA
 MAMMMXMMMM
-MXMXAXMASX"))
+MXMXAXMASX")))
 
 (defn coord-line [length [x y]]
   [; Down
@@ -44,14 +44,13 @@ MXMXAXMASX"))
 (defn find-xmas [coord-map coord]
   (let [seqs (coord-line 4 coord)]
     (->> seqs
-         (map (fn [xs]
-                (map coord-map xs)))
-         (filter #{["X" "M" "A" "S"]})
+         (mapv (fn [xs]
+                 (mapv coord-map xs)))
+         (filterv #{[\X \M \A \S]})
          count)))
 
-(defn part-1 [input]
-  (let [coord-map input
-        x-es (filter (comp #{"X"} val) coord-map)]
+(defn part-1 [coord-map]
+  (let [x-es (filter (comp #{\X} val) coord-map)]
     (->> x-es
          (map #(find-xmas coord-map (key %)))
          (reduce +))))
@@ -59,7 +58,7 @@ MXMXAXMASX"))
 (= 18 (part-1 test-data))
 
 (comment
-  (part-1 (utils/coord-map (slurp "input/2024/input4.txt"))))
+  (part-1 (utils/coord-map (utils/text->matrix (slurp "input/2024/input4.txt")))))
 
 (defn find-x-mas [coord-map [x y]]
   (let [diagonals [[[(dec x) (dec y)] [x y] [(inc x) (inc y)]]
@@ -81,3 +80,61 @@ MXMXAXMASX"))
 
 (comment
   (part-2 (utils/coord-map (slurp "input/2024/input4.txt"))))
+
+; # Igjen, med matriser
+
+; Denne gangen leter vi ikke opp alle X-er og leter etter XMAS fra
+; deres posisjon, men skjærer opp matrisen i linjer og leter langs
+; hele linjene etter forekomst av ordet.
+
+; Løsningen kan sies å være enklere å lese, og algoritmen er dessuten
+; litt raskere (94ms vs 73ms)
+
+(def test-input "MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX")
+
+(defn to-matrix [input]
+  (m/matrix (utils/text->matrix input)))
+
+(to-matrix test-input)
+
+(defn get-all-lines
+  "Hent alle 'linjer' i matrisen, altså alle rader, kolonner
+   og alle diagonaler."
+  [matrix]
+  (let [lines (concat
+               (m/rows matrix)
+               (m/columns matrix)
+               (let [dim (m/dimension-count matrix 0)]
+                 (for [i (range (- (- dim 4)) (- dim 3))]
+                   (m/diagonal matrix i)))
+               (let [dim (m/dimension-count matrix 0)
+                     rotated (m/transpose (reverse matrix))]
+                 (for [i (range (- (- dim 4)) (- dim 3))]
+                   (m/diagonal rotated i))))]
+    lines))
+
+(defn count-xmas-along-line
+  "Finn alle XMAS langs en linje, både forlengs og baklengs"
+  [line]
+  (count (filterv #{[\X \M \A \S]
+                    [\S \A \M \X]}
+                  (partitionv 4 1 line))))
+
+(defn part-1-matrix [input]
+  (transduce (map count-xmas-along-line)
+             +
+             (get-all-lines (to-matrix input))))
+
+(= 18 (part-1-matrix test-input))
+
+(comment
+  (part-1-matrix (slurp "input/2024/input4.txt")))
