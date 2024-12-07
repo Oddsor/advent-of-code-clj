@@ -41,10 +41,8 @@
   ([solution operators acc [value & values]]
    (cond (> acc solution) false
          (nil? value) (= solution acc)
-         :else (some identity
-                     (map (fn [op]
-                            (solve-equation solution operators (op acc value) values))
-                          operators)))))
+         :else (some #(solve-equation solution operators (% acc value) values)
+                     operators))))
 
 (solve-equation 3267 [+ *] [81 40 27])
 
