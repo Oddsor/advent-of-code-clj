@@ -1,7 +1,5 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns y2024.d07
-  (:require
-   [criterium.core :as crit]))
+(ns y2024.d07)
 
 ; # 2024, dag 7
 
