@@ -86,8 +86,8 @@ MXMXAXMASX")))
 ; deres posisjon, men skjærer opp matrisen i linjer og leter langs
 ; hele linjene etter forekomst av ordet.
 
-; Løsningen kan sies å være enklere å lese, og algoritmen er dessuten
-; litt raskere (94ms vs 73ms)
+; Løsningen kan sies å være enklere å lese, og algoritmen har relativt
+; lik ytelse.
 
 (def test-input "MMMSXXMASM
 MSAMXMSMSA
