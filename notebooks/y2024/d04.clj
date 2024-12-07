@@ -58,20 +58,19 @@ MXMXAXMASX")))
 (= 18 (part-1 test-data))
 
 (comment
-  (part-1 (utils/coord-map (utils/text->matrix (slurp "input/2024/input4.txt")))))
+  (= 2547 (part-1 (utils/coord-map (utils/text->matrix (slurp "input/2024/input4.txt"))))))
 
 (defn find-x-mas [coord-map [x y]]
   (let [diagonals [[[(dec x) (dec y)] [x y] [(inc x) (inc y)]]
                    [[(dec x) (inc y)] [x y] [(inc x) (dec y)]]]]
     (->> diagonals
-         (map #(String/join "" (map coord-map %)))
+         (map #(apply str (map coord-map %)))
          (filter #{"MAS" "SAM"})
          count
          (= 2))))
 
-(defn part-2 [input]
-  (let [coord-map input
-        a-s (filter (comp #{"A"} val) coord-map)]
+(defn part-2 [coord-map]
+  (let [a-s (filter (comp #{\A} val) coord-map)]
     (->> a-s
          (filter #(find-x-mas coord-map (key %)))
          count)))
@@ -79,7 +78,7 @@ MXMXAXMASX")))
 (= 9 (part-2 test-data))
 
 (comment
-  (part-2 (utils/coord-map (slurp "input/2024/input4.txt"))))
+  (= 1939 (part-2 (utils/coord-map (utils/text->matrix (slurp "input/2024/input4.txt"))))))
 
 ; # Igjen, med matriser
 
@@ -137,4 +136,4 @@ MXMXAXMASX")
 (= 18 (part-1-matrix test-input))
 
 (comment
-  (part-1-matrix (slurp "input/2024/input4.txt")))
+  (= 2547 (part-1-matrix (slurp "input/2024/input4.txt"))))
