@@ -36,13 +36,17 @@
 ; Dette kan løses med en rekursiv funksjon:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(defn solve-equation [solution operators acc [value & values]]
-  (cond (> acc solution) false
-        (nil? value) (= solution acc)
-        :else (some identity
-                    (map (fn [op]
-                           (solve-equation solution operators (op acc value) values))
-                         operators))))
+(defn solve-equation
+  ([solution operators [value & values]] (solve-equation solution operators value values))
+  ([solution operators acc [value & values]]
+   (cond (> acc solution) false
+         (nil? value) (= solution acc)
+         :else (some identity
+                     (map (fn [op]
+                            (solve-equation solution operators (op acc value) values))
+                          operators)))))
+
+(solve-equation 3267 [+ *] [81 40 27])
 
 ; Og deretter filtrerer vi alle linjene basert på om de gir riktig
 ; svar eller ikke:
@@ -51,8 +55,8 @@
 (defn solve [operators input]
   (let [lines (map #(map parse-long (re-seq #"\d+" %)) (.split input "\n"))]
     (->> lines
-         (filter (fn [[solution val1 & remainder]]
-                   (solve-equation solution operators val1 remainder)))
+         (filter (fn [[solution & values]]
+                   (solve-equation solution operators values)))
          (map first)
          (reduce +))))
 
@@ -76,6 +80,11 @@
   (parse-long (str a b)))
 
 (|| 12 34)
+
+; Med den nye operatoren kan feks denne linjen bli sann: `7290: 6 8 6 15`
+
+(solve-equation 7290 [+ *] [6 8 6 15])
+(solve-equation 7290 [+ * ||] [6 8 6 15])
 
 (= 11387 (solve [+ * ||] test-input))
 
