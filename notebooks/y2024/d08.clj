@@ -3,7 +3,8 @@
    [advent-of-code-clj.utils :as utils]
    [clojure.core.matrix :as m]
    [medley.core :as medley]
-   [nextjournal.clerk :as clerk]))
+   [nextjournal.clerk :as clerk]
+   [advent-of-code-clj.input :as input]))
 
 ; 2024, dag 8
 
@@ -72,7 +73,7 @@
 
 ; og reell input:
 (comment
-  (= 381 (count (solve antinodes-1 (utils/text->matrix (slurp "input/2024/input8.txt"))))))
+  (= 381 (count (solve antinodes-1 (utils/text->matrix (input/get-input 2024 8))))))
 
 ; ## Del 2
 
@@ -101,5 +102,4 @@
 
 ; Og riktig svar i reell input:
 
-(comment
-  (= 1184 (count (solve antinodes-2 (utils/text->matrix (slurp "input/2024/input8.txt"))))))
+(= 1184 (count (solve antinodes-2 (utils/text->matrix (input/get-input 2024 8)))))
