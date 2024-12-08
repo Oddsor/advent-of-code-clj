@@ -7,13 +7,13 @@
                     load))
 
 (defn get-input [year day]
-  (let [password (Dotenv/.get dotenv "INPUT_SALT")]
+  (let [password (.get dotenv "INPUT_SALT")]
     (nippy/thaw-from-file
      (str "input/" year "/input" day ".nippy")
      {:password [:salted password]})))
 
 (defn save-input [year day]
-  (let [password (Dotenv/.get dotenv "INPUT_SALT")]
+  (let [password (.get dotenv "INPUT_SALT")]
     (nippy/freeze-to-file
      (str "input/" year "/input" day ".nippy")
      (slurp "input.txt")
