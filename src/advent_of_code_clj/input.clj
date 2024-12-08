@@ -2,7 +2,9 @@
   (:require [taoensso.nippy :as nippy])
   (:import [io.github.cdimascio.dotenv Dotenv]))
 
-(defonce dotenv (Dotenv/load))
+(defonce dotenv (.. (Dotenv/configure)
+                    ignoreIfMissing
+                    load))
 
 (defn get-input [year day]
   (let [password (Dotenv/.get dotenv "INPUT_SALT")]
@@ -14,5 +16,5 @@
   (let [password (Dotenv/.get dotenv "INPUT_SALT")]
     (nippy/freeze-to-file
      (str "input/" year "/input" day ".nippy")
-     "input.txt"
+     (slurp "input.txt")
      {:password [:salted password]})))
