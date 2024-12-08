@@ -8,6 +8,8 @@
 
 (defn get-input [year day]
   (let [password (.get dotenv "INPUT_SALT")]
+    (assert (some? password)
+            "Failed to get password for decrypting inputs")
     (nippy/thaw-from-file
      (str "input/" year "/input" day ".nippy")
      {:password [:salted password]})))
