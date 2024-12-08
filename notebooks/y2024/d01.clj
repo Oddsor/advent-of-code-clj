@@ -2,7 +2,7 @@
 (ns y2024.d01
   (:require
    [nextjournal.clerk :as clerk]
-   [debux.core :as d]))
+   [advent-of-code-clj.input :as input]))
 
 ; # 2024, dag 1
 
@@ -91,11 +91,7 @@
         (d/set-debug-mode! false)
         debug-output))))
 
-
-
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 2756096 (total-difference (slurp "input/2024/input1.txt"))))
+(= 2756096 (total-difference (input/get-input 2024 1)))
 
 ; ## Del 2
 
@@ -123,6 +119,4 @@
         (d/set-debug-mode! false)
         debug-output))))
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 23117829 (total-similarity-score (slurp "input/2024/input1.txt"))))
+(= 23117829 (total-similarity-score (input/get-input 2024 1)))
