@@ -1,7 +1,8 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2024.d07
   (:require
-   [nextjournal.clerk :as clerk]))
+   [nextjournal.clerk :as clerk]
+   [advent-of-code-clj.input :as input]))
 
 ; # 2024, dag 7
 
@@ -65,9 +66,7 @@
 
 ; Som gir oss svaret på reell input:
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 1038838357795 (solve [+ *] (slurp "input/2024/input7.txt"))))
+(= 1038838357795 (solve [+ *] (input/get-input 2024 7)))
 
 ; ## Del 2
 
@@ -97,6 +96,4 @@
 
 ; Og riktig svar på reell input:
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 254136560217241 (solve [+ * ||] (slurp "input/2024/input7.txt"))))
+(= 254136560217241 (solve [+ * ||] (input/get-input 2024 7)))
