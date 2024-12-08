@@ -9,6 +9,14 @@
                                    xs)))
        (transduce cat merge)))
 
+(defn coord-map-fixed [xs-of-xses]
+  (->> xs-of-xses
+       (map-indexed (fn [idy xs]
+                      (map-indexed (fn [idx v]
+                                     [[idy idx] v])
+                                   xs)))
+       (transduce cat merge)))
+
 (defn text->matrix [text]
   (mapv vec (str/split-lines text)))
 

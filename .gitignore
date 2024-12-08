@@ -13,10 +13,11 @@ pom.xml.asc
 .hg/
 .calva/
 .DS_Store
-/input
+/input/**/*.txt
 .clj-kondo/
 .lsp/
 .cpcache/
 .clerk/
 .portal/
 __site/
+.env
