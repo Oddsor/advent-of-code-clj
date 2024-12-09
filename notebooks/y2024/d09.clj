@@ -8,7 +8,7 @@
 
 ; # 2024, dag 9
 
-; # Del 1
+; ## Del 1
 
 (def test-input "2333133121414131402")
 
@@ -50,7 +50,7 @@
 
 (= 6211348208140 (checksum (defragment (expand-drive (input/get-input 2024 9)))))
 
-; # Del 2
+; ## Del 2
 
 (defn lazy-defrag [input]
   (loop [drive (dtype/->array-buffer (expand-drive input))
