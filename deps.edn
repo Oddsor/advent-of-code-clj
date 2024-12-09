@@ -8,7 +8,7 @@
         criterium/criterium {:mvn/version "0.4.6"}
         pangloss/pattern {:git/url "https://github.com/pangloss/pattern"
                           :git/sha "affc7f3ac907f5b98de6638574a741e4693f1648"}
-        techascent/tech.ml.dataset {:mvn/version "7.034"}
+        techascent/tech.ml.dataset {:mvn/version "7.035"}
         org.flatland/ordered {:mvn/version "1.15.12"}
         com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.3.0"}
         djblue/portal {:mvn/version "0.58.3"}
@@ -16,7 +16,7 @@
         org.clojure/math.numeric-tower {:mvn/version "0.1.0"}
         expresso/expresso {:mvn/version "0.2.4"}
         dev.weavejester/medley {:mvn/version "1.8.1"}
-        io.github.nextjournal/clerk {:git/sha "d9cab25aae62029557cff3346e7bd06e878999cd"
+        io.github.nextjournal/clerk {:git/sha "73c6a5002734f568bbbb5421a59462b61462ccc6"
                                      :git/url "https://github.com/nextjournal/clerk"}
         io.github.mentat-collective/emmy {:git/url "https://github.com/mentat-collective/emmy"
                                           :git/sha "4471f873522df8a2997faccc9d3f5ea23527a956"}
@@ -26,7 +26,8 @@
         philoskim/debux {:mvn/version "0.9.1"}
         lambdaisland/regal {:mvn/version "0.1.175"}
         io.github.cdimascio/dotenv-java {:mvn/version "3.0.2"}
-        com.taoensso/nippy {:mvn/version "3.4.2"}}
+        com.taoensso/nippy {:mvn/version "3.4.2"}
+        org.babashka/http-client {:mvn/version "0.4.22"}}
  :aliases
  {:profiler {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.5.1"}}
              :jvm-opts ["-Djdk.attach.allowAttachSelf"]}
