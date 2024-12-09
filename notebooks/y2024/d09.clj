@@ -1,6 +1,9 @@
 (ns y2024.d09
   (:require
-   [advent-of-code-clj.input :as input])
+   [advent-of-code-clj.input :as input]
+   [tech.v3.datatype-api :as dtype]
+   [tech.v3.datatype.argops :as darg]
+   [medley.core :as medley])
   (:import [java.util ArrayList]))
 
 ; # 2024, dag 9
@@ -38,12 +41,39 @@
 
 (defn checksum [drive]
   (transduce (comp
-              (map-indexed (fn [idx v] (* idx v))))
+              (map-indexed (fn [idx x]
+                             (if x (* idx x)
+                                 0))))
              + drive))
 
-(checksum (defragment (expand-drive test-input)))
+(= 1928 (checksum (defragment (expand-drive test-input))))
 
-(checksum (defragment (expand-drive (input/get-input 2024 9))))
+(= 6211348208140 (checksum (defragment (expand-drive (input/get-input 2024 9)))))
 
 ; # Del 2
 
+(defn lazy-defrag [input]
+  (loop [drive (dtype/->array-buffer (expand-drive input))
+         [id & ids] (sort > (disj (set drive) nil))]
+    (if id
+      (let [val-group (darg/argfilter #(= id %) drive)
+            target-nil-group (->> (darg/argpartition-by some? drive)
+                                  (keep #(when (false? (first %))
+                                           (second %)))
+                                  (filter #(>= (count %) (count val-group)))
+                                  first)]
+        (if (or (nil? target-nil-group)
+                (> (first target-nil-group) (first val-group)))
+          (recur drive ids)
+          (recur
+           (reduce (fn [d [idx vid]]
+                     (-> d
+                         (dtype/set-value! (target-nil-group idx) (d vid))
+                         (dtype/set-value! vid nil))) drive (medley/indexed val-group))
+           ids)))
+      drive)))
+
+(checksum (lazy-defrag test-input))
+
+(comment
+  (checksum (lazy-defrag  (input/get-input 2024 9))))
