@@ -1,5 +1,6 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns y2024.d02)
+(ns y2024.d02
+  (:require [advent-of-code-clj.input :as input]))
 
 ; # 2024, dag 2
 
@@ -14,7 +15,7 @@
   "Gjør om tekst til en matrise (liste med lister av tall)"
   [input]
   (for [line (.split input "\\n")
-        :let [numbers (.split line "\\s+")]]
+        :let [numbers (String/.split line "\\s+")]]
     (map parse-long numbers)))
 
 (def test-data (to-matrix "7 6 4 2 1
@@ -40,9 +41,7 @@
 
 (safe-lines test-data)
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 314 (safe-lines (to-matrix (slurp "input/2024/input2.txt")))))
+(= 314 (safe-lines (to-matrix (input/get-input 2024 2))))
 
 ; ## Del 2
 
@@ -81,6 +80,4 @@
 ; Brute-force-løsningen kjører heldigvis på beskjedne 17ms på
 ; inputten i dag, så vi slipper å optimalisere denne gangen
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 373 (safeish-lines (to-matrix (slurp "input/2024/input2.txt")))))
+(= 373 (safeish-lines (to-matrix (input/get-input 2024 2))))
