@@ -1,5 +1,7 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns y2024.d05)
+(ns y2024.d05
+  (:require
+   [advent-of-code-clj.input :as input]))
 
 ; # 2024, dag 5
 
@@ -41,12 +43,12 @@
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn parse-input [input]
-  (let [[rules seqs] (.split input "\n\n")
-        rulesets (->> (.split rules "\n")
-                      (map #(let [[k v] (.split % "\\|")]
+  (let [[rules seqs] (String/.split input "\n\n")
+        rulesets (->> (String/.split rules "\n")
+                      (map #(let [[k v] (String/.split % "\\|")]
                               {k #{v}}))
                       (apply merge-with into))
-        seqs (map #(.split % ",") (.split seqs "\n"))]
+        seqs (map #(String/.split % ",") (String/.split seqs "\n"))]
     [rulesets seqs]))
 
 (parse-input test-input)
@@ -108,9 +110,7 @@
 
 (= 143 (part-1 test-input))
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 4905 (part-1 (slurp "input/2024/input5.txt"))))
+(= 4905 (part-1 (input/get-input 2024 5)))
 
 ; Morsom innsikt: hashmappen som inneholder "alle sider 
 ; som skal være bak denne siden", kan gjenbrukes som en
@@ -128,6 +128,4 @@
 
 (= 123 (part-2 test-input))
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 6204 (part-2 (slurp "input/2024/input5.txt"))))
+(= 6204 (part-2 (input/get-input 2024 5)))
