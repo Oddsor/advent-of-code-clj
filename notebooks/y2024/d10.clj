@@ -22,7 +22,7 @@
                 :when (= (coord-map neighbour-node) (inc (coord-map node)))]
             neighbour-node)
           {np nil
-           ep 9} (medley/collate-by (comp #{9} coord-map) conj vector npath-heads)]
+           ep 9} (group-by (comp #{9} coord-map) npath-heads)]
       (if (empty? np)
         (cond-> (into endpoints ep)
           only-distinct? distinct)
