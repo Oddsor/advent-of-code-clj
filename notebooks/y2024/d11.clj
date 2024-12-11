@@ -70,12 +70,9 @@
 ; I stedet for rekursiv memoisering kan vi bruke en hashmap for å "deduplisere"
 ; like tall underveis, og holde telling på antallet like tall.
 
-(set! *warn-on-reflection* true)
-(set! *unchecked-math* :warn-on-boxed)
-
 (defn solve-iteration [freqs]
   (reduce-kv (fn [acc ^long k v]
-               (let [update-add (fn [c] (+ (or c 0) v))]
+               (let [update-add (fnil #(+ v %) 0)]
                  (cond
                    (zero? k) (update acc 1 update-add)
                    (-> k digits even?) (let [[n1 n2] (split-number k)]
@@ -89,7 +86,7 @@
   (let [numbers (map parse-long (re-seq #"\d+" input))
         num-freqs (frequencies numbers)]
     (->> (nth (iterate solve-iteration num-freqs) n)
-         vals (reduce +))))
+         (transduce (map second) +))))
 
 (solve-freq 25 test-input)
 
