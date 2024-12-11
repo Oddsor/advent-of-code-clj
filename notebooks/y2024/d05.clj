@@ -43,12 +43,12 @@
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn parse-input [input]
-  (let [[rules seqs] (String/.split input "\n\n")
-        rulesets (->> (String/.split rules "\n")
-                      (map #(let [[k v] (String/.split % "\\|")]
+  (let [[rules seqs] (.split input "\n\n")
+        rulesets (->> (.split rules "\n")
+                      (map #(let [[k v] (.split % "\\|")]
                               {k #{v}}))
                       (apply merge-with into))
-        seqs (map #(String/.split % ",") (String/.split seqs "\n"))]
+        seqs (map #(.split % ",") (.split seqs "\n"))]
     [rulesets seqs]))
 
 (parse-input test-input)

@@ -15,7 +15,7 @@
   "Gjør om tekst til en matrise (liste med lister av tall)"
   [input]
   (for [line (.split input "\\n")
-        :let [numbers (String/.split line "\\s+")]]
+        :let [numbers (.split line "\\s+")]]
     (map parse-long numbers)))
 
 (def test-data (to-matrix "7 6 4 2 1
