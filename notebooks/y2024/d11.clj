@@ -4,7 +4,7 @@
 
 ; # 2024, dag 11
 
-; ## Del 1
+; ## Del 1 og 2
 
 ; Vi skal finne ut hvor mange "steiner" vi sitter igjen med etter å ha gått igjennom et par
 ; iterasjoner hvor vi dobler steinene basert på noen enkle regler:
@@ -53,12 +53,45 @@
          (map #(blink iterations %)))
    +  (re-seq #"\d+" input)))
 
-; Med det får vi riktig svar på all input:
+; Med det får vi riktig svar på all input for del 1:
 
 ; Elapsed time: 56.157468 msecs
 (solve 25 test-input)
 
 (solve 25 (input/get-input 2024 11))
 
+; Og del 2:
+
 ; Elapsed time: 220.008672 msecs
 (solve 75 (input/get-input 2024 11))
+
+; ## Med frequencies
+
+; I stedet for rekursiv memoisering kan vi bruke en hashmap for å "deduplisere"
+; like tall underveis, og holde telling på antallet like tall.
+
+(defn solve-iteration [freqs]
+  (reduce-kv (fn [acc ^long k v]
+               (let [update-add (fn [c] (+ (or c 0) v))]
+                 (cond
+                   (zero? k) (update acc 1 update-add)
+                   (-> k digits even?) (let [[n1 n2] (split-number k)]
+                                         (-> acc
+                                             (update n1 update-add)
+                                             (update n2 update-add)))
+                   :else (update acc (* 2024 k) update-add))))
+             {} freqs))
+
+(defn solve-freq [n input]
+  (let [numbers (map parse-long (re-seq #"\d+" input))
+        num-freqs (frequencies numbers)]
+    (->> (nth (iterate solve-iteration num-freqs) n)
+         vals (reduce +))))
+
+(solve-freq 25 test-input)
+
+(solve-freq 25 (input/get-input 2024 11))
+
+; Elapsed time: 116.157357 msecs
+(time
+ (solve-freq 75 (input/get-input 2024 11)))
