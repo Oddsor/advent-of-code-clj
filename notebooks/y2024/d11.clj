@@ -70,6 +70,9 @@
 ; I stedet for rekursiv memoisering kan vi bruke en hashmap for å "deduplisere"
 ; like tall underveis, og holde telling på antallet like tall.
 
+(set! *warn-on-reflection* true)
+(set! *unchecked-math* :warn-on-boxed)
+
 (defn solve-iteration [freqs]
   (reduce-kv (fn [acc ^long k v]
                (let [update-add (fn [c] (+ (or c 0) v))]
@@ -93,5 +96,15 @@
 (solve-freq 25 (input/get-input 2024 11))
 
 ; Elapsed time: 116.157357 msecs
-(time
- (solve-freq 75 (input/get-input 2024 11)))
+(solve-freq 75 (input/get-input 2024 11))
+
+(defn solve-loopy [^long n input]
+  (loop [n n
+         acc (frequencies (map parse-long (re-seq #"\d+" input)))]
+    (if (zero? n)
+      (->> acc vals (reduce +))
+      (recur (dec n)
+             (solve-iteration acc)))))
+
+; Elapsed time: 114.77593 msecs
+(solve-loopy 75 (input/get-input 2024 11))
