@@ -1,5 +1,6 @@
 (ns advent-of-code-clj.utils
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str])
+  (:import [java.util HashSet]))
 
 (defn coord-map [xs-of-xses]
   (->> xs-of-xses
@@ -52,3 +53,19 @@
 (defn sum [xs] (reduce + xs))
 
 (def sort- (partial sort >))
+
+(defn breadth-search [graph-fn start-nodes]
+  (let [visited (doto (HashSet.) (.addAll start-nodes))]
+    (cons (seq start-nodes)
+          (seq (iteration (fn [nodes]
+                            (let [next-nodes
+                                  (seq (eduction
+                                        (mapcat graph-fn)
+                                        (remove (fn [x]
+                                                  (.contains visited x)))
+                                        (distinct)
+                                        nodes))]
+                              (when next-nodes
+                                (.addAll visited next-nodes))
+                              (seq next-nodes)))
+                          {:initk start-nodes})))))
