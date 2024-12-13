@@ -1,3 +1,4 @@
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2024.d12
   (:require
    [advent-of-code-clj.input :as input]
@@ -27,6 +28,7 @@ MIIISIJEEE
 MMMISSJEEE")
 
 ; Som matrise:
+(def test-matrix (utils/text->matrix test-input))
 
 (clerk/md
  (with-out-str
@@ -57,6 +59,7 @@ MMMISSJEEE")
 ; Å finne en region er gjort ved å kjøre et bredde-først søk fra
 ; en gitt node, og lete etter alle noder som er av samme type (bokstav)
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn find-region [coord-map node]
   (into [] cat
         (utils/breadth-search
@@ -66,10 +69,18 @@ MMMISSJEEE")
                             node))
          node)))
 
+; *OBS:* Noder med samme bokstav er ikke nødvendigvis i samme region.
+; Se C'en som ligger for seg selv, den er en egen region:
+(m/emap (fn [sym]
+          (if (= \C sym)
+            \C \.))
+        test-matrix)
+
 ; Å finne alle regioner gjøres ved å undersøke alle noder i matrisen,
 ; finne hele regionen noden tilhører. Vi unngår å finne samme region
 ; igjen ved å lagre alle oppdagede noder i et sett (visited)
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn find-regions [coord-map]
   (loop [visited #{}
          regions []
@@ -88,12 +99,14 @@ MMMISSJEEE")
 ; som også er omkretsen. En firkantet region med 4 noder har
 ; omkrets lik 8, fordi hver node har to åpne sider.
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn open-sides [node-set node]
   (->> node
        (apply utils/adjacent-hv)
        (remove node-set)
        count))
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn circumference [nodes]
   (let [node-set (set nodes)]
     (transduce (map #(open-sides node-set %))
@@ -101,12 +114,14 @@ MMMISSJEEE")
 
 ; "Prisen" i en region er areal multiplisert med omkrets:
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn region-price [nodes]
   (let [area (count nodes)]
     (* area (circumference nodes))))
 
 ; Og løsningen på del 1 er summen av prisen i alle regioner:
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-1 [input]
   (let [coord-map (utils/coord-map-fixed (utils/text->matrix input))
         regions (find-regions coord-map)]
