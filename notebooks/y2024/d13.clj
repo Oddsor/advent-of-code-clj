@@ -81,7 +81,6 @@ Prize: X=18641, Y=10279")
 
 (let [{:keys [a b prize]} first-game]
   (solve-game prize a b))
-;;=> {a 80, b 40}
 
 ; Med løsningsfunksjonen i hånd kan vi lage reduceren som løser
 ; del 1. I del 1 er det ikke lov å trykke mer enn 100 ganger
