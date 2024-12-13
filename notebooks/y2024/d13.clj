@@ -6,7 +6,7 @@
    [instaparse.core :as insta]
    [advent-of-code-clj.input :as input]))
 
-; 2024, dag 13
+; # 2024, dag 13
 
 ; ## Del 1
 
@@ -109,7 +109,7 @@ Prize: X=18641, Y=10279")
 
 (solve part-1 (input/get-input 2024 13))
 
-; # Del 2
+; ## Del 2
 
 ; I del 2 er belønningen i en posisjon som er `10000000000000`
 ; lenger unna i hver akse!
