@@ -1,3 +1,4 @@
+^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2024.d13
   (:require
    [clojure.core.match :as m]
@@ -44,11 +45,13 @@ Prize: X=18641, Y=10279")
                  ws = #'[\\s\\n]*'
                  num = #'\\d+'"))
 
-(insta/parse game-parser (first (.split test-data "\n\n")))
+(def first-game-parsed
+  (insta/parse game-parser (first (.split test-data "\n\n"))))
 
 ; Og core.match lar oss pattern-matche på parset output for å
 ; sette sammen dataene slik vi vil:
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn game-map [game]
   (m/match game
     [:game button-a button-b prize] {:a (game-map button-a)
@@ -58,6 +61,9 @@ Prize: X=18641, Y=10279")
                                            :y (parse-long y)}
     [:prize [:num x] [:num y]] {:x (parse-long x) :y (parse-long y)}))
 
+(def first-game (game-map first-game-parsed))
+
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn get-games [input]
   (map #(game-map (insta/parse game-parser %))
        (.. input trim (split "\n\n"))))
@@ -67,19 +73,22 @@ Prize: X=18641, Y=10279")
 ; For å løse spillet bruker vi expresso for å sette opp to
 ; formler (løse for x-aksen og y-aksen):
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn solve-game [{px :x py :y} {ax :x ay :y} {bx :x by :y}]
   (first (e/solve ['a 'b]
                   (e/ex (= ~px (+ (* ~ax a) (* ~bx b))))
                   (e/ex (= ~py (+ (* ~ay a) (* ~by b)))))))
 
-(let [{:keys [a b prize]} (first (get-games test-data))]
+(let [{:keys [a b prize]} first-game]
   (solve-game prize a b))
+;;=> {a 80, b 40}
 
 ; Med løsningsfunksjonen i hånd kan vi lage reduceren som løser
 ; del 1. I del 1 er det ikke lov å trykke mer enn 100 ganger
 ; på hver knapp, og det er ikke lov med "halve trykk", så vi
 ; filtrerer vekk løsninger som gir ratio (feks `1/3`):
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-1 [acc {:keys [prize a b]}]
   (let [{a 'a b 'b} (solve-game prize a b)]
     (if (or (< 100 a) (< 100 b)
@@ -87,6 +96,7 @@ Prize: X=18641, Y=10279")
       acc
       (+ acc (* a 3) b))))
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn solve [solver input]
   (reduce solver 0
           (get-games input)))
@@ -107,6 +117,7 @@ Prize: X=18641, Y=10279")
 ; Nå er det også lov å trykke flere ganger på knappene, som er
 ; reflektert i den nye reduceren for del 2:
 
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-2 [acc {:keys [prize a b]}]
   (let [bigger-prize (-> prize
                          (update :x + 10000000000000)
