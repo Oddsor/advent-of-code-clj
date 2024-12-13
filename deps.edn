@@ -18,8 +18,6 @@
         dev.weavejester/medley {:mvn/version "1.8.1"}
         io.github.nextjournal/clerk {:git/sha "73c6a5002734f568bbbb5421a59462b61462ccc6"
                                      :git/url "https://github.com/nextjournal/clerk"}
-        io.github.mentat-collective/emmy {:git/url "https://github.com/mentat-collective/emmy"
-                                          :git/sha "4471f873522df8a2997faccc9d3f5ea23527a956"}
         instaparse/instaparse {:mvn/version "1.5.0"}
         org.clojure/core.match {:mvn/version "1.1.0"}
         com.github.flow-storm/flow-storm-dbg {:mvn/version "4.0.2"}
