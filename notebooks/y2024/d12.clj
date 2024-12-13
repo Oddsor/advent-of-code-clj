@@ -7,6 +7,14 @@
 
 ; # 2024, dag 12
 
+; ## Del 1
+
+; I dag skal vi finne regioner og kalkulere en "pris" for hver
+; region som til slutt skal summeres.
+
+; Eksempeldataene våre ser slik ut; regioner er **sammenhengende**
+; sett med bokstaver:
+
 (def test-input "RRRRIICCFF
 RRRRIICCCF
 VVRRRCCFFF
@@ -18,18 +26,21 @@ MIIIIIJJEE
 MIIISIJEEE
 MMMISSJEEE")
 
+; Som matrise:
+
 (clerk/md
  (with-out-str
    (m/pm (utils/text->matrix test-input))))
 
+; Vi kommer til å bruke en map-representasjon av matrisen i oppgaven:
+
 (def test-coordmap
   (utils/coord-map-fixed (utils/text->matrix test-input)))
 
-; ## Del 1
-
-; Første steg er å kunne finne nabo-noder. Her har vi en util-funksjon
-; allerede. Funksjonen har et predikat-argument slik at vi kan filtrere
-; ut nabo-noder som ikke er av samme type og som er innenfor matrisen:
+; Første steg for å finne regionene er å kunne finne nabo-noder. Her har 
+; vi en util-funksjon allerede. Funksjonen har et predikat-argument slik
+; at vi kan filtrere ut nabo-noder som ikke er av samme type og som er
+; innenfor matrisen:
 
 (find-neighbours identity [0 3])
 

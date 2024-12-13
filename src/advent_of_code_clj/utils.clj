@@ -54,18 +54,23 @@
 
 (def sort- (partial sort >))
 
-(defn breadth-search [graph-fn start-nodes]
-  (let [visited (doto (HashSet.) (.addAll start-nodes))]
-    (cons (seq start-nodes)
-          (seq (iteration (fn [nodes]
-                            (let [next-nodes
-                                  (seq (eduction
-                                        (mapcat graph-fn)
-                                        (remove (fn [x]
-                                                  (.contains visited x)))
-                                        (distinct)
-                                        nodes))]
-                              (when next-nodes
-                                (.addAll visited next-nodes))
-                              (seq next-nodes)))
-                          {:initk start-nodes})))))
+(defn find-neighbours [predicate node]
+  (for [neighbour (apply adjacent-hv node)
+        :when (predicate neighbour)]
+    neighbour))
+
+(defn breadth-search [graph-fn start-node]
+  (let [visited (doto (HashSet.) (.add start-node))]
+    (iteration (fn [nodes]
+                 (if (nil? nodes)
+                   [start-node]
+                   (let [next-nodes
+                         (seq (eduction
+                               (mapcat graph-fn)
+                               (remove (fn [x]
+                                         (.contains visited x)))
+                               (distinct)
+                               nodes))]
+                     (when next-nodes
+                       (.addAll visited next-nodes))
+                     (seq next-nodes)))))))
