@@ -16,7 +16,7 @@
         org.clojure/math.numeric-tower {:mvn/version "0.1.0"}
         expresso/expresso {:mvn/version "0.2.4"}
         dev.weavejester/medley {:mvn/version "1.8.1"}
-        io.github.nextjournal/clerk {:git/sha "73c6a5002734f568bbbb5421a59462b61462ccc6"
+        io.github.nextjournal/clerk {:git/sha "b08b7ebc743be1f2a617beda1362f646b8aedaf6"
                                      :git/url "https://github.com/nextjournal/clerk"}
         instaparse/instaparse {:mvn/version "1.5.0"}
         org.clojure/core.match {:mvn/version "1.1.0"}
@@ -40,6 +40,7 @@
            :main-opts ["-m" "antq.core" "--check-clojure-tools" "true" "--upgrade" "true"]}
 
   :buildnotebooks {:exec-fn clerk/build-notebooks!}
+  :buildclay {:exec-fn clay/build-notebooks!}
   :test ;; added by neil
   {:extra-paths ["test"]
    :extra-deps {io.github.cognitect-labs/test-runner

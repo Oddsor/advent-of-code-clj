@@ -19,6 +19,6 @@ pom.xml.asc
 .cpcache/
 .clerk/
 .portal/
-__site/
+_site/
 .env
 _clay/
