@@ -21,3 +21,4 @@ pom.xml.asc
 .portal/
 __site/
 .env
+_clay/
