@@ -69,15 +69,14 @@
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn safeish-lines [input]
-  (let [{safe-rows true unsafe-rows false} (group-by row-safe? input)]
-    (->> unsafe-rows
-         (filter safe-without-one-element?)
-         count
-         (+ (count safe-rows)))))
+  (->> input
+       (filter (some-fn row-safe?
+                        safe-without-one-element?))
+       count))
 
 (safeish-lines test-data)
 
-; Brute-force-løsningen kjører heldigvis på beskjedne 17ms på
+; Brute-force-løsningen kjører heldigvis på beskjedne 11ms på
 ; inputten i dag, så vi slipper å optimalisere denne gangen
 
 (= 373 (safeish-lines (to-matrix (input/get-input 2024 2))))
