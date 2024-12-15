@@ -1,0 +1,6 @@
+{
+  "search.exclude": {
+    "_clay/**": true,
+    "target/**": true
+  }
+}
