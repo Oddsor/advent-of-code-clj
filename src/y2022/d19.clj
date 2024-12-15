@@ -1,7 +1,6 @@
 (ns y2022.d19
   (:require [advent-of-code-clj.utils :refer [sum]]
-            [clojure.string :as str])
-  (:import (java.util ArrayDeque)))
+            [clojure.string :as str]))
 
 (def test-data "Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.
 Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 8 clay. Each geode robot costs 3 ore and 12 obsidian.")
@@ -27,7 +26,7 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
   (map parse-blueprint (str/split-lines data)))
 
 (defn build-ore-bot [{{ore-cost :ore} :ore-bot :keys [max-ore-cost]}
-                     [ore clay obsidian geode obot :as st]]
+                     [ore _clay _obsidian _geode obot :as st]]
   (when (and (> max-ore-cost obot)
              (>= ore ore-cost))
     (-> st
@@ -35,7 +34,7 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
         (update 4 inc))))
 
 (defn build-clay-bot [{{ore-cost :ore} :clay-bot :keys [max-clay-cost]}
-                      [ore clay obsidian geode obot cbot :as st]]
+                      [ore _clay _obsidian _geode _obot cbot :as st]]
   (when (and (> max-clay-cost cbot)
              (>= ore ore-cost))
     (-> st
@@ -53,7 +52,7 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
         (update 6 inc))))
 
 (defn build-geode-bot [{{ore-cost :ore obsidian-cost :obsidian} :geode-bot}
-                       [ore clay obsidian :as st]]
+                       [ore _clay obsidian :as st]]
   (when (and (>= ore ore-cost)
              (>= obsidian obsidian-cost))
     (-> st
@@ -61,7 +60,7 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
         (update 2 - obsidian-cost)
         (update 7 inc))))
 
-(defn heuristic [blueprint [ore clay obsidian geode orebot claybot obsidianbot geodebot]]
+(defn heuristic [blueprint [_ore _clay _obsidian _geode orebot claybot obsidianbot geodebot]]
   (float (+ geodebot
             (/ (+ geodebot
                   (/ (+ (/ orebot (-> blueprint :geode-bot :ore))

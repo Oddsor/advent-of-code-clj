@@ -1,6 +1,5 @@
 (ns advent-of-code-clj.y2020.d05
-  (:require [clojure.string :as str]
-            [com.rpl.specter :refer :all #_[srange-dynamic subselect ALL FIRST select-one]]))
+  (:require [com.rpl.specter :refer :all #_[srange-dynamic subselect ALL FIRST select-one]]))
 
 (def test-data
   [["BFFFBBFRRR" 70 7 567]

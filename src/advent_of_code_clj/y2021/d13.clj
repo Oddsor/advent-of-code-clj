@@ -39,7 +39,7 @@ fold along x=5"))
 (defn fold [num at]
   (- at (Math/abs (- at num))))
 
-(defn new-coords [coords [c n :as rule]]
+(defn new-coords [coords [c n :as _rule]]
   (set (map (fn [[x y]]
               (case c
                 :y [x (fold y n)]

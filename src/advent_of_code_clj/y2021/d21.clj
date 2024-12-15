@@ -51,7 +51,7 @@ Player 2 starting position: 8"))
 (defn play-game-2 [data nth-die]
   (reduce (fn [{:keys [die current-player] :as state} nth-die]
             (let [player-pos (modpos (+ (get state current-player)
-                                        (+ die (to-num nth-die))))
+                                        die (to-num nth-die)))
                   new-state
                   (-> state
                       (assoc :die (+ 3 die))

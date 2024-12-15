@@ -93,7 +93,7 @@ F = 1111")
     (true? x) 1
     :else x))
 
-(defn calc [{:keys [op content] :as packet}]
+(defn calc [{:keys [op content] :as _packet}]
   (if (= identity op) content
       (apply (comp coerce-int op)
              (map calc content))))

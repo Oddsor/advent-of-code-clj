@@ -1,7 +1,5 @@
 (ns advent-of-code-clj.y2020.d07
   (:require [clojure.string :as str]
-            [meander.epsilon :as m]
-            [meander.strategy.epsilon :as r]
             [com.rpl.specter :as s]
             [datascript.core :as d]
             [clojure.walk :as walk]))

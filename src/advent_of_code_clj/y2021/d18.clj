@@ -1,6 +1,5 @@
 (ns advent-of-code-clj.y2021.d18
   (:require [clojure.zip :as zip]
-            [clojure.string :as str]
             [clojure.walk :as walk]))
 
 (defn apply-until [f pred z]

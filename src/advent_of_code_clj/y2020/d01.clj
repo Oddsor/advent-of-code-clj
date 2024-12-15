@@ -1,5 +1,4 @@
-(ns advent-of-code-clj.y2020.d01
-  (:require [clojure.string :as str]))
+(ns advent-of-code-clj.y2020.d01)
 
 (comment
   (def liste-av-tall (map parse-long

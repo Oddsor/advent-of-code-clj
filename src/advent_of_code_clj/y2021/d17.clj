@@ -6,7 +6,7 @@
 
 (def test-data (parse "target area: x=20..30, y=-10..-5"))
 
-(defn distance-from-area? [[x y :as proj] [x1 x2 y1 y2 :as box]]
+(defn distance-from-area? [[x y :as _proj] [x1 x2 y1 y2 :as _box]]
   (if (and (>= x2 x x1)
            (>= y2 y y1))
     0

@@ -26,7 +26,7 @@
                       (apply min (keep data (apply adjacent point))))))
        (r/fold (r/monoid merge hash-map) assoc)))
 
-(r/fold (r/monoid merge hash-map) assoc (r/filter (fn [k v] (odd? v)) {[1 2] 1 :b 2 :c 3 :d 4}))
+(r/fold (r/monoid merge hash-map) assoc (r/filter (fn [_k v] (odd? v)) {[1 2] 1 :b 2 :c 3 :d 4}))
 (into [] (r/filter odd? [1 2 3 4]))
 
 (defn higher-adjacent-points [data point]
