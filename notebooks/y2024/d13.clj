@@ -88,17 +88,20 @@ Prize: X=18641, Y=10279")
 ; filtrerer vekk løsninger som gir ratio (feks `1/3`):
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(defn part-1 [acc {:keys [prize a b]}]
+(defn tokens-needed [[a b]]
+  (+ (* 3 a) b))
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn part-1 [{:keys [prize a b]}]
   (let [{a 'a b 'b} (solve-game prize a b)]
     (if (or (< 100 a) (< 100 b)
             (ratio? a) (ratio? b))
-      acc
-      (+ acc (* a 3) b))))
+      0
+      (tokens-needed [a b]))))
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn solve [solver input]
-  (reduce solver 0
-          (get-games input)))
+  (transduce (map solver) + (get-games input)))
 
 ; Nå kan vi løse del 1 for test-dataene:
 
@@ -117,14 +120,14 @@ Prize: X=18641, Y=10279")
 ; reflektert i den nye reduceren for del 2:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(defn part-2 [acc {:keys [prize a b]}]
+(defn part-2 [{:keys [prize a b]}]
   (let [bigger-prize (-> prize
                          (update :x + 10000000000000)
                          (update :y + 10000000000000))
         {a 'a b 'b} (solve-game bigger-prize a b)]
     (if (or (ratio? a) (ratio? b))
-      acc
-      (+ acc (* a 3) b))))
+      0
+      (tokens-needed [a b]))))
 
 ; Ellers kan vi løse oppgaven på samme måte som i del 1 for test-input:
 
@@ -133,3 +136,76 @@ Prize: X=18641, Y=10279")
 ; Og faktiske input:
 
 (solve part-2 (input/get-input 2024 13))
+
+; ## Matriser
+
+; Et alternativ til expresso er å bruke "Cramer's rule", hvor en ligning
+; med to ukjente og kun ett gyldig svar kan løses med matriseregning.
+
+(defn transpose [matrix]
+  (apply mapv vector matrix))
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn game-matrices [input]
+  (eduction
+   (map (fn [game-text]
+          (transpose (partitionv 2 (map parse-long (re-seq #"\d+" game-text))))))
+   (.. input trim (split "\n\n"))))
+
+(defn det-2d
+  "Determinant i en 2d-matrise"
+  [[[ax bx]
+    [ay by]]]
+  (- (* ax by)
+     (* bx ay)))
+
+(defn cramers-rule
+  "I Cramer's regel er en ukjent lik determinanten av 2d-matrisen
+   hvor en kolonne er byttet ut med løsningsvektoren, dividert med
+   den opprinnelige 2d-matrisen."
+  [[[ax bx rx]
+    [ay by ry]]]
+  (let [A [[ax bx]
+           [ay by]]
+        A1 [[rx bx]
+            [ry by]]
+        A2 [[ax rx]
+            [ay ry]]]
+    [(/ (det-2d A1)
+        (det-2d A))
+     (/ (det-2d A2)
+        (det-2d A))]))
+
+^{:nextjournal.clerk/visibility {:result :hide}}
+(defn solve-mx [games & {:keys [scale max-presses]
+                         :or {scale nil max-presses nil}}]
+  (eduction
+   (map (fn [[[ax bx rx]
+              [ay by ry] :as matrix]]
+          (if scale
+            [[ax bx (+ rx scale)]
+             [ay by (+ ry scale)]]
+            matrix)))
+   (map cramers-rule)
+   (remove (fn [[a b :as _result]]
+             (when max-presses
+               (and (>= a max-presses)
+                    (>= b max-presses)))))
+   (remove (fn [result] (some ratio? result)))
+   games))
+
+(->> (solve-mx (game-matrices test-data)
+               :max-presses 100)
+     (transduce (map tokens-needed) +))
+
+(->> (solve-mx (game-matrices (input/get-input 2024 13))
+               :max-presses 100)
+     (transduce (map tokens-needed) +))
+
+(->> (solve-mx (game-matrices test-data)
+               :scale 10000000000000)
+     (transduce (map tokens-needed) +))
+
+(->> (solve-mx (game-matrices (input/get-input 2024 13))
+               :scale 10000000000000)
+     (transduce (map tokens-needed) +))
