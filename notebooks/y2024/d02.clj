@@ -41,7 +41,7 @@
 
 (safe-lines test-data)
 
-(= 314 (safe-lines (to-matrix (input/get-input 2024 2))))
+(safe-lines (to-matrix (input/get-input 2024 2)))
 
 ; ## Del 2
 
@@ -79,4 +79,4 @@
 ; Brute-force-løsningen kjører heldigvis på beskjedne 11ms på
 ; inputten i dag, så vi slipper å optimalisere denne gangen
 
-(= 373 (safeish-lines (to-matrix (input/get-input 2024 2))))
+(safeish-lines (to-matrix (input/get-input 2024 2)))

@@ -1,5 +1,7 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
-(ns y2024.d03)
+(ns y2024.d03
+  (:require
+   [advent-of-code-clj.input :as input]))
 
 ; # 2024, dag 3
 
@@ -92,9 +94,7 @@
 
 ; Fortsatt riktig på testdata, og nå blir det også riktig på inputten:
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 90669332 (process-operations (get-operations (slurp "input/2024/input3.txt")))))
+(= 90669332 (process-operations (get-operations (input/get-input 2024 3))))
 
 ; ## Del 2 igjen
 
@@ -123,6 +123,4 @@
 
 (prep-input "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?don't()mul(8,5))")
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 90669332 (parse-and-multiply (prep-input (slurp "input/2024/input3.txt")))))
+(= 90669332 (parse-and-multiply (prep-input (input/get-input 2024 3))))

@@ -1,4 +1,5 @@
-^{:nextjournal.clerk/visibility {:code :hide :result :hide}}
+^{:nextjournal.clerk/visibility {:code :hide :result :hide}
+  :kindly/hide-code true}
 (ns y2024.d01
   (:require
    [nextjournal.clerk :as clerk]
@@ -29,7 +30,8 @@
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (require '[debux.core :as d])
-^{:nextjournal.clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}
+  :kind/hidden true}
 (d/set-debug-mode! false)
 
 ; Så kan vi starte med å få tak i listene:
@@ -44,6 +46,17 @@
         (apply mapv vector))
    :level 2))
 
+(defmacro dbg-output [& body]
+  `(let [set-debug-mode!# (requiring-resolve 'debux.core/set-debug-mode!)]
+     (set-debug-mode!# true)
+     (let [debug-output#
+           (with-out-str ~@body)]
+       (set-debug-mode!# false)
+
+       ^:kind/hiccup [:pre debug-output#])))
+
+(dbg-output (get-lists test-data))
+
 ; dbg-makroen lar oss inspisere hva som skjer i hvert steg
 ; av get-lists-funksjonen:
 ^{:nextjournal.clerk/visibility {:result :hide}}
@@ -56,7 +69,6 @@
     (let [debug-output (with-out-str (get-lists test-data))]
       (d/set-debug-mode! false)
       debug-output)))
-
 
 ; Når vi har listene kan vi sortere og finne differansen
 ; mellom hvert siffer, og summere:
@@ -91,7 +103,7 @@
         (d/set-debug-mode! false)
         debug-output))))
 
-(= 2756096 (total-difference (input/get-input 2024 1)))
+(total-difference (input/get-input 2024 1))
 
 ; ## Del 2
 
@@ -119,4 +131,4 @@
         (d/set-debug-mode! false)
         debug-output))))
 
-(= 23117829 (total-similarity-score (input/get-input 2024 1)))
+(total-similarity-score (input/get-input 2024 1))

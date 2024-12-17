@@ -1,6 +1,14 @@
 (ns y2024.d04
   (:require [advent-of-code-clj.utils :as utils]
-            [clojure.core.matrix :as mx]))
+            [clojure.core.matrix :as mx]
+            [advent-of-code-clj.input :as input]))
+
+; # 2024, dag 4
+
+; ## Del 1
+
+; Vi skal finne ordet "XMAS" i en matrise, i alle retninger
+; (horisontalt, verticalt, diagonalt).
 
 (def test-data (utils/coord-map (utils/text->matrix "MMMSXXMASM
 MSAMXMSMSA
@@ -57,8 +65,7 @@ MXMXAXMASX")))
 
 (= 18 (part-1 test-data))
 
-(comment
-  (= 2547 (part-1 (utils/coord-map (utils/text->matrix (slurp "input/2024/input4.txt"))))))
+(delay (= 2547 (part-1 (utils/coord-map (utils/text->matrix (input/get-input 2024 4))))))
 
 (defn find-x-mas [coord-map [x y]]
   (let [diagonals [[[(dec x) (dec y)] [x y] [(inc x) (inc y)]]
@@ -77,8 +84,7 @@ MXMXAXMASX")))
 
 (= 9 (part-2 test-data))
 
-(comment
-  (= 1939 (part-2 (utils/coord-map (utils/text->matrix (slurp "input/2024/input4.txt"))))))
+(delay (= 1939 (part-2 (utils/coord-map (utils/text->matrix (input/get-input 2024 4))))))
 
 ; # Igjen, med matriser
 
@@ -135,5 +141,4 @@ MXMXAXMASX")
 
 (= 18 (part-1-matrix test-input))
 
-(comment
-  (= 2547 (part-1-matrix (slurp "input/2024/input4.txt"))))
+(delay (= 2547 (part-1-matrix (input/get-input 2024 4))))
