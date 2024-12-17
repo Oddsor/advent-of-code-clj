@@ -25,11 +25,9 @@
              +
              (re-seq mul-pattern text)))
 
-(= 161 (parse-and-multiply "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))"))
+(parse-and-multiply "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))")
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 173419328 (parse-and-multiply (slurp "input/2024/input3.txt"))))
+(parse-and-multiply (input/get-input 2024 3))
 
 ; ## Del 2
 
@@ -50,11 +48,9 @@
                                     [:cat [:capture "mul"] "(" [:capture [:+ :digit]] "," [:capture [:+ :digit]] ")"]]])
                      text)))
 
-(= 48 (parse-and-multiply-when "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"))
+(parse-and-multiply-when "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))")
 
-^{:nextjournal.clerk/visibility {:result :hide}}
-(comment
-  (= 98059175 (parse-and-multiply-when (slurp "input/2024/input3.txt"))))
+(parse-and-multiply-when (slurp "input/2024/input3.txt"))
 
 ; Men reell input ble regnet feil!! Da får vi gå dumt til verks.
 
@@ -90,11 +86,11 @@
                                 sum)))
       sum)))
 
-(= 48 (process-operations (get-operations "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))")))
+(process-operations (get-operations "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))"))
 
 ; Fortsatt riktig på testdata, og nå blir det også riktig på inputten:
 
-(= 90669332 (process-operations (get-operations (input/get-input 2024 3))))
+(process-operations (get-operations (input/get-input 2024 3)))
 
 ; ## Del 2 igjen
 
@@ -123,4 +119,4 @@
 
 (prep-input "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?don't()mul(8,5))")
 
-(= 90669332 (parse-and-multiply (prep-input (input/get-input 2024 3))))
+(parse-and-multiply (prep-input (input/get-input 2024 3)))
