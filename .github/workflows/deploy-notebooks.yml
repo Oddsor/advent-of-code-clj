@@ -1,4 +1,4 @@
-name: Bygg og deploy dev
+name: Bygg og deploy pages
 
 on:
   push:
@@ -25,7 +25,12 @@ jobs:
       - name: Build notebooks
         env:
           INPUT_SALT: ${{ secrets.INPUT_SALT }}
-        run: clojure -X:buildnotebooks
+        run: make build-clerk
+      
+      - name: Build clay
+        env:
+          INPUT_SALT: ${{ secrets.INPUT_SALT }}
+        run: make build-clay
 
       # Optional step:
       - name: Cache clojure dependencies

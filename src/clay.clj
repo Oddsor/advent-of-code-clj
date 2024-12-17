@@ -11,7 +11,7 @@
                   (mapv str (filter File/.isFile (tree-seq File/.isDirectory File/.listFiles (File. "notebooks"))))
                   "src/index.clj")
     :title "Advent of Code"
-    :base-target-path "_clay"
+    :base-target-path "_site/new/"
     :hide-ui-header true
     :show false
     :live-reload false
