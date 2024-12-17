@@ -11,12 +11,13 @@
                   (mapv str (filter File/.isFile (tree-seq File/.isDirectory File/.listFiles (File. "notebooks"))))
                   "src/index.clj")
     :title "Advent of Code"
-    :base-target-path "_site/new/"
+    :base-target-path "_site/new"
     :hide-ui-header true
     :show false
     :live-reload false
     :post-process (fn [html]
-                    (when-let [title (second (first (re-seq #"<h1.*?>(.*?)</h1>" html)))]
+                    (if-let [title (second (first (re-seq #"<h1.*?>(.*?)</h1>" html)))]
                       (.replaceFirst html
-                                     "<title>.*?</title>" (str "<title>" title "</title>"))))})
+                                     "<title>.*?</title>" (str "<title>" title "</title>"))
+                      html))})
   (p/stop))
