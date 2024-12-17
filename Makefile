@@ -6,23 +6,23 @@ help: # Show help for each of the Makefile recipes.
 
 .PHONY: build-clerk
 build-clerk: # Build clerk notebook
-	clj -X:buildclerk
+	clojure -X:buildclerk
 
 .PHONY: build-clay
 build-clay: # Build clay notebook
-	clj -X:buildclay
+	clojure -X:buildclay
 
 .PHONY: deps-list
 deps-list: # List dependencies
-	clj -X:deps list
+	clojure -X:deps list
 
 .PHONY: deps-tree
 deps-tree: # List dependencies
-	clj -X:deps tree
+	clojure -X:deps tree
 
 .PHONY: update-deps
 update-deps: # Update dependencies
-	clj -M:update
+	clojure -M:update
 
 .PHONY: lint
 lint: # Build and run jar-file
