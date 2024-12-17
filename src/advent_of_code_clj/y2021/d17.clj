@@ -1,5 +1,5 @@
 (ns advent-of-code-clj.y2021.d17
-  (:require [clojure.core.matrix :as m]))
+  (:require [clojure.core.matrix :as mx]))
 
 (defn parse [t]
   (map read-string (re-seq #"-?\d+" t)))
@@ -10,8 +10,8 @@
   (if (and (>= x2 x x1)
            (>= y2 y y1))
     0
-    (let [distances (map (partial m/distance [x y]) [[x1 y1] [x2 y1]
-                                                     [x1 y2] [x2 y2]])]
+    (let [distances (map (partial mx/distance [x y]) [[x1 y1] [x2 y1]
+                                                      [x1 y2] [x2 y2]])]
       (apply min distances))))
 
 (defn step [x y vx vy]

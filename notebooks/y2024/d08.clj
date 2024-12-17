@@ -1,7 +1,7 @@
 (ns y2024.d08
   (:require
    [advent-of-code-clj.utils :as utils]
-   [clojure.core.matrix :as m]
+   [clojure.core.matrix :as mx]
    [medley.core :as medley]
    [nextjournal.clerk :as clerk]
    [advent-of-code-clj.input :as input]))
@@ -33,8 +33,8 @@
   (filter (fn [[antinode-x antinode-y]]
             (and (< -1 antinode-x dimx)
                  (< -1 antinode-y dimy)))
-          [(m/add antenna2
-                  (m/sub antenna2 antenna1))]))
+          [(mx/add antenna2
+                   (mx/sub antenna2 antenna1))]))
 
 (clerk/example
  (first (antinodes-1 [12 12] [9 9] [8 8]))
@@ -58,7 +58,7 @@
 ; alle distinkte antinoder:
 
 (defn solve [antinode-fn matrix]
-  (let [dims (m/shape matrix)
+  (let [dims (mx/shape matrix)
         coord-map (utils/coord-map-fixed matrix)
         grouped (dissoc (medley/collate-by val merge #(apply assoc {} %) coord-map)
                         \.)]
@@ -81,20 +81,20 @@
 ; del 1, men repeterer langs aksen helt til vi er "out of bounds":
 
 (defn antinodes-2 [[dimy dimx] antenna2 antenna1]
-  (let [increment (m/sub antenna2 antenna1)]
-    (->> (iterate #(m/add % increment) antenna2)
+  (let [increment (mx/sub antenna2 antenna1)]
+    (->> (iterate #(mx/add % increment) antenna2)
          (take-while (fn [[nx ny]]
                        (and (< -1 nx dimx)
                             (< -1 ny dimy)))))))
 
 ; Eksempel fra oppgaven med "T-master":
-(reduce (fn [mx [x y]] (m/mset mx x y \T)) (m/broadcast \. [10 10]) [[0 0] [2 1] [1 3]])
+(reduce (fn [mx [x y]] (mx/mset mx x y \T)) (mx/broadcast \. [10 10]) [[0 0] [2 1] [1 3]])
 
 ; Hvor antinodene da ender opp med å være:
 
-(let [mx (reduce (fn [mx [x y]] (m/mset mx x y \T)) (m/broadcast \. [10 10]) [[0 0] [2 1] [1 3]])
+(let [mx (reduce (fn [mx [x y]] (mx/mset mx x y \T)) (mx/broadcast \. [10 10]) [[0 0] [2 1] [1 3]])
       antinodes (solve antinodes-2 mx)]
-  (reduce (fn [mx [x y]] (m/mset mx x y \#)) mx antinodes))
+  (reduce (fn [mx [x y]] (mx/mset mx x y \#)) mx antinodes))
 
 ; Nå finner vi riktig svar i test-input:
 

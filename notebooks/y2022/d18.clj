@@ -22,15 +22,15 @@
 {::clerk/visibility {:result :hide}}
 
 (require '[advent-of-code-clj.utils :as u]
-         '[clojure.core.matrix :as m]
+         '[clojure.core.matrix :as mx]
          '[clojure.set :as set])
 
 (defn parse [data]
-  (m/to-nested-vectors (partition 3 (map parse-long (re-seq #"\d+" data)))))
+  (mx/to-nested-vectors (partition 3 (map parse-long (re-seq #"\d+" data)))))
 
 (defn neighbours [[head & points]]
   (lazy-cat
-   (keep (fn [point] (when (>= 1.0 (m/distance head point))
+   (keep (fn [point] (when (>= 1.0 (mx/distance head point))
                        [head point]))
          points)
    (when (seq points) (neighbours points))))
@@ -90,7 +90,7 @@
 (defn part-2 [data]
   (let [d (set (parse data))
         [[min-x max-x] [min-y max-y] [min-z max-z]]
-        (mapv (juxt m/minimum m/maximum) (apply mapv vector d))
+        (mapv (juxt mx/minimum mx/maximum) (apply mapv vector d))
         filled (set (fill-area (set/union (add-walls (- min-x 2) (+ max-x 2)
                                                      (- min-y 2) (+ max-y 2)
                                                      (-  min-z 2) (+ max-z 2))

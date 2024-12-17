@@ -1,5 +1,5 @@
 (ns advent-of-code-clj.y2021.d03
-  (:require [clojure.core.matrix :as m]))
+  (:require [clojure.core.matrix :as mx]))
 
 (def test-data "00100
 11110
@@ -23,9 +23,9 @@
 
 (defn calculate-power-consumption [data]
   (->> (map seq data)
-       m/transpose
+       mx/transpose
        (map #(->> % frequencies (sort-by val) (map first)))
-       m/transpose
+       mx/transpose
        (map #(->> % (apply str) bit-str-to-dec))
        (apply *)))
 

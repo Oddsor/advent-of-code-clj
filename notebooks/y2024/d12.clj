@@ -3,7 +3,7 @@
   (:require
    [advent-of-code-clj.input :as input]
    [advent-of-code-clj.utils :refer [find-neighbours] :as utils]
-   [clojure.core.matrix :as m]
+   [clojure.core.matrix :as mx]
    [nextjournal.clerk :as clerk]))
 
 ; # 2024, dag 12
@@ -30,9 +30,11 @@ MMMISSJEEE")
 ; Som matrise:
 (def test-matrix (utils/text->matrix test-input))
 
-(clerk/md
- (with-out-str
-   (m/pm (utils/text->matrix test-input))))
+^{:nextjournal.clerk/viewer nextjournal.clerk/html
+  :kind/hiccup true
+  :kindly/hide-code true}
+[:pre (with-out-str
+        (mx/pm (utils/text->matrix test-input)))]
 
 ; Vi kommer til å bruke en map-representasjon av matrisen i oppgaven:
 
@@ -69,12 +71,17 @@ MMMISSJEEE")
                             node))
          node)))
 
-; *OBS:* Noder med samme bokstav er ikke nødvendigvis i samme region.
+; **OBS:** Noder med samme bokstav er ikke nødvendigvis i samme region.
 ; Se C'en som ligger for seg selv, den er en egen region:
-(m/emap (fn [sym]
-          (if (= \C sym)
-            \C \.))
-        test-matrix)
+^{:nextjournal.clerk/viewer nextjournal.clerk/html
+  :kind/hiccup true
+  :kindly/hide-code true}
+[:pre
+ (with-out-str
+   (mx/pm (mx/emap (fn [sym]
+                     (if (= \C sym)
+                       \C \.))
+                   test-matrix)))]
 
 ; Å finne alle regioner gjøres ved å undersøke alle noder i matrisen,
 ; finne hele regionen noden tilhører. Vi unngår å finne samme region

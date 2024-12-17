@@ -1,7 +1,7 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2023.d03
   (:require [clojure.string :as str]
-            [clojure.core.matrix :as m]
+            [clojure.core.matrix :as mx]
             [advent-of-code-clj.utils :as u]
             [nextjournal.clerk :as clerk]))
 
@@ -49,7 +49,7 @@
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn digit-coordinates [matrix]
-  (filter #(is-digit? (get-in matrix %)) (m/index-seq matrix)))
+  (filter #(is-digit? (get-in matrix %)) (mx/index-seq matrix)))
 
 ;; Since we chose to just collect digit coordinates, we also need a
 ;; helper to group digits that are next to each other. Initially I

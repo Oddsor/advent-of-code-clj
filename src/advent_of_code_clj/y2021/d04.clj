@@ -1,7 +1,7 @@
 (ns advent-of-code-clj.y2021.d04
   (:require [clojure.string :as str]
             [com.rpl.specter :as s]
-            [clojure.core.matrix :as m]))
+            [clojure.core.matrix :as mx]))
 
 (def test-data "7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
 
@@ -39,7 +39,7 @@
 
 (defn board-wins? [board]
   ;; Mer elegant algo fra tschady: https://github.com/tschady/advent-of-code/blob/main/src/aoc/2021/d04.clj
-  (some #(every? nil? %) (concat board (m/transpose board))))
+  (some #(every? nil? %) (concat board (mx/transpose board))))
 
 (defn remove-value-from-board [num board]
   (s/setval (s/walker #{num}) nil board))

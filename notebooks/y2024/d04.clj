@@ -1,6 +1,6 @@
 (ns y2024.d04
   (:require [advent-of-code-clj.utils :as utils]
-            [clojure.core.matrix :as m]))
+            [clojure.core.matrix :as mx]))
 
 (def test-data (utils/coord-map (utils/text->matrix "MMMSXXMASM
 MSAMXMSMSA
@@ -101,7 +101,7 @@ MAMMMXMMMM
 MXMXAXMASX")
 
 (defn to-matrix [input]
-  (m/matrix (utils/text->matrix input)))
+  (mx/matrix (utils/text->matrix input)))
 
 (to-matrix test-input)
 
@@ -110,15 +110,15 @@ MXMXAXMASX")
    og alle diagonaler."
   [matrix]
   (let [lines (concat
-               (m/rows matrix)
-               (m/columns matrix)
-               (let [dim (m/dimension-count matrix 0)]
+               (mx/rows matrix)
+               (mx/columns matrix)
+               (let [dim (mx/dimension-count matrix 0)]
                  (for [i (range (- (- dim 4)) (- dim 3))]
-                   (m/diagonal matrix i)))
-               (let [dim (m/dimension-count matrix 0)
-                     rotated (m/transpose (reverse matrix))]
+                   (mx/diagonal matrix i)))
+               (let [dim (mx/dimension-count matrix 0)
+                     rotated (mx/transpose (reverse matrix))]
                  (for [i (range (- (- dim 4)) (- dim 3))]
-                   (m/diagonal rotated i))))]
+                   (mx/diagonal rotated i))))]
     lines))
 
 (defn count-xmas-along-line
