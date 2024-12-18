@@ -55,14 +55,14 @@
 ; og som er blokkert av `corrupted-locations`:
 
 (defn find-path [[dimy dimx :as _dimensions] corrupted-locations]
-  (let [in-bounds? (fn [[y x]]
-                     (and (>= dimy y 0)
-                          (>= dimx x 0)))]
+  (let [out-of-bounds? (fn [[y x]]
+                         (not (and (>= dimy y 0)
+                                   (>= dimx x 0))))]
     (ua/shortest-path
      (fn [node]
        (->> (apply utils/adjacent-hv node)
             (remove (some-fn corrupted-locations
-                             (complement in-bounds?)))
+                             out-of-bounds?))
             (map (fn [x] {:dest x}))))
      [0 0] [dimy dimx])))
 
@@ -111,20 +111,14 @@
         corrupted-locations (corrupted-locations input)]
     (->> (nth corrupted-locations
               (loop [[start end] [0 num-bytes]]
-                (if (>= 1 (- end start))
-                  (first (filter (fn [x]
-                                   (find-path dimensions (set (take x corrupted-locations))))
-                                 [start end]))
-                  (let [middle (int (+ (/ (- end start) 2) start))
-                        corrupted-locations-start (set (take start corrupted-locations))
-                        corrupted-locations-middle (set (take middle corrupted-locations))
-                        corrupted-locations-end (set (take end corrupted-locations))
-                        res-start (find-path dimensions corrupted-locations-start)
-                        res-middle (find-path dimensions corrupted-locations-middle)
-                        res-end (find-path dimensions corrupted-locations-end)]
-                    (cond
-                      (= nil res-end res-middle) (recur [start middle])
-                      (and res-start res-middle) (recur [middle end]))))))
+                (let [middle (int (+ (/ (- end start) 2) start))
+                      results (->> [start middle end]
+                                   (map #(some? (find-path dimensions (set (take % corrupted-locations))))))
+                      index-result (zipmap [start middle end] results)]
+                  (if (= 2 (count index-result))
+                    (first (keep (fn [[k v]] (when v k)) index-result))
+                    (recur [(last (filter index-result [start middle end]))
+                            (first (remove index-result [start middle end]))])))))
          reverse
          (map str)
          (String/join ","))))
