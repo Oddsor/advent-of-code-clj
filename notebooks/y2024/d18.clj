@@ -105,21 +105,12 @@
 ; Dette løser vi ved å snevre inn søkeområdet basert på om vi finner en gyldig path på
 ; starten, midten og slutten av søkeområdet.
 
-; (*TODO: denne algoritmen trenger litt refaktorering*)
-
 (defn part-2 [dimensions input]
-  (let [num-bytes (alength (.split input "\n"))
-        corrupted-locations (corrupted-locations input)]
+  (let [total-number-of-bytes (alength (.split input "\n"))
+        corrupted-locations (corrupted-locations input)
+        has-valid-path? #(find-path dimensions (set (take % corrupted-locations)))]
     (->> (nth corrupted-locations
-              (loop [[start end] [0 num-bytes]]
-                (let [middle (int (+ (/ (- end start) 2) start))
-                      results (->> [start middle end]
-                                   (map #(some? (find-path dimensions (set (take % corrupted-locations))))))
-                      index-result (zipmap [start middle end] results)]
-                  (if (= 2 (count index-result))
-                    (first (keep (fn [[k v]] (when v k)) index-result))
-                    (recur [(last (filter index-result [start middle end]))
-                            (first (remove index-result [start middle end]))])))))
+              (utils/binary-search has-valid-path? (dec total-number-of-bytes)))
          reverse
          (map str)
          (String/join ","))))

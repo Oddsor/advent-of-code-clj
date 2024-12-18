@@ -74,3 +74,28 @@
                      (when next-nodes
                        (.addAll visited next-nodes))
                      (seq next-nodes)))))))
+
+(defn binary-search
+  "Find the first or last value where a predicate is true in a range.
+   
+   Tests the start, middle and end of the value range and narrows down
+   the search space until a value is found"
+  ([pred end]
+   (binary-search pred 0 end))
+  ([pred start end]
+   (let [middle (quot (+ start end) 2)
+         p-start (pred start)
+         p-mid (pred middle)
+         p-end (pred end)]
+     (cond
+       (= p-start p-mid p-end) (throw (ex-info "Could not find a solution: start, middle and end had same equality" {}))
+       (= start middle) (if p-start start end)
+       (and p-mid (not p-end)) (binary-search pred middle end)
+       (and p-start (not p-mid)) (binary-search pred start middle)
+       (and (not p-start) p-mid) (binary-search pred start middle)
+       (and (not p-mid) p-end) (binary-search pred middle end)))))
+
+(defn depth-search [graph-fn start-node]
+  (let [visited (doto (HashSet.) (.add start-node))]
+    (loop [node [start-node]]
+      (let [neighbours (graph-fn node)]))))
