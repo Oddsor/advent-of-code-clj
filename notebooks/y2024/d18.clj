@@ -1,3 +1,4 @@
+^:kindly/hide-code
 (ns y2024.d18
   (:require
    [advent-of-code-clj.input :as input]
@@ -49,7 +50,7 @@
        (map reverse)
        (map vec)))
 
-(corrupted-locations test-input)
+(take 5 (corrupted-locations test-input))
 
 ; Pathen kan finnes ved å hente nabo-noder og filtrere vekk noder som er "out of bounds",
 ; og som er blokkert av `corrupted-locations`:
