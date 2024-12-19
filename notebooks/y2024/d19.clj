@@ -3,7 +3,7 @@
   (:require
    [advent-of-code-clj.input :as input]))
 
-; 2024, dag 19
+; # 2024, dag 19
 
 ; ## Del 1
 
