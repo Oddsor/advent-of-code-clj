@@ -114,9 +114,11 @@ bbrgwb")
 ; "hot loop":
 
 ^:kind/hiccup
+^:kindly/hide-code
 [:pre "(set! *warn-on-reflection* true)"]
 
 ^:kind/hiccup
+^:kindly/hide-code
 [:pre "Reflection warning,... - call to method startsWith can't be resolved (target class is unknown)."]
 
 ; Hvis vi lager nye type-hintede versjoner av `valid-pattern`-algoritmene kuttes kjøretiden ned til et mer
