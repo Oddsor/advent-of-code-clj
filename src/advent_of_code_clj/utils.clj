@@ -1,8 +1,9 @@
 (ns advent-of-code-clj.utils
-  (:require [clojure.string :as str])
   (:import [java.util HashSet]))
 
-(defn coord-map [xs-of-xses]
+(defn coord-map
+  {:malli/schema [:-> [:sequential [:sequential :any]] [:map-of [:tuple :int :int] :any]]}
+  [xs-of-xses]
   (->> xs-of-xses
        (map-indexed (fn [idy xs]
                       (map-indexed (fn [idx v]
@@ -10,7 +11,9 @@
                                    xs)))
        (transduce cat merge)))
 
-(defn coord-map-fixed [xs-of-xses]
+(defn coord-map-fixed
+  {:malli/schema [:-> [:sequential [:sequential :any]] [:map-of [:tuple :int :int] :any]]}
+  [xs-of-xses]
   (->> xs-of-xses
        (map-indexed (fn [idy xs]
                       (map-indexed (fn [idx v]
@@ -18,8 +21,10 @@
                                    xs)))
        (transduce cat merge)))
 
-(defn text->matrix [text]
-  (mapv vec (str/split-lines text)))
+(defn text->matrix
+  {:malli/schema [:-> :string [:vector [:vector char?]]]}
+  [text]
+  (mapv vec (.split text "\n")))
 
 (defn adjacent-hv
   "Find adjacent coordinates, without diagonals"
@@ -40,7 +45,7 @@
    [(dec x) (inc y)] [x (inc y)] [(inc x) (inc y)]])
 
 (defn split-newline [text]
-  (str/split text #"\n\n"))
+  (.split text "\n\n"))
 
 (defn emap [fun xs]
   (if (coll? xs)
@@ -75,13 +80,14 @@
                        (.addAll visited next-nodes))
                      (seq next-nodes)))))))
 
-(defn binary-search
+(defn bisect
   "Find the first or last value where a predicate is true in a range.
    
    Tests the start, middle and end of the value range and narrows down
    the search space until a value is found"
+  {:malli/schema [:-> ifn? :int [:* :int] :int]}
   ([pred end]
-   (binary-search pred 0 end))
+   (bisect pred 0 end))
   ([pred start end]
    (let [middle (quot (+ start end) 2)
          p-start (pred start)
@@ -90,10 +96,10 @@
      (cond
        (= p-start p-mid p-end) (throw (ex-info "Could not find a solution: start, middle and end had same equality" {}))
        (= start middle) (if p-start start end)
-       (and p-mid (not p-end)) (binary-search pred middle end)
-       (and p-start (not p-mid)) (binary-search pred start middle)
-       (and (not p-start) p-mid) (binary-search pred start middle)
-       (and (not p-mid) p-end) (binary-search pred middle end)))))
+       (and p-mid (not p-end)) (bisect pred middle end)
+       (and p-start (not p-mid)) (bisect pred start middle)
+       (and (not p-start) p-mid) (bisect pred start middle)
+       (and (not p-mid) p-end) (bisect pred middle end)))))
 
 (defn depth-search [graph-fn start-node]
   (let [visited (doto (HashSet.) (.add start-node))]

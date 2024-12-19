@@ -5,7 +5,8 @@
    {:title "Y2022 - Day 1"}}
   (:require [advent-of-code-clj.utils :refer [emap sort- split-newline sum]]
             [clojure.string :as str]
-            [nextjournal.clerk :as clerk]))
+            [nextjournal.clerk :as clerk]
+            [advent-of-code-clj.input :as input]))
 
 ^{::clerk/visibility {:code :hide}}
 (clerk/md "# Advent of code 2022, part 01")
@@ -54,9 +55,8 @@
 (part-1 test-data)
 
 ;; This yields the expected result, so we apply it to our input:
-^{::clerk/visibility {:code :hide}}
-(clerk/code
- '(= 66186 (part-1 (slurp "input/2022/01.txt"))))
+
+(= 66186 (part-1 (input/get-input 2022 1)))
 
 ;; ## Part 2
 ;; > find the amount of calories carried by the "top 3" elves
@@ -64,10 +64,9 @@
 ^{::clerk/visibility {:result :hide}}
 (defn part-2 [data]
   (->> data parse sorted-calories (take 3) sum))
+
 (part-2 test-data)
 
 ;; Test output looks ok, so let's apply it to the read input
 
-^{::clerk/visibility {:code :hide}}
-(clerk/code
- '(= 196804 (part-2 (slurp "input/2022/01.txt"))))
+(= 196804 (part-2 (input/get-input 2022 1)))

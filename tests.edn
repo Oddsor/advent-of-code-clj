@@ -11,8 +11,9 @@
  :kaocha.plugin.randomize/seed 156086537,
  :kaocha.plugin.randomize/randomize? true,
  :kaocha/plugins
- [:kaocha.plugin/randomize
-  :kaocha.plugin/filter
-  :kaocha.plugin/capture-output],
- :kaocha.plugin.capture-output/capture-output? true,
+ [:randomize
+  :filter
+  :capture-output
+  :profiling],
+ :kaocha.plugin.capture-output/capture-output? true
  :kaocha/reporter [kaocha.report/dots]}

@@ -110,7 +110,7 @@
         corrupted-locations (corrupted-locations input)
         has-valid-path? #(find-path dimensions (set (take % corrupted-locations)))]
     (->> (nth corrupted-locations
-              (utils/binary-search has-valid-path? (dec total-number-of-bytes)))
+              (utils/bisect has-valid-path? (dec total-number-of-bytes)))
          reverse
          (map str)
          (String/join ","))))
