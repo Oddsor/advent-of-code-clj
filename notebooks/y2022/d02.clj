@@ -2,7 +2,7 @@
 (ns y2022.d02
   (:require [clojure.set :as set]
             [clojure.string :as str]
-            [nextjournal.clerk :as clerk]))
+            [advent-of-code-clj.input :as input]))
 
 (def opponent-strategy {\A :rock
                         \B :paper
@@ -62,7 +62,6 @@
     (transduce (map (comp calculate)) +
                (str/split-lines data))))
 
-^{:nextjournal.clerk/visibility {:code :hide}}
-(clerk/code '(= 11767 (part-1 (slurp "input/2022/02.txt"))))
-^{:nextjournal.clerk/visibility {:code :hide}}
-(clerk/code '(= 13886 (part-2 (slurp "input/2022/02.txt"))))
+(= 11767 (part-1 (input/get-input 2022 2)))
+
+(= 13886 (part-2 (input/get-input 2022 2)))
