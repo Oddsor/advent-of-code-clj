@@ -1,3 +1,4 @@
+^:kindly/hide-code
 (ns y2024.d19
   (:require
    [advent-of-code-clj.input :as input]))
@@ -33,7 +34,7 @@ bbrgwb")
 ; mønstrene, og resten av duken matcher et mønster. Altså en rekursiv
 ; algritme:
 
-(defn valid-pattern? [patterns towel]
+(defn valid-pattern? [patterns ^String towel]
   (if (= "" towel)
     true
     (some
@@ -78,7 +79,7 @@ bbrgwb")
 
 (def valid-patterns
   (memoize
-   (fn [patterns towel]
+   (fn [patterns ^String towel]
      (if (= "" towel)
        1
        (transduce (map (fn [p]
@@ -101,3 +102,56 @@ bbrgwb")
 (comment
   (time
    (part-2 (input/get-input 2024 19))))
+
+; ## Del 1 og 2 med typehints
+
+; Det viser seg at algoritmene egentlig ikke er så trege! Algoritmen bruker mye tid på reflection fordi
+; vi kaller `.startsWith` på en variabel som kompilatoren ikke kan garantere at alltid er en `String`.
+
+; Se [dokumentasjon om type hinting](https://clojure.org/reference/java_interop#typehints)
+
+; Når kjører koden med reflection-warning finner vi de to stedene som er særlig utsatt fordi de er i en
+; "hot loop":
+
+^:kind/hiccup
+[:pre "(set! *warn-on-reflection* true)"]
+
+^:kind/hiccup
+[:pre "Reflection warning,... - call to method startsWith can't be resolved (target class is unknown)."]
+
+; Hvis vi lager nye type-hintede versjoner av `valid-pattern`-algoritmene kuttes kjøretiden ned til et mer
+; akseptabelt nivå (~80ms og ~300ms):
+
+(defn valid-pattern?-hinted [patterns ^String towel]
+  (if (= "" towel)
+    true
+    (some
+     (fn [p]
+       (when (.startsWith towel p)
+         (valid-pattern?-hinted patterns (subs towel (count p) (count towel)))))
+     patterns)))
+
+(def valid-patterns-hinted
+  (memoize
+   (fn [patterns ^String towel]
+     (if (= "" towel)
+       1
+       (transduce (map (fn [p]
+                         (if (.startsWith towel p)
+                           (valid-patterns-hinted patterns (subs towel (count p) (count towel)))
+                           0)))
+                  + patterns)))))
+
+(defn part-1-hinted [input]
+  (let [[patterns towels] (parse input)]
+    (count (keep #(valid-pattern?-hinted patterns %)
+                 towels))))
+
+(delay (part-1-hinted (input/get-input 2024 19)))
+
+(defn part-2-hinted [input]
+  (let [[patterns towels] (parse input)]
+    (transduce (map #(valid-patterns-hinted patterns %))
+               + towels)))
+
+(delay (part-2-hinted (input/get-input 2024 19)))
