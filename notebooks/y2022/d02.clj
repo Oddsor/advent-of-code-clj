@@ -21,19 +21,19 @@
                :rock :scissors})
 (def wins-to (set/map-invert loses-to))
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn decide-outcome [{:keys [player opponent]}]
   (cond
     (= player opponent) :draw
     (= opponent (wins-to player)) :opponent-wins
     (= opponent (loses-to player)) :player-wins))
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn calculate-score [{:keys [player] :as game}]
   (+ (outcome-points (decide-outcome game))
      (hand-points player)))
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-1 [data]
   (letfn [(calculate [line]
             (calculate-score
@@ -45,14 +45,14 @@
 (def desired-outcome {\X :lose
                       \Y :draw
                       \Z :win})
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn decide-hand [opponent desired-outcome]
   (case desired-outcome
     :draw opponent
     :win (wins-to opponent)
     :lose (loses-to opponent)))
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-2 [data]
   (letfn [(calculate [line]
             (let [opponent-hand (opponent-strategy (first line))]
@@ -62,7 +62,7 @@
     (transduce (map (comp calculate)) +
                (str/split-lines data))))
 
-^{::clerk/visibility {:code :hide}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (clerk/code '(= 11767 (part-1 (slurp "input/2022/02.txt"))))
-^{::clerk/visibility {:code :hide}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (clerk/code '(= 13886 (part-2 (slurp "input/2022/02.txt"))))

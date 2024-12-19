@@ -75,7 +75,7 @@
 ;; We use the parsed map to find the starting position:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(defn find-starting-position [{:keys [open-spaces] :as map-coords}]
+(defn find-starting-position [{:keys [open-spaces] :as _map-coords}]
   {:coord (->> open-spaces
                (filter (fn [[x y]] (zero? y)))
                (sort-by first)

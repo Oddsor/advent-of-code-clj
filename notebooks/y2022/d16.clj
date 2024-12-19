@@ -16,7 +16,7 @@
 
 ;; > For example, suppose you had the following scan output:
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (def test-data "Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
 Valve BB has flow rate=13; tunnels lead to valves CC, AA
 Valve CC has flow rate=2; tunnels lead to valves DD, BB
@@ -36,10 +36,10 @@ Valve JJ has flow rate=21; tunnel leads to valve II")
 
 ;; Start by parsing the test-data into a map where each valve is a key, and the value is a map listing the pressure and neighbouring nodes:
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (require '[clojure.string :as str])
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn parse [data]
   (->> data
        str/split-lines
@@ -55,15 +55,15 @@ Valve JJ has flow rate=21; tunnel leads to valve II")
                         :pressure pressure}])))
        (into {})))
 
-^{::clerk/visibility {:code :hide}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (clerk/example
  (parse test-data))
 
 ;; To find the shortest path we'll use the excellent Ubergraph library:
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (require '[ubergraph.alg :as ua])
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn shortest-path [start-pos end-pos data]
   (ua/shortest-path (fn [coord]
                       (map (fn [neighbour] {:dest neighbour}) (-> data coord :next)))
@@ -73,7 +73,7 @@ Valve JJ has flow rate=21; tunnel leads to valve II")
 ;; Once refactored and shrunk down, this function ended up being almost
 ;; a copy-paste of [@volesen's solution](https://github.com/volesen/aoc2022/blob/main/day16/day16.clj#L48C10-L48C10)
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn max-pressure [time-remaining start non-zero-valves elephant? data]
   (let [next-nodes* (keep (fn [node]
                             (let [time-to-open (inc (:cost (shortest-path start node data)))]
@@ -89,31 +89,31 @@ Valve JJ has flow rate=21; tunnel leads to valve II")
                      elephant? (conj (max-pressure 26 :AA non-zero-valves false data)))]
     (+ (* time-remaining (-> data start :pressure)) (apply max 0 next-nodes))))
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-1 [data]
   (with-redefs [shortest-path (memoize shortest-path)]
     (let [data (parse data)
           non-zero-valves (set (remove (fn [valve] (zero? (:pressure (valve data)))) (keys data)))]
       (max-pressure 30 :AA non-zero-valves false data))))
 
-^{::clerk/visibility {:code :hide}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (clerk/example (= 1651 (part-1 test-data)))
 
 ;; Applying it to our input we get:
-^{::clerk/visibility {:code :hide}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (clerk/code
  '(= 1896 (part-1 (slurp "input/2022/16.txt"))))
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-2 [data-string]
   (with-redefs [shortest-path (memoize shortest-path)]
     (let [data (parse data-string)
           non-zero-valves (set (remove (fn [valve] (zero? (:pressure (valve data)))) (keys data)))]
       (max-pressure 26 :AA non-zero-valves true data))))
-^{::clerk/visibility {:code :hide}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (clerk/example (= 1707 (part-2 test-data)))
 
 ;; Applying it to our input we get:
-^{::clerk/visibility {:code :hide}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (clerk/code
  '(= 2576 (part-2 (slurp "input/2022/16.txt"))))

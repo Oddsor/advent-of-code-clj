@@ -8,12 +8,12 @@
             [nextjournal.clerk :as clerk]
             [advent-of-code-clj.input :as input]))
 
-^{::clerk/visibility {:code :hide}}
-(clerk/md "# Advent of code 2022, part 01")
+
+; # Advent of code 2022, part 01
 
 ; Create a parser to convert the following test-data into lists:
 
-^{::clerk/visibility {:code :hide}} (def test-data "1000
+^{:nextjournal.clerk/visibility {:code :hide}} (def test-data "1000
 2000
 3000
 
@@ -28,16 +28,16 @@
 
 10000")
 
-{::clerk/visibility {:code :show :result :hide}}
+{:nextjournal.clerk/visibility {:code :show :result :hide}}
 
 (defn- parse [text]
   (->> text split-newline (map str/split-lines) (emap parse-long)))
 
-^{::clerk/visibility {:code :hide :result :show}}
+^{:nextjournal.clerk/visibility {:code :hide :result :show}}
 (clerk/example
  (parse test-data))
 
-{::clerk/visibility {:code :show :result :show}}
+{:nextjournal.clerk/visibility {:code :show :result :show}}
 
 ;; ## Part 1
 ;; > find the maximum calories carried by one elf
@@ -45,11 +45,11 @@
 ;; Could use "(apply max ...)" instead of sorting, but part 2
 ;; needs the maximum 3 calorie counts, so a sorted list is more useful
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn sorted-calories [data]
   (->> data (map sum) sort-))
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-1 [data]
   (->> data parse sorted-calories first))
 (part-1 test-data)
@@ -61,7 +61,7 @@
 ;; ## Part 2
 ;; > find the amount of calories carried by the "top 3" elves
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (defn part-2 [data]
   (->> data parse sorted-calories (take 3) sum))
 

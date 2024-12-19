@@ -4,7 +4,7 @@
 
 ;; # Year 2022 - Day 18
 
-^{::clerk/visibility {:result :hide}}
+^{:nextjournal.clerk/visibility {:result :hide}}
 (def test-data "2,2,2
 1,2,2
 3,2,2
@@ -19,7 +19,7 @@
 2,1,5
 2,3,5")
 
-{::clerk/visibility {:result :hide}}
+{:nextjournal.clerk/visibility {:result :hide}}
 
 (require '[advent-of-code-clj.utils :as u]
          '[clojure.core.matrix :as mx]
@@ -43,9 +43,9 @@
        ;; For every immediate neighbour we lose two sides
        (* (count (neighbours points)) 2))))
 
-{::clerk/visibility {:result :show}}
+{:nextjournal.clerk/visibility {:result :show}}
 
-^{::clerk/visibility {:code :hide}}
+^{:nextjournal.clerk/visibility {:code :hide}}
 (clerk/example
  (= 64 (part-1 test-data)))
 
@@ -54,7 +54,7 @@
 (clerk/code
  '(= 4302 (part-1 (slurp "input/2022/18.txt"))))
 
-{::clerk/visibility {:result :hide}}
+{:nextjournal.clerk/visibility {:result :hide}}
 
 (defn adjacents [[x y z]]
   (set (u/adjacent-hv x y z)))
@@ -106,9 +106,9 @@
            ;; For every immediate neighbour we lose two sides
        (* (count (neighbours diff)) 2))))
 
-{::clerk/visibility {:result :show}}
+{:nextjournal.clerk/visibility {:result :show}}
 
-{::clerk/visibility {:code :hide}}
+{:nextjournal.clerk/visibility {:code :hide}}
 (clerk/example
  (= 58 (part-2 test-data)))
 
