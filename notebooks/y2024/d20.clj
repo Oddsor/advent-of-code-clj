@@ -38,10 +38,10 @@
 
 (defn coordinates [input]
   (let [coord-map (utils/coord-map-fixed (utils/text->matrix input))
-        start-node (key (medley/find-first (fn [[k v]]
+        start-node (key (medley/find-first (fn [[_k v]]
                                              (= \S v))
                                            coord-map))
-        end-node (key (medley/find-first (fn [[k v]]
+        end-node (key (medley/find-first (fn [[_k v]]
                                            (= \E v))
                                          coord-map))]
     {:start-node start-node
@@ -137,10 +137,10 @@ dir-vectors
          count)))
 
 ; For å teste kan vi se om vi finner de 5 snarveiene som er beskrevet i oppgaveteksten
-; som har en besparelse over 20 steg i test-dataene:
+; som har en besparelse over 20 steg i test-dataene (~3ms kjøretid):
 
 (delay (part-1 20 test-input))
 
-; Det ser ut til å fungere også, så da finner vi nok løsningen på del 1:
+; Det ser ut til å fungere også, så da finner vi nok løsningen på del 1 (~270 ms kjøretid):
 
-(delay (part-1 100 (input/get-input 2024 20)))
+(delay (time (part-1 100 (input/get-input 2024 20))))
