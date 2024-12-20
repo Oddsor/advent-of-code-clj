@@ -66,7 +66,7 @@
 
 (let [{p :possible-locations
        from :end-node} (coordinates test-input)]
-  (node->cost p from))
+  (into {} (take 5) (node->cost p from)))
 
 ; Neste steg er å finne alle mulige snarveier. En snarvei er lik
 ; en mulig lokasjon som kan nå en annen mulig lokasjon selv om en
