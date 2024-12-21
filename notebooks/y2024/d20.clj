@@ -143,4 +143,32 @@ dir-vectors
 
 ; Det ser ut til å fungere også, så da finner vi nok løsningen på del 1 (~270 ms kjøretid):
 
-(delay (time (part-1 100 (input/get-input 2024 20))))
+(delay (part-1 100 (input/get-input 2024 20)))
+
+; ## Del 1 med kun ett breadt-first-søk
+
+; Tydeligvis er både test-input og reell input ikke bygd opp med blindgater og lignende,
+; så man trenger ikke å kjøre bredde-først fra begge retninger:
+
+(defn savings [node->cost shortcut]
+  (let [node-costs (map node->cost shortcut)]
+    (- (apply max node-costs) (apply min node-costs) 2)))
+
+(let [{:keys [possible-locations start-node]} (coordinates test-input)
+      node->cost-from-start (node->cost possible-locations start-node)]
+  [(savings node->cost-from-start #{[7 7] [7 5]})
+   (savings node->cost-from-start #{[3 1] [3 3]})
+   (savings node->cost-from-start #{[1 7] [1 9]})])
+
+(defn part-1-faster [required-amount-saved input]
+  (let [{:keys [possible-locations start-node]} (coordinates input)
+        node->cost-from-start (node->cost possible-locations start-node)
+        shortcuts (shortcuts possible-locations)]
+    (->> shortcuts
+         (map #(savings node->cost-from-start %))
+         (filter (fn [savings] (>= savings required-amount-saved)))
+         count)))
+
+(delay (part-1-faster 20 test-input))
+
+(delay (part-1-faster 100 (input/get-input 2024 20)))
