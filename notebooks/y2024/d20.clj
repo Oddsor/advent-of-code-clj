@@ -190,8 +190,8 @@ dir-vectors
 ; spart om vi jukset.
 
 (defn shortcuts-new
-  "For each possible location, can it reach a location two steps
-   away with an impossible location in-between?"
+  "For each possible location, can it reach a location x steps
+   and save the required amount of time?"
   [cheat-length required-amount-saved node->cost]
   (let [nodes (mapv key (sort-by val node->cost))]
     (->> (for [index (range (count nodes))
