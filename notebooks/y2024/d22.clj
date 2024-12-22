@@ -59,3 +59,40 @@
 ; ## Del 2
 
 ; TODO
+
+(defn last-digit [number] (mod number 10))
+
+(= 9 (last-digit 8685429))
+
+(= [-3 6 -1 -1 0 2 -2 0 -2]
+   (->> (iterate next-secret-number 123)
+        (take 10)
+        (map last-digit)
+        (partition 2 1)
+        (map #(apply - (reverse %)))))
+
+(defn pattern->value [secret-number]
+  (let [numbers (->> (iterate next-secret-number secret-number)
+                     (take 2001)
+                     (mapv last-digit))
+        patterns (->> (map - (rest numbers) numbers)
+                      (partitionv 4 1))]
+    (transduce (map-indexed vector)
+               (completing
+                (fn add-if-missing [acc [idx v]]
+                  (update acc v (fn [old-val]
+                                  (if old-val old-val
+                                      (numbers (+ idx 4)))))))
+               {} patterns)))
+
+(defn part-2 [input]
+  (let [numbers (map parse-long (re-seq #"\d+" input))]
+    (->> numbers
+         (map pattern->value)
+         (apply merge-with +)
+         (apply max-key val))))
+
+(part-2 "1 2 3 2024")
+
+(comment
+  (time (part-2 (input/get-input 2024 22))))
