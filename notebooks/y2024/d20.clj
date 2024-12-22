@@ -81,6 +81,13 @@
 
 dir-vectors
 
+(defn distance [[ay ax] [by bx]]
+  (+ (- (max ay by) (min ay by))
+     (- (max ax bx) (min ax bx))))
+
+(distance [7 5] [7 7])
+(distance [3 1] [7 3])
+
 (defn shortcuts
   "For each possible location, can it reach a location two steps
    away with an impossible location in-between?"
@@ -172,3 +179,57 @@ dir-vectors
 (delay (part-1-faster 20 test-input))
 
 (delay (part-1-faster 100 (input/get-input 2024 20)))
+
+; ## Del 2
+
+; I del 2 lærer vi at vi kan jukse enda lenger enn to steg! Da er det på tide å tenke
+; nytt; hva er det vi trenger å vite?
+
+; Vi må vite hvor mye tid vi kan spare ved å jukse mellom to noder, altså kan vi lete
+; etter alle noder som er innen rekkevidde fra en gitt node, og hvor mye tid vi ville
+; spart om vi jukset.
+
+(defn shortcuts-new
+  "For each possible location, can it reach a location two steps
+   away with an impossible location in-between?"
+  [cheat-length required-amount-saved node->cost]
+  (let [nodes (mapv key (sort-by val node->cost))]
+    (->> (for [index (range (count nodes))
+               :let [loc-a (nth nodes index)]
+               loc-b (drop (inc index) nodes)
+               :when (not= loc-a loc-b) ; Not the same node
+               :let [distance (distance loc-a loc-b)
+                     time-saved (- (node->cost loc-b) (node->cost loc-a) distance)]
+               :when (>= time-saved required-amount-saved) ; Would save required amount of time
+               :when (>= cheat-length distance) ; Within distance of eachother?
+               ]
+           {#{loc-a loc-b} time-saved})
+         (apply merge))))
+
+; Den nye algoritmen fungerer fortsatt på del 1 (hvor cheat-length er 2):
+
+(def test-node->cost (let [{:keys [possible-locations start-node]} (coordinates test-input)]
+                       (node->cost possible-locations start-node)))
+
+; Den eneste snarveien som sparer over 50 steg er mellom slutt-noden og noden
+; til høyre på kartet:
+
+(delay (shortcuts-new 2 50 test-node->cost))
+
+; Og på del 2 (jukse rett fra start-noden til slutt-noden):
+
+(delay ((shortcuts-new 20 50 test-node->cost) #{[3 1] [7 4]}))
+
+(defn part-2 [required-amount-saved input]
+  (let [{:keys [possible-locations start-node]} (coordinates input)
+        node->cost-from-start (node->cost possible-locations start-node)]
+    (count (shortcuts-new 20 required-amount-saved node->cost-from-start))))
+
+; I test-inputten vil det være 285 snarveier som sparer inn mer enn 50 steg.
+
+(delay (part-2 50 test-input))
+
+; Dessverre tar algoritmen veldig lang tid på reell input (~11 sekunder), men
+; vi får riktig svar (`989316`):
+(comment
+  (= 989316 (part-2 100 (input/get-input 2024 20))))
