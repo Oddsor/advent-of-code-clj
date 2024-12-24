@@ -86,9 +86,11 @@ td-yn")
 
 (def test-graph (graph/graph (computers->connections test-input)))
 
-; Med grafen i hånd kan vi hente ut "maximal cliques":
+; Med grafen vi fant i del 1 kan vi hente ut "maximal cliques":
 
 (def test-cliques (loom-alg/maximal-cliques test-graph))
+
+test-cliques
 
 ; Ingen garanti for at den største clique'n er først i listen:
 
@@ -111,5 +113,4 @@ td-yn")
      (sort-by count >)
      first
      sort
-     (String/join ",")
-     time)
+     (String/join ","))
