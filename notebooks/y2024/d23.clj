@@ -1,6 +1,8 @@
 (ns y2024.d23
   (:require
-   [advent-of-code-clj.input :as input]))
+   [advent-of-code-clj.input :as input]
+   [loom.graph :as graph]
+   [loom.alg :as loom-alg]))
 
 ; # 2024, dag 23
 
@@ -49,8 +51,6 @@ td-yn")
 
 (computers->connections test-input)
 
-#_(computers->connections (input/get-input 2024 23))
-
 (defn find-interconnected-t-computers [computer->connection]
   (let [t-computers (filter #(.startsWith % "t") (keys computer->connection))]
     (reduce (fn [acc t-c]
@@ -78,4 +78,38 @@ td-yn")
 
 (apply max-key val (frequencies (find-interconnected-computers (computers->connections test-input))))
 
-(String/join "," ^Iterable (sort (key (apply max-key val (frequencies (find-interconnected-computers (computers->connections (input/get-input 2024 23))))))))
+(time (String/join "," ^Iterable (sort (key (apply max-key val (frequencies (find-interconnected-computers (computers->connections (input/get-input 2024 23)))))))))
+
+; ## Del 2 med Loom
+
+; Vi kan løse del 2 mer elegant  ved å bruke et graf-bibliotek:
+
+(def test-graph (graph/graph (computers->connections test-input)))
+
+; Med grafen i hånd kan vi hente ut "maximal cliques":
+
+(def test-cliques (loom-alg/maximal-cliques test-graph))
+
+; Ingen garanti for at den største clique'n er først i listen:
+
+(first (sort-by count > test-cliques))
+
+; Så kan vi sortere og slå sammen navnet på maskinene:
+
+(->> test-cliques
+     (sort-by count >)
+     first
+     sort
+     (String/join ","))
+
+; Og får løsningen for reell input:
+
+(->> (input/get-input 2024 23)
+     computers->connections
+     graph/graph
+     loom-alg/maximal-cliques
+     (sort-by count >)
+     first
+     sort
+     (String/join ",")
+     time)
