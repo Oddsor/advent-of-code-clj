@@ -1,5 +1,7 @@
 (ns advent-of-code-clj.utils
-  (:import [java.util HashSet]))
+  (:import [java.util HashSet])
+  (:require
+   [advent-of-code-clj.matrix :as mx]))
 
 (defn coord-map
   {:malli/schema [:-> [:sequential [:sequential :any]] [:map-of [:tuple :int :int] :any]]}
@@ -11,20 +13,9 @@
                                    xs)))
        (transduce cat merge)))
 
-(defn coord-map-fixed
-  {:malli/schema [:-> [:sequential [:sequential :any]] [:map-of [:tuple :int :int] :any]]}
-  [xs-of-xses]
-  (->> xs-of-xses
-       (map-indexed (fn [idy xs]
-                      (map-indexed (fn [idx v]
-                                     [[idy idx] v])
-                                   xs)))
-       (transduce cat merge)))
+(def coord-map-fixed mx/coord-map-fixed)
 
-(defn text->matrix
-  {:malli/schema [:-> :string [:vector [:vector char?]]]}
-  [text]
-  (mapv vec (.split text "\n")))
+(def text->matrix mx/text->matrix)
 
 (defn adjacent-hv
   "Find adjacent coordinates, without diagonals"

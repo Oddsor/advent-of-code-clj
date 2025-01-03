@@ -1,7 +1,7 @@
 (ns y2024.d25
   (:require
    [advent-of-code-clj.input :as input]
-   [advent-of-code-clj.utils :as utils]))
+   [advent-of-code-clj.matrix :as mx]))
 
 (def test-input "#####
 .####
@@ -54,11 +54,11 @@
 (defn parse-key [input]
   (map (fn [line]
          (dec (count (filter #{\.} line))))
-       (apply mapv vector (utils/text->matrix input))))
+       (mx/transpose (mx/text->matrix input))))
 (defn parse-lock [input]
   (map (fn [line]
          (dec (count (filter #{\#} line))))
-       (apply mapv vector (utils/text->matrix input))))
+       (mx/transpose (mx/text->matrix input))))
 
 (defn parse [input]
   (let [lock-or-key (.split input "\n\n")
