@@ -51,21 +51,21 @@ CN -> C")
 
 (assert (= 1588
            (max-minus-min
-            (nth (iterate (partial expand (:inserts test-data))
-                          (:freqs test-data)) 10))))
+             (nth (iterate (partial expand (:inserts test-data))
+                           (:freqs test-data)) 10))))
 
 (comment
   (def data (parse (slurp "input/y2021/14.txt")))
 
   (= 2590
      (max-minus-min
-      (nth (iterate (partial expand (:inserts data))
-                    (:freqs data)) 10)))
+       (nth (iterate (partial expand (:inserts data))
+                     (:freqs data)) 10)))
 
   (time
-   (= 2875665202438
-      (max-minus-min
-       (nth (iterate (partial expand (:inserts data))
-                     (:freqs data)) 40))))
+    (= 2875665202438
+       (max-minus-min
+         (nth (iterate (partial expand (:inserts data))
+                       (:freqs data)) 40))))
   ;
   )

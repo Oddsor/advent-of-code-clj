@@ -90,10 +90,11 @@ Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsid
           (recur (inc n)
                  (->> state
                       (mapcat (fn [s]
-                                (when-not (or #_(and (> n 7) (zero? (get s 5)))
-                                           (and (> most-geode-bots 1) (zero? (get s 7)))
-                                              (>= (- (inc most-geode-bots) (get s 7)) 2)
-                                              #_(and (> n 20) (zero? (get s 7))))
+                                (when-not (or
+                                            #_(and (> n 7) (zero? (get s 5)))
+                                            (and (> most-geode-bots 1) (zero? (get s 7)))
+                                            (>= (- (inc most-geode-bots) (get s 7)) 2)
+                                            #_(and (> n 20) (zero? (get s 7))))
                                   (let [[_ _ _ _ o a b g :as no-action] s
                                         c (transient [])]
                                     (fun s c)

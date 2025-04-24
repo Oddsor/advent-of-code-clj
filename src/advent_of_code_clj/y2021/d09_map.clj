@@ -1,6 +1,6 @@
 (ns advent-of-code-clj.y2021.d09-map
-  (:require [clojure.string :as str]
-            [clojure.core.reducers :as r]))
+  (:require [clojure.core.reducers :as r]
+            [clojure.string :as str]))
 
 (defn parse-nums [idy text]
   (apply merge
@@ -37,12 +37,12 @@
 
 (defn climb [data points]
   (lazy-seq
-   (if-let [xs (->> points
-                    (r/mapcat (partial higher-adjacent-points data))
-                    r/foldcat
-                    seq)]
-     (cons points (climb data xs))
-     [points])))
+    (if-let [xs (->> points
+                     (r/mapcat (partial higher-adjacent-points data))
+                     r/foldcat
+                     seq)]
+      (cons points (climb data xs))
+      [points])))
 
 (comment (climb test-data [[9 0]]))
 ;; ([[9 0]] 

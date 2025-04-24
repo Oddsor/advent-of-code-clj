@@ -26,9 +26,9 @@
 
 (defn move-tail [new-head [thead & tail]]
   (lazy-seq
-   (cons new-head
-         (when thead
-           (move-tail (move-towards-head new-head thead) tail)))))
+    (cons new-head
+          (when thead
+            (move-tail (move-towards-head new-head thead) tail)))))
 
 (defn move [[[hx hy] & tail] d]
   (move-tail [((case d :L dec :R inc identity) hx)

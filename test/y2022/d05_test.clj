@@ -1,6 +1,6 @@
 (ns y2022.d05-test
-  (:require [y2022.d05 :refer [part-1 part-2]]
-            [clojure.test :refer [deftest is]]))
+  (:require [clojure.test :refer [deftest is]]
+            [y2022.d05 :refer [part-1 part-2]]))
 
 (def test-data "    [D]    
 [N] [C]    

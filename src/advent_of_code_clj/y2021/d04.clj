@@ -1,7 +1,7 @@
 (ns advent-of-code-clj.y2021.d04
-  (:require [clojure.string :as str]
-            [com.rpl.specter :as s]
-            [clojure.core.matrix :as mx]))
+  (:require [clojure.core.matrix :as mx]
+            [clojure.string :as str]
+            [com.rpl.specter :as s]))
 
 (def test-data "7,4,9,5,11,17,23,2,0,14,21,24,10,16,13,6,15,25,12,22,18,20,8,19,3,26,1
 
@@ -47,14 +47,14 @@
 ;; Mer elegant rekursjon via lazy-seq, også inspirert av tschady (og hele clojure core)
 (defn scores [[num & nums] boards]
   (lazy-seq
-   (when num
-     (let [{winners true
-            losers nil} (group-by board-wins? (map (partial remove-value-from-board num) boards))]
-       (if (seq winners)
-         (cons {:score (* num (reduce + (s/select (s/walker number?) (first winners))))
-                :winning-boards winners}
-               (scores nums losers))
-         (scores nums losers))))))
+    (when num
+      (let [{winners true
+             losers nil} (group-by board-wins? (map (partial remove-value-from-board num) boards))]
+        (if (seq winners)
+          (cons {:score (* num (reduce + (s/select (s/walker number?) (first winners))))
+                 :winning-boards winners}
+                (scores nums losers))
+          (scores nums losers))))))
 
 (assert (= 4512 (:score (first (scores (:draw-seq (parse test-data))
                                        (:boards (parse test-data)))))))

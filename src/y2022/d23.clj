@@ -21,15 +21,15 @@
 (defn adjacent
   ([[x y] directions]
    (mapv val (filter
-              (comp (set directions) key)
-              {:E [(inc x) y]
-               :W [(dec x) y]
-               :SE [(inc x) (inc y)]
-               :SW [(dec x) (inc y)]
-               :S [x (inc y)]
-               :N [x (dec y)]
-               :NW [(dec x) (dec y)]
-               :NE [(inc x) (dec y)]})))
+               (comp (set directions) key)
+               {:E [(inc x) y]
+                :W [(dec x) y]
+                :SE [(inc x) (inc y)]
+                :SW [(dec x) (inc y)]
+                :S [x (inc y)]
+                :N [x (dec y)]
+                :NW [(dec x) (dec y)]
+                :NE [(inc x) (dec y)]})))
   ([coords]
    (adjacent coords [:N :S :E :W :NW :NE :SW :SE])))
 

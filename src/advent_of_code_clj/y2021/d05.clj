@@ -45,34 +45,34 @@
 
 (assert (= 5
            (intersecting-points
-            (reduce apply-plot
-                    (init-grid 10)
-                    (filter only-horizontal-or-vertical?
-                            (parse test-data))))))
+             (reduce apply-plot
+                     (init-grid 10)
+                     (filter only-horizontal-or-vertical?
+                             (parse test-data))))))
 
 (assert (= 12
            (intersecting-points
-            (reduce apply-plot
-                    (init-grid 10)
-                    (parse test-data)))))
+             (reduce apply-plot
+                     (init-grid 10)
+                     (parse test-data)))))
 
 (comment
   ;; Part 1
   (= 6225
      (intersecting-points
-      (reduce apply-plot
-              (init-grid 1000)
-              (filter (fn [[[x1 y1] [x2 y2]]]
-                        (or (= x1 x2)
-                            (= y1 y2)))
-                      (parse (slurp "input/y2021/05.txt"))))))
+       (reduce apply-plot
+               (init-grid 1000)
+               (filter (fn [[[x1 y1] [x2 y2]]]
+                         (or (= x1 x2)
+                             (= y1 y2)))
+                       (parse (slurp "input/y2021/05.txt"))))))
 
   ;; Part 2
   (= 22116
      (intersecting-points
-      (reduce apply-plot
-              (init-grid 1000)
-              (parse (slurp "input/y2021/05.txt")))))
+       (reduce apply-plot
+               (init-grid 1000)
+               (parse (slurp "input/y2021/05.txt")))))
   ;;
   )
 
@@ -80,9 +80,9 @@
 
 (defn plots [[x1 y1 :as a] [x2 y2 :as b]]
   (lazy-seq
-   (cons [x1 y1] (when-not (= a b)
-                   (plots [(+ x1 (compare x2 x1))
-                           (+ y1 (compare y2 y1))] b)))))
+    (cons [x1 y1] (when-not (= a b)
+                    (plots [(+ x1 (compare x2 x1))
+                            (+ y1 (compare y2 y1))] b)))))
 
 (assert (= 5
            (->> test-data

@@ -1,6 +1,6 @@
 (ns y2020.d06-test
-  (:require [clojure.test :refer [deftest is]]
-            [advent-of-code-clj.y2020.d06 :refer [part-1 part-2]]))
+  (:require [advent-of-code-clj.y2020.d06 :refer [part-1 part-2]]
+            [clojure.test :refer [deftest is]]))
 
 (def test-data "abc
 

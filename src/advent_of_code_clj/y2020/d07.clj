@@ -1,8 +1,8 @@
 (ns advent-of-code-clj.y2020.d07
   (:require [clojure.string :as str]
+            [clojure.walk :as walk]
             [com.rpl.specter :as s]
-            [datascript.core :as d]
-            [clojure.walk :as walk]))
+            [datascript.core :as d]))
 
 (def test-data "light red bags contain 1 bright white bag, 2 muted yellow bags.
 dark orange bags contain 3 bright white bags, 4 muted yellow bags.
@@ -44,22 +44,22 @@ dotted black bags contain no other bags.")
                 :bag {:db/unique :db.unique/identity}}
         conn (d/create-conn schema)]
     (d/transact! conn (s/transform
-                       [s/ALL :contains s/ALL]
-                       (fn [x]
-                         {:bag x})
-                       bagmaps))
+                        [s/ALL :contains s/ALL]
+                        (fn [x]
+                          {:bag x})
+                        bagmaps))
     (d/q
-     '[:find ?n
-       :in $ %
-       :where [?b :bag "shiny gold bag"]
-       (fits-bag ?e ?b)
-       [?e :bag ?n]]
-     @conn
-     '[[(fits-bag ?e1 ?e2)
-        [?e1 :contains ?e2]]
-       [(fits-bag ?e1 ?e2)
-        [?e1 :contains ?c]
-        (fits-bag ?c ?e2)]])))
+      '[:find ?n
+        :in $ %
+        :where [?b :bag "shiny gold bag"]
+        (fits-bag ?e ?b)
+        [?e :bag ?n]]
+      @conn
+      '[[(fits-bag ?e1 ?e2)
+         [?e1 :contains ?e2]]
+        [(fits-bag ?e1 ?e2)
+         [?e1 :contains ?c]
+         (fits-bag ?c ?e2)]])))
 
 (assert (= 4 (count (bags-that-hold-shiny (parse test-data)))))
 
@@ -69,10 +69,10 @@ dotted black bags contain no other bags.")
     (loop [gold-bag (mapped "shiny gold bag")
            recs 0]
       (let [modified (s/transform (s/walker (every-pred
-                                             coll?
-                                             (comp #{:contains} first)
-                                             (comp (partial every? string?)
-                                                   second)))
+                                              coll?
+                                              (comp #{:contains} first)
+                                              (comp (partial every? string?)
+                                                    second)))
                                   (fn [[k v]]
                                     [k (map mapped v)])
                                   gold-bag)]
@@ -104,12 +104,12 @@ dotted black bags contain no other bags.")
   (def recursively-built-bags (let [bags (parse test-data)
                                     bags-by-name (into {} (map (juxt :bag identity) bags))]
                                 ((r/until
-                                  =
-                                  (r/bottom-up
-                                   (r/attempt
-                                    (r/rewrite
-                                     ((m/pred string? !bagnames) ...)
-                                     ~(map bags-by-name !bagnames)))))
+                                   =
+                                   (r/bottom-up
+                                     (r/attempt
+                                       (r/rewrite
+                                         ((m/pred string? !bagnames) ...)
+                                         ~(map bags-by-name !bagnames)))))
                                  bags)))
 
   (count (filterv (fn [bag]

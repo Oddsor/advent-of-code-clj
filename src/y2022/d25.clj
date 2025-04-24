@@ -1,6 +1,6 @@
 (ns y2022.d25
-  (:require [clojure.string :as str]
-            [clojure.set :as set]))
+  (:require [clojure.set :as set]
+            [clojure.string :as str]))
 
 (def snafu->dec {\= -2
                  \- -1

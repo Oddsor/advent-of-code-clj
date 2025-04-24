@@ -29,8 +29,8 @@
 (defn assign-size-to-directories [tree]
   (walk/postwalk (fif map? (fn [node]
                              {:size (sum (concat
-                                          (filter number? (vals node))
-                                          (keep :size (vals node))))
+                                           (filter number? (vals node))
+                                           (keep :size (vals node))))
                               :children node}))
                  tree))
 

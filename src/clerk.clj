@@ -1,9 +1,9 @@
 (ns clerk
   (:require
-   [clojure.java.io :as io]
-   [nextjournal.clerk :as clerk])
+    [clojure.java.io :as io]
+    [nextjournal.clerk :as clerk])
   (:import
-   [java.io File]))
+    [java.io File]))
 
 (comment
   ;; start Clerk's built-in webserver on the default port 7777, opening the browser when done

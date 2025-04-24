@@ -1,6 +1,6 @@
 (ns advent-of-code-clj.y2021.d20
-  (:require [clojure.string :as str]
-            [advent-of-code-clj.utils :as u]))
+  (:require [advent-of-code-clj.utils :as u]
+            [clojure.string :as str]))
 
 (defn parse [t]
   (let [[iha grid] (->> t

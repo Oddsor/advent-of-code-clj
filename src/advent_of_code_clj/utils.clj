@@ -1,7 +1,7 @@
 (ns advent-of-code-clj.utils
   (:import [java.util HashSet])
   (:require
-   [advent-of-code-clj.matrix :as mx]))
+    [advent-of-code-clj.matrix :as mx]))
 
 (defn coord-map
   {:malli/schema [:-> [:sequential [:sequential :any]] [:map-of [:tuple :int :int] :any]]}
@@ -62,11 +62,11 @@
                    [start-node]
                    (let [next-nodes
                          (seq (eduction
-                               (mapcat graph-fn)
-                               (remove (fn [x]
-                                         (.contains visited x)))
-                               (distinct)
-                               nodes))]
+                                (mapcat graph-fn)
+                                (remove (fn [x]
+                                          (.contains visited x)))
+                                (distinct)
+                                nodes))]
                      (when next-nodes
                        (.addAll visited next-nodes))
                      (seq next-nodes)))))))

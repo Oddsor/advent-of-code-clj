@@ -1,6 +1,6 @@
 (ns advent-of-code-clj.y2021.d15
-  (:require [clojure.string :as str]
-            [advent-of-code-clj.utils :as u]
+  (:require [advent-of-code-clj.utils :as u]
+            [clojure.string :as str]
             [ubergraph.alg :as ua]))
 
 (defn parse [t]
@@ -24,13 +24,13 @@
         destination [(dec (count (first data))) (dec (count data))]]
     (-> (ua/shortest-path (fn [[x y]]
                             (eduction
-                             (filter (fn [[x y]]
-                                       (and (> (count data) x -1)
-                                            (> (count data) y -1))))
+                              (filter (fn [[x y]]
+                                        (and (> (count data) x -1)
+                                             (> (count data) y -1))))
 
-                             (map (fn [coord]
-                                    {:dest coord :weight (coord-map coord)}))
-                             (u/adjacent-hv x y)))
+                              (map (fn [coord]
+                                     {:dest coord :weight (coord-map coord)}))
+                              (u/adjacent-hv x y)))
                           {:start-node [0 0]
                            :end-node destination
                            :cost-attr :weight})

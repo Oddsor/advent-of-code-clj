@@ -1,8 +1,8 @@
 (ns y2024.d01-test
   (:require
-   [clojure.test :refer [deftest is]]
-   [y2024.d01 :as sut]
-   [advent-of-code-clj.input :as input]))
+    [advent-of-code-clj.input :as input]
+    [clojure.test :refer [deftest is]]
+    [y2024.d01 :as sut]))
 
 (deftest part-1-test
   (is (= 11 (sut/total-difference sut/test-data)))

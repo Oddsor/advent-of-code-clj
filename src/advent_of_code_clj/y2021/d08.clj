@@ -1,6 +1,6 @@
 (ns advent-of-code-clj.y2021.d08
-  (:require [clojure.string :as str]
-            [clojure.set :as set]))
+  (:require [clojure.set :as set]
+            [clojure.string :as str]))
 
 (defn parse [text]
   (->> (str/split-lines text)

@@ -1,8 +1,8 @@
 (ns advent-of-code-clj.utils-test
   (:require
-   [aoc.test-utils :as tu]
-   [advent-of-code-clj.utils :as utils]
-   [clojure.test :refer [deftest is testing use-fixtures]]))
+    [advent-of-code-clj.utils :as utils]
+    [aoc.test-utils :as tu]
+    [clojure.test :refer [deftest is testing use-fixtures]]))
 
 (use-fixtures :once tu/with-instrumentation)
 

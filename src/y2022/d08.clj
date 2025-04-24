@@ -20,21 +20,21 @@
 (defn part-1 [data]
   (->> (build-matrix data)
        (apply-to-nearby-trees
-        (fn [tree coords]
-          (let [lower-tree? #(> tree %)]
-            (some #(every? lower-tree? %) coords))))
+         (fn [tree coords]
+           (let [lower-tree? #(> tree %)]
+             (some #(every? lower-tree? %) coords))))
        (remove nil?)
        count))
 
 (defn part-2 [data]
   (->> (build-matrix data)
        (apply-to-nearby-trees
-        (fn [tree coords]
-          (let [add-if-visible (fn [acc other-tree]
-                                 ((if (> tree other-tree)
-                                    identity
-                                    reduced) (inc acc)))]
-            (apply * (map #(reduce add-if-visible 0 %) coords)))))
+         (fn [tree coords]
+           (let [add-if-visible (fn [acc other-tree]
+                                  ((if (> tree other-tree)
+                                     identity
+                                     reduced) (inc acc)))]
+             (apply * (map #(reduce add-if-visible 0 %) coords)))))
        (apply max)))
 
 (comment

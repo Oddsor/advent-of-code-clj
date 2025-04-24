@@ -1,7 +1,7 @@
 (ns advent-of-code-clj.y2021.d11
-  (:require [clojure.string :as str]
-            [com.rpl.specter :as s]
-            [advent-of-code-clj.utils :as u]))
+  (:require [advent-of-code-clj.utils :as u]
+            [clojure.string :as str]
+            [com.rpl.specter :as s]))
 
 (def parse-nums (comp (partial map read-string)
                       (partial re-seq #"\d")))
@@ -38,9 +38,9 @@
 
 (defn increment-all [coord-map]
   (s/transform
-   s/MAP-VALS
-   modinc
-   coord-map))
+    s/MAP-VALS
+    modinc
+    coord-map))
 
 (defn zero-coord-set [m]
   (set (keys (filter (comp zero? val) m))))

@@ -7,8 +7,8 @@
 
 (defn overlaps-at-all [[a b c d]]
   (seq (set/intersection
-        (set (range a (inc b)))
-        (set (range c (inc d))))))
+         (set (range a (inc b)))
+         (set (range c (inc d))))))
 (defn parse [data]
   (->> data (re-seq #"\d+") (map parse-long) (partition 4)))
 

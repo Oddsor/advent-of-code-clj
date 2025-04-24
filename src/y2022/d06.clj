@@ -18,7 +18,7 @@
 
 (comment (= 1651 (part-1 (slurp "input/2022/06.txt")))
          (crit/quick-bench
-          (= 3837 (part-2 (slurp "input/2022/06.txt"))))
+           (= 3837 (part-2 (slurp "input/2022/06.txt"))))
          ;; Execution time mean : 10,199115 ms
          )
 (defn unique-sequence-end-index-2 [length data]
@@ -33,7 +33,7 @@
   (with-bindings {#'*unique-sequence-end-index-fn* unique-sequence-end-index-2}
     (= 1651 (part-1 (slurp "input/2022/06.txt"))))
   (crit/quick-bench
-   (with-bindings {#'*unique-sequence-end-index-fn* unique-sequence-end-index-2}
-     (= 3837 (part-2 (slurp "input/2022/06.txt")))))
+    (with-bindings {#'*unique-sequence-end-index-fn* unique-sequence-end-index-2}
+      (= 3837 (part-2 (slurp "input/2022/06.txt")))))
   ;; Execution time mean : 5,866074 ms
   )

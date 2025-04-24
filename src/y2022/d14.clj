@@ -48,11 +48,11 @@
 
 (defn place-sand [max-y state]
   (lazy-seq
-   (cons state
-         (let [sp (next-sand-position max-y state)
-               ns (cond-> state sp (assoc sp :sand))]
-           (when-not (or (= (last sp) max-y) (= ns state))
-             (place-sand max-y ns))))))
+    (cons state
+          (let [sp (next-sand-position max-y state)
+                ns (cond-> state sp (assoc sp :sand))]
+            (when-not (or (= (last sp) max-y) (= ns state))
+              (place-sand max-y ns))))))
 
 (defn part-1 [data]
   (let [lines (parse data)]

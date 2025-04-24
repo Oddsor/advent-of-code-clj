@@ -1,7 +1,7 @@
 (ns y2022.d10-test
-  (:require [y2022.d10 :refer [cycle-seq part-1 part-2 process-cycles]]
+  (:require [clojure.string :as str]
             [clojure.test :refer [deftest is]]
-            [clojure.string :as str]))
+            [y2022.d10 :refer [cycle-seq part-1 part-2 process-cycles]]))
 
 (def test-data "noop
 addx 3

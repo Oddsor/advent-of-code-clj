@@ -1,6 +1,6 @@
 (ns y2022.d11-test
-  (:require [y2022.d11 :refer [part-1 part-2]]
-            [clojure.test :refer [deftest is]]))
+  (:require [clojure.test :refer [deftest is]]
+            [y2022.d11 :refer [part-1 part-2]]))
 
 (def test-data "Monkey 0:
   Starting items: 79, 98

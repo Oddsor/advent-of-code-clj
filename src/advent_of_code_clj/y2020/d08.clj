@@ -29,18 +29,18 @@ acc +6")
                                 :acc [(inc position) (+ acc value)]
                                 :jmp [(+ position value) acc])]
       (cond
-          ;; Hvis programmet kjørte til slutten
-          ;; uten å sendes out of bounds via jmp,
-          ;; så er kjøring vellykket
+        ;; Hvis programmet kjørte til slutten
+        ;; uten å sendes out of bounds via jmp,
+        ;; så er kjøring vellykket
         (and (= next-pos (count instruction-set))
              (= next-pos (inc position)))
         [:ok next-acc]
-          ;; Hvis en instruksjon er besøkt tidligere
-          ;; eller neste posisjon er out of bounds, halt
+        ;; Hvis en instruksjon er besøkt tidligere
+        ;; eller neste posisjon er out of bounds, halt
         (or (= visited-positions previous-positions)
             (not (>= (dec (count instruction-set)) next-pos 0)))
         [:halt acc]
-          ;; Kjør neste instruksjon
+        ;; Kjør neste instruksjon
         :else
         (recur next-pos next-acc visited-positions)))))
 
@@ -59,9 +59,9 @@ acc +6")
     (->> (range num-variations)
          (map (fn [index]
                 (s/transform
-                 [(s/filterer relevant-instruction?) (s/nthpath index) :op]
-                 flip-op
-                 instruction-set)))
+                  [(s/filterer relevant-instruction?) (s/nthpath index) :op]
+                  flip-op
+                  instruction-set)))
          (cons instruction-set))))
 
 (defn valid-results [instruction-set]

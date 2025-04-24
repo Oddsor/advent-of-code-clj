@@ -46,10 +46,10 @@
 
 (defn expand-outward [plots data]
   (lazy-seq
-   (if-let [xs (seq (mapcat (fn [[x y]]
-                              (higher-adjacents x y data)) plots))]
-     (cons plots (expand-outward xs data))
-     [plots])))
+    (if-let [xs (seq (mapcat (fn [[x y]]
+                               (higher-adjacents x y data)) plots))]
+      (cons plots (expand-outward xs data))
+      [plots])))
 
 (defn collect-plots [plot-groups]
   (set (mapcat identity plot-groups)))

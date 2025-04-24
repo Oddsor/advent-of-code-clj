@@ -1,6 +1,6 @@
 (ns y2022.d09-test
-  (:require [y2022.d09 :refer [part-1 part-2]]
-            [clojure.test :refer [deftest is]]))
+  (:require [clojure.test :refer [deftest is]]
+            [y2022.d09 :refer [part-1 part-2]]))
 
 (def test-data "R 4
 U 4

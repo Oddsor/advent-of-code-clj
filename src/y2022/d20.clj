@@ -15,14 +15,14 @@
             (take (* size times) (cycle with-ids))
             with-ids)
           (reduce
-           (fn [acc {n :number :as entry}]
-             (if (zero? n)
-               acc
-               (let [idx (.indexOf acc entry)
-                     new-idx (mod (+ idx n) (dec size))]
-                 (->> acc
-                      (setval [(nthpath idx)] NONE)
-                      (setval [(before-index new-idx)] entry))))) with-ids)
+            (fn [acc {n :number :as entry}]
+              (if (zero? n)
+                acc
+                (let [idx (.indexOf acc entry)
+                      new-idx (mod (+ idx n) (dec size))]
+                  (->> acc
+                       (setval [(nthpath idx)] NONE)
+                       (setval [(before-index new-idx)] entry))))) with-ids)
           (mapv :number)))))
 
 (defn reorder-fast
@@ -34,14 +34,14 @@
             (take (* size times) (cycle with-ids))
             with-ids)
           (reduce
-           (fn [^ArrayList acc {n :number :as entry}]
-             (if (zero? n)
-               acc
-               (let [idx (.indexOf acc entry)
-                     new-idx (mod (+ idx n) (dec size))]
-                 (doto acc
-                   (.remove ^int idx)
-                   (.add new-idx entry))))) (ArrayList. with-ids))
+            (fn [^ArrayList acc {n :number :as entry}]
+              (if (zero? n)
+                acc
+                (let [idx (.indexOf acc entry)
+                      new-idx (mod (+ idx n) (dec size))]
+                  (doto acc
+                    (.remove ^int idx)
+                    (.add new-idx entry))))) (ArrayList. with-ids))
           (mapv :number)))))
 
 (defn compute [xs]

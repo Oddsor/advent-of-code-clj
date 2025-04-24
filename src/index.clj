@@ -1,7 +1,7 @@
 ^:kindly/hide-code
 (ns index
   (:import
-   [java.io File]))
+    [java.io File]))
 
 ; # Advent of Code!
 
