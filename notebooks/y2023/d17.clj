@@ -70,7 +70,8 @@
   ([movement-algorithm data]
    (calc-cost movement-algorithm 0 data))
   ([movement-algorithm min-n data]
-   (let [m (update-vals (u/coord-map (str/split-lines (str/trim data))) #(Character/getNumericValue %))
+   (let [m (update-vals (u/coord-map (str/split-lines (str/trim data)))
+                        #(Character/getNumericValue ^char %))
          max-y (apply max (map second (keys m)))
          max-x (apply max (map first (keys m)))]
      (:cost (ua/shortest-path (partial movement-algorithm m)

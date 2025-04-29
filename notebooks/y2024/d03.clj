@@ -1,7 +1,7 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2024.d03
   (:require
-   [advent-of-code-clj.input :as input]))
+    [advent-of-code-clj.input :as input]))
 
 ; # 2024, dag 3
 
@@ -37,10 +37,10 @@
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn parse-and-multiply-when [text]
   (transduce (comp
-              (filter (fn [[_ _ x]] (= "mul" x)))
-              (map (fn [[_ _ _ num1 num2]]
-                     (* (Integer/parseInt num1)
-                        (Integer/parseInt num2)))))
+               (filter (fn [[_ _ x]] (= "mul" x)))
+               (map (fn [[_ _ _ num1 num2]]
+                      (* (Integer/parseInt num1)
+                         (Integer/parseInt num2)))))
              +
              (re-seq (regal/regex [:capture
                                    [:alt
@@ -115,7 +115,7 @@
 (defn prep-input [input]
   ; ?s slik at `.` matcher newline også
   ;`\Z` for å matche slutten av filen (fanger opp `don't` som ikke følges av en `do`)
-  (.replaceAll input prep-pattern ""))
+  (String/.replaceAll input prep-pattern ""))
 
 (prep-input "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?don't()mul(8,5))")
 

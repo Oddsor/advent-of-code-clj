@@ -1,6 +1,9 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2023.d12
-  (:require [clojure.string :as str]))
+  (:require
+    [clojure.string :as str])
+  (:import
+    [java.util Collection]))
 
 ;; # Year 2023; Day 12
 
@@ -22,11 +25,11 @@
 (defn split-line
   ([line] (split-line 1 line))
   ([scale line]
-   (let [[pattern numbers] (.split line " ")]
-     [(map parse-long (re-seq #"\d+" (String/join "," (repeat scale numbers))))
-      (.replaceAll
-       (String/join "?" (repeat scale pattern))
-       "\\.\\.+" ".")])))
+   (let [[pattern numbers] (String/.split line " ")]
+     [(map parse-long (re-seq #"\d+" (String/join "," ^Collection (repeat scale numbers))))
+      (String/.replaceAll
+        (String/join "?" ^Collection (repeat scale pattern))
+        "\\.\\.+" ".")])))
 
 (split-line (second (str/split-lines test-data)))
 
@@ -48,20 +51,20 @@
 (assert (= []
            (valid-remainder 3 "##")))
 (assert (=
-         [(list \? \? \? \? \? \? \?)]
-         (valid-remainder 3 "?###????????")))
+          [(list \? \? \? \? \? \? \?)]
+          (valid-remainder 3 "?###????????")))
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (def find-arrangements
   (memoize
-   (fn [[counts pattern]]
-     (if-let [[c & rst] (seq counts)]
-       (reduce +
-               (for [remaining-chars (valid-remainder c pattern)]
-                 (find-arrangements [rst remaining-chars])))
-       (if (every? #{\. \?} pattern)
-         1
-         0)))))
+    (fn [[counts pattern]]
+      (if-let [[c & rst] (seq counts)]
+        (reduce +
+                (for [remaining-chars (valid-remainder c pattern)]
+                  (find-arrangements [rst remaining-chars])))
+        (if (every? #{\. \?} pattern)
+          1
+          0)))))
 
 (= 1 (find-arrangements (split-line "???.### 1,1,3")))
 (= 4 (find-arrangements (split-line ".??..??...?##. 1,1,3")))
@@ -73,8 +76,8 @@
 ;; Solution for the test set:
 
 (= 21 (transduce (comp
-                  (map split-line)
-                  (map find-arrangements))
+                   (map split-line)
+                   (map find-arrangements))
                  + (str/split-lines test-data)))
 
 ;; This gives us the following solution for the input (use pmap to parallelize and speed things up):
@@ -82,12 +85,12 @@
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (comment
   (crit/quick-bench
-   (= 21 (transduce (comp (map split-line)
-                          (map find-arrangements))
-                    + (str/split-lines test-data))))
+    (= 21 (transduce (comp (map split-line)
+                           (map find-arrangements))
+                     + (str/split-lines test-data))))
   (crit/quick-bench
-   (= 7771 (apply + (map (comp find-arrangements split-line)
-                         (str/split-lines (slurp "input/2023/d12.txt")))))))
+    (= 7771 (apply + (map (comp find-arrangements split-line)
+                          (str/split-lines (slurp "input/2023/d12.txt")))))))
 
 ;; ## Part 2
 

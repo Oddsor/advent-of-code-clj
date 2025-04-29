@@ -1,10 +1,12 @@
 ^:kindly/hide-code
 (ns y2024.d18
   (:require
-   [advent-of-code-clj.input :as input]
-   [advent-of-code-clj.utils :as utils]
-   [clojure.core.matrix :as mx]
-   [ubergraph.alg :as ua]))
+    [advent-of-code-clj.input :as input]
+    [advent-of-code-clj.utils :as utils]
+    [clojure.core.matrix :as mx]
+    [ubergraph.alg :as ua])
+  (:import
+    [java.util Collection]))
 
 ; # 2024, dag 18
 
@@ -60,12 +62,12 @@
                          (not (and (>= dimy y 0)
                                    (>= dimx x 0))))]
     (ua/shortest-path
-     (fn [node]
-       (->> (apply utils/adjacent-hv node)
-            (remove (some-fn corrupted-locations
-                             out-of-bounds?))
-            (map (fn [x] {:dest x}))))
-     [0 0] [dimy dimx])))
+      (fn [node]
+        (->> (apply utils/adjacent-hv node)
+             (remove (some-fn corrupted-locations
+                              out-of-bounds?))
+             (map (fn [x] {:dest x}))))
+      [0 0] [dimy dimx])))
 
 ; Viktig å huske på at vi ikke skal ta inn alle nodene i input, så funksjonen vår kan
 ; ta to argumenter for dimensjon og antall "bytes":
@@ -106,13 +108,13 @@
 ; starten, midten og slutten av søkeområdet.
 
 (defn part-2 [dimensions input]
-  (let [total-number-of-bytes (alength (.split input "\n"))
+  (let [total-number-of-bytes (alength (String/.split input "\n"))
         corrupted-locations (corrupted-locations input)
         has-valid-path? #(find-path dimensions (set (take % corrupted-locations)))]
     (->> (nth corrupted-locations
               (utils/bisect has-valid-path? (dec total-number-of-bytes)))
          reverse
-         (map str)
+         ^Collection (map str)
          (String/join ","))))
 
 (delay (part-2 [6 6] test-input))

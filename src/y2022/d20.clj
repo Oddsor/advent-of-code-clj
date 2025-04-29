@@ -1,7 +1,9 @@
 (ns y2022.d20
-  (:require [clojure.edn :as edn]
-            [com.rpl.specter :refer [before-index NONE nthpath setval]])
-  (:import (java.util ArrayList)))
+  (:require
+    [clojure.edn :as edn]
+    [com.rpl.specter :refer [before-index NONE nthpath setval]])
+  (:import
+    (java.util ArrayList Collection List)))
 
 (defn parse [data]
   (edn/read-string (str "[" data "]")))
@@ -18,11 +20,12 @@
             (fn [acc {n :number :as entry}]
               (if (zero? n)
                 acc
-                (let [idx (.indexOf acc entry)
+                (let [idx (List/.indexOf acc entry)
                       new-idx (mod (+ idx n) (dec size))]
                   (->> acc
                        (setval [(nthpath idx)] NONE)
-                       (setval [(before-index new-idx)] entry))))) with-ids)
+                       (setval [(before-index new-idx)] entry)))))
+            with-ids)
           (mapv :number)))))
 
 (defn reorder-fast
@@ -34,18 +37,19 @@
             (take (* size times) (cycle with-ids))
             with-ids)
           (reduce
-            (fn [^ArrayList acc {n :number :as entry}]
+            (fn [acc {n :number :as entry}]
               (if (zero? n)
                 acc
-                (let [idx (.indexOf acc entry)
+                (let [idx (ArrayList/.indexOf acc entry)
                       new-idx (mod (+ idx n) (dec size))]
                   (doto acc
-                    (.remove ^int idx)
-                    (.add new-idx entry))))) (ArrayList. with-ids))
+                    (ArrayList/.remove ^int idx)
+                    (ArrayList/.add new-idx entry)))))
+            (ArrayList. ^Collection with-ids))
           (mapv :number)))))
 
 (defn compute [xs]
-  (let [zidx (.indexOf xs 0)]
+  (let [zidx (List/.indexOf xs 0)]
     (transduce (comp (drop zidx)
                      (take-nth 1000)
                      (take 4)) + (cycle xs))))

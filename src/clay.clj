@@ -6,6 +6,7 @@
     [java.io File]))
 
 (defn build-notebooks! [_]
+  (set! *warn-on-reflection* true)
   (clay/make!
     {:source-path (conj
                     (mapv str (filter File/.isFile (tree-seq File/.isDirectory File/.listFiles (File. "notebooks"))))

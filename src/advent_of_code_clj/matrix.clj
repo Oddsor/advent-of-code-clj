@@ -16,4 +16,4 @@
 (defn text->matrix
   {:malli/schema [:-> :string [:vector [:vector char?]]]}
   [text]
-  (mapv vec (.split text "\n")))
+  (mapv vec (String/.split text "\n")))

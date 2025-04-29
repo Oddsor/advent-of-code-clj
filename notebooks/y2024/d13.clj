@@ -1,10 +1,10 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2024.d13
   (:require
-   [clojure.core.match :as m]
-   [numeric.expresso.core :as e]
-   [instaparse.core :as insta]
-   [advent-of-code-clj.input :as input]))
+    [clojure.core.match :as m]
+    [numeric.expresso.core :as e]
+    [instaparse.core :as insta]
+    [advent-of-code-clj.input :as input]))
 
 ; # 2024, dag 13
 
@@ -46,7 +46,7 @@ Prize: X=18641, Y=10279")
                  num = #'\\d+'"))
 
 (def first-game-parsed
-  (insta/parse game-parser (first (.split test-data "\n\n"))))
+  (insta/parse game-parser (first (String/.split test-data "\n\n"))))
 
 ; Og core.match lar oss pattern-matche på parset output for å
 ; sette sammen dataene slik vi vil:
@@ -66,7 +66,7 @@ Prize: X=18641, Y=10279")
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn get-games [input]
   (map #(game-map (insta/parse game-parser %))
-       (.. input trim (split "\n\n"))))
+       (.. ^String input trim (split "\n\n"))))
 
 (get-games test-data)
 
@@ -148,9 +148,9 @@ Prize: X=18641, Y=10279")
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn game-matrices [input]
   (eduction
-   (map (fn [game-text]
-          (transpose (partitionv 2 (map parse-long (re-seq #"\d+" game-text))))))
-   (.. input trim (split "\n\n"))))
+    (map (fn [game-text]
+           (transpose (partitionv 2 (map parse-long (re-seq #"\d+" game-text))))))
+    (.. ^String input trim (split "\n\n"))))
 
 (defn det-2d
   "Determinant i en 2d-matrise"
@@ -180,19 +180,19 @@ Prize: X=18641, Y=10279")
 (defn solve-mx [games & {:keys [scale max-presses]
                          :or {scale nil max-presses nil}}]
   (eduction
-   (map (fn [[[ax bx rx]
-              [ay by ry] :as matrix]]
-          (if scale
-            [[ax bx (+ rx scale)]
-             [ay by (+ ry scale)]]
-            matrix)))
-   (map cramers-rule)
-   (remove (fn [[a b :as _result]]
-             (when max-presses
-               (and (>= a max-presses)
-                    (>= b max-presses)))))
-   (remove (fn [result] (some ratio? result)))
-   games))
+    (map (fn [[[ax bx rx]
+               [ay by ry] :as matrix]]
+           (if scale
+             [[ax bx (+ rx scale)]
+              [ay by (+ ry scale)]]
+             matrix)))
+    (map cramers-rule)
+    (remove (fn [[a b :as _result]]
+              (when max-presses
+                (and (>= a max-presses)
+                     (>= b max-presses)))))
+    (remove (fn [result] (some ratio? result)))
+    games))
 
 (->> (solve-mx (game-matrices test-data)
                :max-presses 100)

@@ -36,7 +36,7 @@
    [(dec x) (inc y)] [x (inc y)] [(inc x) (inc y)]])
 
 (defn split-newline [text]
-  (.split text "\n\n"))
+  (String/.split text "\n\n"))
 
 (defn emap [fun xs]
   (if (coll? xs)

@@ -1,7 +1,7 @@
 (ns y2024.d25
   (:require
-   [advent-of-code-clj.input :as input]
-   [advent-of-code-clj.matrix :as mx]))
+    [advent-of-code-clj.input :as input]
+    [advent-of-code-clj.matrix :as mx]))
 
 (def test-input "#####
 .####
@@ -61,9 +61,9 @@
        (mx/transpose (mx/text->matrix input))))
 
 (defn parse [input]
-  (let [lock-or-key (.split input "\n\n")
-        lock (filter #(.startsWith % "#####") lock-or-key)
-        key (remove #(.startsWith % "#####") lock-or-key)]
+  (let [lock-or-key (String/.split input "\n\n")
+        lock (filter #(String/.startsWith % "#####") lock-or-key)
+        key (remove #(String/.startsWith % "#####") lock-or-key)]
     {:keys (map parse-key key)
      :locks (map parse-lock lock)}))
 

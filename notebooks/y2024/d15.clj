@@ -43,7 +43,7 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^")
                  \> [0 1]})
 
 (defn map-and-moves [input]
-  (let [[game-map-str moves-str] (.split input "\n\n")
+  (let [[game-map-str moves-str] (String/.split input "\n\n")
         game-matrix (utils/text->matrix game-map-str)
         coord-map (utils/coord-map-fixed game-matrix)
         grouped (group-by val coord-map)]

@@ -1,8 +1,8 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2024.d07
   (:require
-   [nextjournal.clerk :as clerk]
-   [advent-of-code-clj.input :as input]))
+    [nextjournal.clerk :as clerk]
+    [advent-of-code-clj.input :as input]))
 
 ; # 2024, dag 7
 
@@ -46,14 +46,14 @@
                      operators))))
 
 (clerk/example
- (solve-equation 3267 [+ *] [81 40 27]))
+  (solve-equation 3267 [+ *] [81 40 27]))
 
 ; Og deretter filtrerer vi alle linjene basert på om de gir riktig
 ; svar eller ikke:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn solve [operators input]
-  (let [lines (map #(map parse-long (re-seq #"\d+" %)) (.split input "\n"))]
+  (let [lines (map #(map parse-long (re-seq #"\d+" %)) (String/.split input "\n"))]
     (->> lines
          (filter (fn [[solution & values]]
                    (solve-equation solution operators values)))
@@ -82,13 +82,13 @@
   (parse-long (str a b)))
 
 (clerk/example
- (|| 12 34))
+  (|| 12 34))
 
 ; Med den nye operatoren kan feks denne linjen bli sann: `7290: 6 8 6 15`
 
 (clerk/example
- (solve-equation 7290 [+ *] [6 8 6 15])
- (solve-equation 7290 [+ * ||] [6 8 6 15]))
+  (solve-equation 7290 [+ *] [6 8 6 15])
+  (solve-equation 7290 [+ * ||] [6 8 6 15]))
 
 ; Den nye operatoren gir svaret for del 2 på test-input:
 

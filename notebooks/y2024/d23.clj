@@ -1,9 +1,11 @@
 (ns y2024.d23
   (:require
-   [advent-of-code-clj.input :as input]
-   [loom.graph :as graph]
-   [loom.alg :as loom-alg]))
-
+    [advent-of-code-clj.input :as input]
+    [loom.alg :as loom-alg]
+    [loom.graph :as graph])
+  (:import
+    [java.util Collection]))
+(set! *warn-on-reflection* true)
 ; # 2024, dag 23
 
 ; ## Del 1
@@ -42,8 +44,8 @@ tb-vc
 td-yn")
 
 (defn computers->connections [input]
-  (->> (.split input "\n")
-       (map (fn [line] (.split line "-")))
+  (->> (String/.split input "\n")
+       (map (fn [line] (String/.split line "-")))
        (reduce (fn [acc [c1 c2]]
                  (-> acc
                      (update c1 (fnil conj #{}) c2)
@@ -52,7 +54,7 @@ td-yn")
 (computers->connections test-input)
 
 (defn find-interconnected-t-computers [computer->connection]
-  (let [t-computers (filter #(.startsWith % "t") (keys computer->connection))]
+  (let [t-computers (filter #(String/.startsWith % "t") (keys computer->connection))]
     (reduce (fn [acc t-c]
               (let [connected (computer->connection t-c)]
                 (into acc
@@ -101,7 +103,7 @@ test-cliques
 (->> test-cliques
      (sort-by count >)
      first
-     sort
+     ^Collection sort
      (String/join ","))
 
 ; Og får løsningen for reell input:
@@ -112,5 +114,5 @@ test-cliques
      loom-alg/maximal-cliques
      (sort-by count >)
      first
-     sort
+     ^Collection sort
      (String/join ","))

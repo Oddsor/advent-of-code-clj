@@ -16,7 +16,7 @@
         org.clojure/math.numeric-tower {:mvn/version "0.1.0"}
         expresso/expresso {:mvn/version "0.2.4"}
         dev.weavejester/medley {:mvn/version "1.8.1"}
-        io.github.nextjournal/clerk {:git/sha "b08b7ebc743be1f2a617beda1362f646b8aedaf6"
+        io.github.nextjournal/clerk {:git/sha "feac79f650d2882373232220b9a960b11b05195e"
                                      :git/url "https://github.com/nextjournal/clerk"}
         instaparse/instaparse {:mvn/version "1.5.0"}
         org.clojure/core.match {:mvn/version "1.1.0"}

@@ -1,7 +1,7 @@
 ^{:nextjournal.clerk/visibility {:code :hide}}
 (ns y2024.d05
   (:require
-   [advent-of-code-clj.input :as input]))
+    [advent-of-code-clj.input :as input]))
 
 ; # 2024, dag 5
 
@@ -43,12 +43,12 @@
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn parse-input [input]
-  (let [[rules seqs] (.split input "\n\n")
-        rulesets (->> (.split rules "\n")
-                      (map #(let [[k v] (.split % "\\|")]
+  (let [[rules seqs] (String/.split input "\n\n")
+        rulesets (->> (String/.split rules "\n")
+                      (map #(let [[k v] (String/.split % "\\|")]
                               {k #{v}}))
                       (apply merge-with into))
-        seqs (map #(.split % ",") (.split seqs "\n"))]
+        seqs (map #(String/.split % ",") (String/.split seqs "\n"))]
     [rulesets seqs]))
 
 (parse-input test-input)

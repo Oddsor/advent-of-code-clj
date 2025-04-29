@@ -7,7 +7,7 @@ KK677 28
 KTJJT 220
 QQQJA 483")
 
-(defn card->strength [card]
+(defn card->strength [^Character card]
   ({\T 10 \J 11 \Q 12 \K 13 \A 14} card (Character/getNumericValue card)))
 
 (defn hand->strength [hand]
@@ -25,7 +25,7 @@ QQQJA 483")
                 :else 0)]
     (into [boost] (map card->strength hand))))
 
-(defn card->strength-2 [card]
+(defn card->strength-2 [^Character card]
   ({\T 10 \J 1 \Q 12 \K 13 \A 14} card (Character/getNumericValue card)))
 
 (defn hand->strength-2 [hand]

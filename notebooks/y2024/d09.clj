@@ -1,10 +1,11 @@
 (ns y2024.d09
   (:require
-   [advent-of-code-clj.input :as input]
-   [tech.v3.datatype-api :as dtype]
-   [tech.v3.datatype.argops :as darg]
-   [medley.core :as medley])
-  (:import [java.util ArrayList]))
+    [advent-of-code-clj.input :as input]
+    [medley.core :as medley]
+    [tech.v3.datatype-api :as dtype]
+    [tech.v3.datatype.argops :as darg])
+  (:import
+    [java.util ArrayList Collection]))
 
 ; # 2024, dag 9
 
@@ -27,7 +28,7 @@
 
 (defn defragment
   "Konverter til arraylist fordi vi kommer til å mutere ofte"
-  [drive]
+  [^Collection drive]
   (loop [drive (ArrayList. drive)]
     (let [first-nil-idx (.indexOf drive nil)
           last-num-idx (- (.size drive) 1)]
@@ -41,9 +42,9 @@
 
 (defn checksum [drive]
   (transduce (comp
-              (map-indexed (fn [idx x]
-                             (if x (* idx x)
-                                 0))))
+               (map-indexed (fn [idx x]
+                              (if x (* idx x)
+                                  0))))
              + drive))
 
 (= 1928 (checksum (defragment (expand-drive test-input))))
@@ -66,11 +67,11 @@
                 (> (first target-nil-group) (first val-group)))
           (recur drive ids)
           (recur
-           (reduce (fn [d [idx vid]]
-                     (-> d
-                         (dtype/set-value! (target-nil-group idx) (d vid))
-                         (dtype/set-value! vid nil))) drive (medley/indexed val-group))
-           ids)))
+            (reduce (fn [d [idx vid]]
+                      (-> d
+                          (dtype/set-value! (target-nil-group idx) (d vid))
+                          (dtype/set-value! vid nil))) drive (medley/indexed val-group))
+            ids)))
       drive)))
 
 (checksum (lazy-defrag test-input))

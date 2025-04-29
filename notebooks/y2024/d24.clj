@@ -1,6 +1,8 @@
 (ns y2024.d24
   (:require
-   [advent-of-code-clj.input :as input]))
+    [advent-of-code-clj.input :as input])
+  (:import
+    [java.util Collection]))
 
 (def test-input "x00: 1
 x01: 0
@@ -63,12 +65,12 @@ tnw OR pbm -> gnj")
 (parse-logic-statement "hwm AND bqk -> z03")
 
 (defn solve-expressions [input]
-  (let [[initial-vars logic-statements] (map #(.trim %) (.split input "\n\n"))]
-    (loop [ls (map parse-logic-statement (.split logic-statements "\n"))
+  (let [[initial-vars logic-statements] (map String/.trim (String/.split input "\n\n"))]
+    (loop [ls (map parse-logic-statement (String/.split logic-statements "\n"))
            known-vals (into {} (map (fn [line]
-                                      (let [[id val] (map #(.trim %) (.split line ":"))]
+                                      (let [[id val] (map String/.trim (String/.split line ":"))]
                                         [id (parse-long val)]))
-                                    (.split initial-vars "\n")))]
+                                    (String/.split initial-vars "\n")))]
 
       (let [solvable (filter #(every? known-vals (:inputs %)) ls)
             unsolvable (filter #(not-every? known-vals (:inputs %)) ls)
@@ -83,8 +85,8 @@ tnw OR pbm -> gnj")
 
 (defn part-1 [input]
   (let [results (solve-expressions input)
-        z-vals (reverse (sort-by key (filter #(.startsWith (key %) "z") results)))]
-    (read-string (str "2r" (String/join "" (map (comp str val) z-vals))))))
+        z-vals (reverse (sort-by key (filter #(String/.startsWith (key %) "z") results)))]
+    (read-string (str "2r" (String/join "" ^Collection (mapv (comp str val) z-vals))))))
 
 (part-1 test-input)
 

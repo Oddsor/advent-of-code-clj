@@ -1,6 +1,6 @@
 (ns y2024.d11
   (:require
-   [advent-of-code-clj.input :as input]))
+    [advent-of-code-clj.input :as input]))
 
 ; # 2024, dag 11
 
@@ -15,8 +15,8 @@
 
 (defn split-number [number]
   (let [nstr (str number)
-        left-half (.substring nstr 0 (/ (.length nstr) 2))
-        right-half (.substring nstr (/ (.length nstr) 2) (.length nstr))]
+        left-half (String/.substring nstr 0 (/ (String/.length nstr) 2))
+        right-half (String/.substring nstr (/ (String/.length nstr) 2) (String/.length nstr))]
     [(parse-long left-half) (parse-long right-half)]))
 
 (split-number 123456)
@@ -35,23 +35,23 @@
 
 (def blink
   (memoize
-   (fn [n number]
-     (if (zero? n)
-       1
-       (cond
-         (zero? number) (blink (dec n) 1)
-         (-> number digits even?) (let [[n1 n2] (split-number number)]
-                                    (+ (blink (dec n) n1)
-                                       (blink (dec n) n2)))
-         :else (blink (dec n) (* 2024 number)))))))
+    (fn [n number]
+      (if (zero? n)
+        1
+        (cond
+          (zero? number) (blink (dec n) 1)
+          (-> number digits even?) (let [[n1 n2] (split-number number)]
+                                     (+ (blink (dec n) n1)
+                                        (blink (dec n) n2)))
+          :else (blink (dec n) (* 2024 number)))))))
 
 ; Vi looper igjennom de "steinene" vi har fra test-input og reell input i en solve-funksjon:
 
 (defn solve [iterations input]
   (transduce
-   (comp (map parse-long)
-         (map #(blink iterations %)))
-   +  (re-seq #"\d+" input)))
+    (comp (map parse-long)
+          (map #(blink iterations %)))
+    +  (re-seq #"\d+" input)))
 
 ; Med det får vi riktig svar på all input for del 1:
 
