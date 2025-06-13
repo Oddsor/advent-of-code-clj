@@ -19,14 +19,14 @@ jobs:
           java-version: '17'
 
       - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@13.1
+        uses: DeLaGuardo/setup-clojure@13.4
         with:
-          cli: 1.12.0.1488
+          cli: 1.12.1.1550
       - name: Build notebooks
         env:
           INPUT_SALT: ${{ secrets.INPUT_SALT }}
         run: make build-clerk
-      
+
       - name: Build clay
         env:
           INPUT_SALT: ${{ secrets.INPUT_SALT }}

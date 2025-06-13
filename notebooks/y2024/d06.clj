@@ -1,7 +1,17 @@
 (ns y2024.d06
   (:require
-   [medley.core :as medley]
-   [advent-of-code-clj.utils :as utils]))
+    [advent-of-code-clj.input :as input]
+    [advent-of-code-clj.utils :as utils]
+    [clojure.core.reducers :as r]
+    [medley.core :as medley]))
+
+;; # Dag 6 - Guard Gallivant
+
+;; ## Del 1
+
+;; Del 1 ser ut til å være ganske grei; gitt en start-posisjon, finn alle
+;; posisjoner som vakten dekker hvis den går fremover og snur til høyre hver
+;; gang den treffer et hinder (`#`)
 
 (def test-input "....#.....
 .........#
@@ -14,31 +24,103 @@
 #.........
 ......#...")
 
+;; Vi parser input til et koordinat-map. For å finne start-posisjonen
+;; henter vi koordinatet som har verdien `^`:
+
 (defn find-starting-pos [coord-map]
   (key (medley/find-first #(= \^ (val %)) coord-map)))
+
+;; Retningen defineres av en retningsvektor, som endrer seg slik at ny
+;; retning til høyre fra forrige retning; representert som et hashmap:
 
 (def new-dir {[0 -1] [1 0]
               [1 0] [0 1]
               [0 1] [-1 0]
               [-1 0] [0 -1]})
 
-(defn part-1 [input]
-  (let [cm (utils/coord-map (utils/text->matrix input))
-        starting-pos (find-starting-pos cm)
-        starting-dir [0 -1]]
-    (loop [pos starting-pos
-           dir starting-dir
-           visited-nodes (transient #{})]
+;; Nå simulerer vi bevegelsen til vakten ved å flytte posisjonen ett steg
+;; hver runde. Alle besøkte posisjoner lagres i et sett.
 
+;; Ganske naiv løsning, men den kjører på greie ~75ms for inputten:
+
+(defn part-1 [input]
+  (let [coord-map (->> input
+                       utils/text->matrix
+                       utils/coord-map)]
+    (loop [pos (find-starting-pos coord-map)
+           dir [0 -1]
+           visited-nodes #{}]
       (let [new-pos (mapv + pos dir)
-            nvisited (conj! visited-nodes pos)]
-        (case (cm new-pos)
+            nvisited (conj visited-nodes pos)]
+        (case (coord-map new-pos)
           (\. \^) (recur new-pos dir nvisited)
           \# (recur pos (new-dir dir) nvisited)
-          nil (count (persistent! nvisited)))))))
+          nil (count nvisited))))))
 
 (part-1 test-input)
 
-(comment
-  (part-1 (slurp "input/2024/input6.txt")))
+(part-1 (input/get-input 2024 6))
 
+;; ## Part 2
+
+;; I del 2 skal vi finne ut hvor mange måter vakten kan bli satt fast
+;; i en uendelig loop på.
+
+;; Den naive løsningen ville vært å plassere et hinder på alle besøkte
+;; noder, og deretter kjøre simuleringen på nytt for å oppdage en loop,
+;; men vi mangler en god måte å oppdage loops på. Vi starter der:
+
+(defn find-path
+  ([coord-map] (find-path coord-map (find-starting-pos coord-map)))
+  ([coord-map starting-pos]
+   (loop [pos starting-pos
+          dir [0 -1]
+          visited #{}]
+     (if (visited [pos dir])
+       [:loop visited]
+       (let [nvisited (conj visited [pos dir])
+             new-pos (mapv + pos dir)]
+         (case (coord-map new-pos)
+           (\. \^) (recur new-pos dir nvisited)
+           \# (recur pos (new-dir dir) nvisited)
+           nil [:end nvisited]))))))
+
+(find-path (-> test-input utils/text->matrix utils/coord-map))
+
+(defn yields-loop? [coord-map starting-pos obstacle-position]
+  (let [coord-map-with-obstacle (assoc coord-map obstacle-position \#)
+        [result _] (find-path coord-map-with-obstacle starting-pos)]
+    (= :loop result)))
+
+#_(defn count-loops
+    ([cmap] 0)
+    ([cmap acc coord]
+     (if (yields-loop? cmap coord)
+       (inc acc)
+       acc)))
+
+(defn part-2 [input]
+  (let [coord-map (-> input utils/text->matrix utils/coord-map)
+        [_ original-path] (find-path coord-map)
+        original-coordinates (into #{}
+                                   (map first)
+                                   original-path)
+        starting-pos (find-starting-pos coord-map)
+        coordinates-minus-starting-pos (disj original-coordinates
+                                             starting-pos)]
+    #_(r/fold 32
+              +
+              #(count-loops coord-map %1 %2)
+              coordinates-minus-starting-pos)
+    (count (filter true? (pmap #(yields-loop? coord-map starting-pos %) coordinates-minus-starting-pos)))))
+
+(part-2 test-input)
+
+;; På ekte input tar den naive løsningen 7 sekunder med parallellisering, som
+;; er ganske langsomt
+
+(delay (time (part-2 (input/get-input 2024 6))))
+
+(comment
+  (require '[clj-async-profiler.core :as prof])
+  (prof/serve-ui 8080))

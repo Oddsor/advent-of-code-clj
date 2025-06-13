@@ -3,7 +3,7 @@
     [clojure.edn :as edn]
     [com.rpl.specter :refer [before-index NONE nthpath setval]])
   (:import
-    (java.util ArrayList Collection List)))
+    (java.util ArrayList List)))
 
 (defn parse [data]
   (edn/read-string (str "[" data "]")))
@@ -45,7 +45,7 @@
                   (doto acc
                     (ArrayList/.remove ^int idx)
                     (ArrayList/.add new-idx entry)))))
-            (ArrayList. ^Collection with-ids))
+            (ArrayList. ^List with-ids))
           (mapv :number)))))
 
 (defn compute [xs]
