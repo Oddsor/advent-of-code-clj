@@ -2,7 +2,6 @@
   (:require
     [advent-of-code-clj.input :as input]
     [advent-of-code-clj.utils :as utils]
-    [clojure.core.reducers :as r]
     [medley.core :as medley]))
 
 ;; # Dag 6 - Guard Gallivant
@@ -33,10 +32,17 @@
 ;; Retningen defineres av en retningsvektor, som endrer seg slik at ny
 ;; retning til høyre fra forrige retning; representert som et hashmap:
 
-(def new-dir {[0 -1] [1 0]
-              [1 0] [0 1]
-              [0 1] [-1 0]
-              [-1 0] [0 -1]})
+(def new-dir {:u :r
+              :r :d
+              :d :l
+              :l :u})
+
+(defn move [[x y] dir]
+  (case dir
+    :u [x (dec y)]
+    :r [(inc x) y]
+    :d [x (inc y)]
+    :l [(dec x) y]))
 
 ;; Nå simulerer vi bevegelsen til vakten ved å flytte posisjonen ett steg
 ;; hver runde. Alle besøkte posisjoner lagres i et sett.
@@ -48,9 +54,9 @@
                        utils/text->matrix
                        utils/coord-map)]
     (loop [pos (find-starting-pos coord-map)
-           dir [0 -1]
+           dir :u
            visited-nodes #{}]
-      (let [new-pos (mapv + pos dir)
+      (let [new-pos (move pos dir)
             nvisited (conj visited-nodes pos)]
         (case (coord-map new-pos)
           (\. \^) (recur new-pos dir nvisited)
@@ -74,12 +80,12 @@
   ([coord-map] (find-path coord-map (find-starting-pos coord-map)))
   ([coord-map starting-pos]
    (loop [pos starting-pos
-          dir [0 -1]
+          dir :u
           visited #{}]
      (if (visited [pos dir])
        [:loop visited]
        (let [nvisited (conj visited [pos dir])
-             new-pos (mapv + pos dir)]
+             new-pos (move pos dir)]
          (case (coord-map new-pos)
            (\. \^) (recur new-pos dir nvisited)
            \# (recur pos (new-dir dir) nvisited)
@@ -92,13 +98,6 @@
         [result _] (find-path coord-map-with-obstacle starting-pos)]
     (= :loop result)))
 
-#_(defn count-loops
-    ([cmap] 0)
-    ([cmap acc coord]
-     (if (yields-loop? cmap coord)
-       (inc acc)
-       acc)))
-
 (defn part-2 [input]
   (let [coord-map (-> input utils/text->matrix utils/coord-map)
         [_ original-path] (find-path coord-map)
@@ -108,11 +107,10 @@
         starting-pos (find-starting-pos coord-map)
         coordinates-minus-starting-pos (disj original-coordinates
                                              starting-pos)]
-    #_(r/fold 32
-              +
-              #(count-loops coord-map %1 %2)
-              coordinates-minus-starting-pos)
-    (count (filter true? (pmap #(yields-loop? coord-map starting-pos %) coordinates-minus-starting-pos)))))
+    (->> coordinates-minus-starting-pos
+         (pmap #(yields-loop? coord-map starting-pos %))
+         (filter true?)
+         count)))
 
 (part-2 test-input)
 
