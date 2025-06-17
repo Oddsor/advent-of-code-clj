@@ -2,7 +2,10 @@
   (:require
     [advent-of-code-clj.input :as input]
     [advent-of-code-clj.utils :as utils]
-    [medley.core :as medley]))
+    [medley.core :as medley])
+  (:import
+    (clojure.lang IPersistentVector)
+    [java.util HashSet]))
 
 ;; # Dag 6 - Guard Gallivant
 
@@ -37,12 +40,15 @@
               :d :l
               :l :u})
 
-(defn move [[x y] dir]
-  (case dir
-    :u [x (dec y)]
-    :r [(inc x) y]
-    :d [x (inc y)]
-    :l [(dec x) y]))
+(defn move [pos dir]
+  ;; Raskere enn destrukturering (https://blog.redplanetlabs.com/2020/09/02/clojure-faster/#destructuring)
+  (let [x (IPersistentVector/.nth pos 0)
+        y (IPersistentVector/.nth pos 1)]
+    (case dir
+      :u [x (dec y)]
+      :r [(inc x) y]
+      :d [x (inc y)]
+      :l [(dec x) y])))
 
 ;; Nå simulerer vi bevegelsen til vakten ved å flytte posisjonen ett steg
 ;; hver runde. Alle besøkte posisjoner lagres i et sett.
@@ -79,17 +85,17 @@
 (defn find-path
   ([coord-map] (find-path coord-map (find-starting-pos coord-map)))
   ([coord-map starting-pos]
-   (loop [pos starting-pos
-          dir :u
-          visited #{}]
-     (if (visited [pos dir])
-       [:loop visited]
-       (let [nvisited (conj visited [pos dir])
-             new-pos (move pos dir)]
-         (case (coord-map new-pos)
-           (\. \^) (recur new-pos dir nvisited)
-           \# (recur pos (new-dir dir) nvisited)
-           nil [:end nvisited]))))))
+   (let [visited (HashSet.)]
+     (loop [pos starting-pos
+            dir :u]
+       (if (HashSet/.contains visited [pos dir])
+         [:loop visited]
+         (let [new-pos (move pos dir)]
+           (HashSet/.add visited [pos dir])
+           (case (coord-map new-pos)
+             (\. \^) (recur new-pos dir)
+             \# (recur pos (new-dir dir))
+             nil [:end visited])))))))
 
 (find-path (-> test-input utils/text->matrix utils/coord-map))
 
@@ -114,11 +120,7 @@
 
 (part-2 test-input)
 
-;; På ekte input tar den naive løsningen 7 sekunder med parallellisering, som
-;; er ganske langsomt
+;; På ekte input tar løsningen ~1.9 sekunder med parallellisering, som
+;; er litt langsommere enn jeg håpet. Her kan vi nok optimalisere enda mer
 
-(delay (time (part-2 (input/get-input 2024 6))))
-
-(comment
-  (require '[clj-async-profiler.core :as prof])
-  (prof/serve-ui 8080))
+(delay (part-2 (input/get-input 2024 6)))
