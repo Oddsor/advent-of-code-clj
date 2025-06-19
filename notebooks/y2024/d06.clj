@@ -120,7 +120,7 @@
 
 (part-2 test-input)
 
-;; På ekte input tar løsningen ~1.9 sekunder med parallellisering, som
+;; På ekte input tar løsningen ~1.3 sekunder med parallellisering, som
 ;; er litt langsommere enn jeg håpet. Her kan vi nok optimalisere enda mer
 
 (delay (part-2 (input/get-input 2024 6)))

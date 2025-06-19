@@ -8,7 +8,7 @@
         criterium/criterium {:mvn/version "0.4.6"}
         #_#_pangloss/pattern {:git/url "https://github.com/pangloss/pattern"
                               :git/sha "affc7f3ac907f5b98de6638574a741e4693f1648"}
-        techascent/tech.ml.dataset {:mvn/version "7.060"}
+        techascent/tech.ml.dataset {:mvn/version "7.061"}
         org.flatland/ordered {:mvn/version "1.15.12"}
         com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.4.0"}
         djblue/portal {:mvn/version "0.59.1"}
@@ -24,7 +24,7 @@
         philoskim/debux {:mvn/version "0.9.1"}
         lambdaisland/regal {:mvn/version "0.1.175"}
         io.github.cdimascio/dotenv-java {:mvn/version "3.2.0"}
-        com.taoensso/nippy {:mvn/version "3.5.0"}
+        com.taoensso/nippy {:mvn/version "3.6.0"}
         org.babashka/http-client {:mvn/version "0.4.23"}
         net.mikera/vectorz-clj {:mvn/version "0.48.0"}
         org.scicloj/clay {:mvn/version "2-beta31.1"}
