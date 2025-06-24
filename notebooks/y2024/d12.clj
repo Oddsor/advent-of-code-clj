@@ -79,7 +79,10 @@ MMMISSJEEE")
   :kindly/hide-code true}
 [:pre
  (with-out-str
-   (mx/pm test-matrix))]
+   (mx/pm (mx/emap (fn [sym]
+                     (if (= \C sym)
+                       \C \.))
+                   test-matrix)))]
 
 ; Å finne alle regioner gjøres ved å undersøke alle noder i matrisen,
 ; finne hele regionen noden tilhører. Vi unngår å finne samme region
@@ -107,8 +110,7 @@ MMMISSJEEE")
 ^{:nextjournal.clerk/visibility {:result :hide}}
 (defn open-sides [node-set node]
   (->> node
-       (apply utils/adjacent-hv)
-       (remove node-set)
+       (find-neighbours (complement node-set))
        count))
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
@@ -224,6 +226,5 @@ AAAAAA")
 
 (part-2 test-input-part-2)
 
-(time
-  (part-2 (input/get-input 2024 12)))
+(part-2 (input/get-input 2024 12))
 
