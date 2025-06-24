@@ -134,7 +134,7 @@ MMMISSJEEE")
         regions (find-regions coord-map)]
     (transduce (map price-fn) + regions)))
 
-(= 1930 (total-price circumference-price test-input))
+(total-price circumference-price test-input)
 
 (total-price circumference-price (input/get-input 2024 12))
 
@@ -211,7 +211,7 @@ MMMISSJEEE")
   (let [area (count nodes)]
     (* area (count-corners nodes))))
 
-(total-price sides-price test-input)
+(= 1206 (total-price sides-price test-input))
 
 ; En viktig "gotcha" er at vi må ta høyde for at to gjerder kan "møtes",
 ; så i eksempelet under har region `A` to hjørner i midten.
@@ -223,7 +223,7 @@ ABBAAA
 ABBAAA
 AAAAAA")
 
-(total-price sides-price test-input-part-2)
+(= 368 (total-price sides-price test-input-part-2))
 
 (total-price sides-price (input/get-input 2024 12))
 
