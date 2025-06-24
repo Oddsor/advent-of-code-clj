@@ -122,21 +122,21 @@ MMMISSJEEE")
 ; "Prisen" i en region er areal multiplisert med omkrets:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(defn region-price [nodes]
+(defn circumference-price [nodes]
   (let [area (count nodes)]
     (* area (circumference nodes))))
 
 ; Og løsningen på del 1 er summen av prisen i alle regioner:
 
 ^{:nextjournal.clerk/visibility {:result :hide}}
-(defn part-1 [input]
+(defn total-price [price-fn input]
   (let [coord-map (utils/coord-map-fixed (utils/text->matrix input))
         regions (find-regions coord-map)]
-    (transduce (map region-price) + regions)))
+    (transduce (map price-fn) + regions)))
 
-(= 1930 (part-1 test-input))
+(= 1930 (total-price circumference-price test-input))
 
-(part-1 (input/get-input 2024 12))
+(total-price circumference-price (input/get-input 2024 12))
 
 ; ## Del 2
 
@@ -146,73 +146,72 @@ MMMISSJEEE")
 ; Antar at man må se på et sett med 4 koordinater sammen for å avgjøre om
 ; vi har et hjørne.
 
-(defn box-coordinates [x y]
+(defn square [x y]
   (for [x [x (inc x)]
         y [y (inc y)]]
     [x y]))
 
-(box-coordinates 1 1)
+(square 1 1)
 
-(defn corner-boxes [[x y]]
-  (let [top-left (box-coordinates (dec x) (dec y))
-        top-right (box-coordinates x (dec y))
-        bottom-left (box-coordinates (dec x) y)
-        bottom-right (box-coordinates x y)]
+(defn corner-squares [[x y]]
+  (let [top-left (square (dec x) (dec y))
+        top-right (square x (dec y))
+        bottom-left (square (dec x) y)
+        bottom-right (square x y)]
     [top-left top-right bottom-left bottom-right]))
 
-(corner-boxes [1 1])
+(corner-squares [1 1])
 
-; Gitt testmatrisen:
+; I testdataene våre skal region `R` ha 10 sider:
 
 ^{:nextjournal.clerk/viewer nextjournal.clerk/html
   :kind/hiccup true
   :kindly/hide-code true}
 [:pre
  (with-out-str
-   (mx/pm test-matrix))]
+   (mx/pm (mx/emap (fn [sym]
+                     (if (= \R sym)
+                       \R \.))
+                   test-matrix)))]
 
-; Så skal regionen `R` øverst til høyre ha et hjørne på
-; blant annet koordinat 0,0 og 1,2
+; Gitt et 2x2 søkeområde, så finner vi ett hjørne dersom
+; det er 1 eller 3 noder fra regionen til stede, eller
+; to hjørner dersom det er 2 som er plassert diagonalt:
 
-(defn corners [node-set box]
-  (let [node-or-nil (mapv node-set box)
-        nodes-in-box (count (filter identity node-or-nil))]
-    (case nodes-in-box
+(defn corners-in-square [node-set square]
+  (let [node-or-nil (mapv node-set square)
+        nodes-in-square (count (filter identity node-or-nil))]
+    (case nodes-in-square
       (1 3) 1
       4 0
-      ; If we're in a search box with diagonal nodes, count as two corners
+      ; If we're in a search square with diagonal nodes, count as two corners
       2 (let [[tl tr bl br] node-or-nil]
           (if (or (= nil tl br)
                   (= nil tr bl))
             2
             0)))))
 
-(defn find-corners [nodes]
+(defn count-corners [nodes]
   (let [node-set (set nodes)]
-    (->> (reduce (fn [{:keys [visited num-corners]} [y x]]
-                   (let [boxes-to-test (remove visited (corner-boxes [y x]))
-                         n-corners (->> boxes-to-test
-                                        (map (fn [box]
-                                               (corners node-set box)))
+    (->> (reduce (fn [{:keys [visited num-corners]} node]
+                   (let [squares-to-test (remove visited (corner-squares node))
+                         n-corners (->> squares-to-test
+                                        (map (fn [square]
+                                               (corners-in-square node-set square)))
                                         (reduce + 0))]
-                     {:visited (into visited boxes-to-test)
+                     {:visited (into visited squares-to-test)
                       :num-corners (+ num-corners n-corners)}))
                  {:visited #{} :num-corners 0}
                  nodes)
          :num-corners)))
 
-(find-corners (find-region test-coordmap [0 0]))
+(count-corners (find-region test-coordmap [0 0]))
 
-(defn region-discounted-price [nodes]
+(defn sides-price [nodes]
   (let [area (count nodes)]
-    (* area (find-corners nodes))))
+    (* area (count-corners nodes))))
 
-(defn part-2 [input]
-  (let [coord-map (utils/coord-map-fixed (utils/text->matrix input))
-        regions (find-regions coord-map)]
-    (transduce (map region-discounted-price) + regions)))
-
-(part-2 test-input)
+(total-price sides-price test-input)
 
 ; En viktig "gotcha" er at vi må ta høyde for at to gjerder kan "møtes",
 ; så i eksempelet under har region `A` to hjørner i midten.
@@ -224,7 +223,7 @@ ABBAAA
 ABBAAA
 AAAAAA")
 
-(part-2 test-input-part-2)
+(total-price sides-price test-input-part-2)
 
-(part-2 (input/get-input 2024 12))
+(total-price sides-price (input/get-input 2024 12))
 
