@@ -114,7 +114,7 @@ p=9,5 v=-3,-3")
         (map parse-long)
         (partition 4)
         (map #(zipmap [:x :y :dx :dy] %))
-        ds/->dataset))
+        (ds/->>dataset {:parser-fn :int})))
 
 (robots-col-major test-data)
 
@@ -123,45 +123,27 @@ p=9,5 v=-3,-3")
          :x (dtype/->int-array
               (dtype/emap (fn [x dx dimx]
                             (mod (+' x dx) dimx))
-                          :int (:x dataset) (:dx dataset) dimx))
+                          nil (:x dataset) (:dx dataset) dimx))
          :y (dtype/->int-array
               (dtype/emap (fn [y dy dimy]
                             (mod (+' y dy) dimy))
-                          :int (:y dataset) (:dy dataset) dimy))))
-
-(defn variance [column]
-  (let [mean (dfn/mean column)]
-    (/ (dfn/sum (dtype/->double-array
-                  (dtype/emap (fn [x]
-                                (math/pow (- x mean) 2))
-                              :double column)))
-       (count column))))
-
-(variance (range 100000))
-
-(variance [1 2 3 4 4 4 4 6 6 8 8])
-
-(variance (repeat 10 5))
+                          nil (:y dataset) (:dy dataset) dimy))))
 
 (defn total-variance [dataset]
-  (let [x-axis (:x dataset)
-        y-axis (:y dataset)
-        x-variance (variance x-axis)
-        y-variance (variance y-axis)]
-    (+ x-variance y-variance)))
+  (+' (dfn/variance (:x dataset))
+      (dfn/variance (:y dataset))))
 
 ; Nå har vi det vi trenger for å finne løsningen, som forøvrig kjører på rundt ~3 sekunder
 
 (defn part-2 [input]
   (let [dimensions [101 103]]
-    (->> (iterate #(move-all-robots dimensions %)
-                  (robots-col-major input))
+    (->> (robots-col-major input)
+         (iterate #(move-all-robots dimensions %))
          (take 7000)
-         (map-indexed (fn [idx game-state]
-                        (let [total-variance (total-variance game-state)]
-                          {:positions game-state
-                           :idx idx
-                           :total-variance total-variance})))
+         (map-indexed (fn [idx dataset]
+                        {:dataset dataset
+                         :idx idx
+                         :total-variance (total-variance dataset)}))
          (sort-by :total-variance)
          first)))
 
@@ -176,7 +158,7 @@ p2-solution
                             robot-positions)))
            (mx/new-matrix y x))))
 
-; Og slik ser brettet ut!
+; Og slik ser brettet ut:
 
 ^{:kind/hiccup true
   :kindly/hide-code true}
@@ -184,6 +166,6 @@ p2-solution
         (str/replace
           (with-out-str
             (print-board [103 101]
-                         (let [p (:positions @p2-solution)]
+                         (let [p (:dataset @p2-solution)]
                            (map vector (:y p) (:x p)))))
           #"\h" "")])
