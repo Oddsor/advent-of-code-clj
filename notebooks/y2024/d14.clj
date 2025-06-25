@@ -1,9 +1,10 @@
+^:kindly/hide-code
 (ns y2024.d14
   (:require
     [advent-of-code-clj.input :as input]
     [clojure.core.matrix :as mx]
-    [clojure.math :as math]
     [clojure.string :as str]
+    [medley.core :as medley]
     [tech.v3.dataset-api :as ds]
     [tech.v3.datatype-api :as dtype]
     [tech.v3.datatype.functional-api :as dfn]))
@@ -46,15 +47,17 @@ p=9,5 v=-3,-3")
 ; ved å bare skalere opp retningsvektoren. Posisjonen vil være
 ; utenfor matrisen, så det må rettes opp senere.
 
-(defn move-robot [times position velocity]
-  (mx/add position (mx/scale velocity times)))
+(defn move-robot
+  ([[posy posx] [vy vx]] [(+' posy vy) (+' posx vx)])
+  ([times position velocity]
+   (mx/add position (mx/scale velocity times))))
 
 ; For å få roboten tilbake i matrisen trenger vi bare å bruke modulo,
 ; fordi robotene "teleporterer" til den andre siden av matrisen når
 ; de går out of bounds.
 
-(defn bound-robot [dimensions position]
-  (mapv #(mod %1 %2) position dimensions))
+(defn bound-robot [[dimy dimx] [posy posx]]
+  [(mod posy dimy) (mod posx dimx)])
 
 (->> (apply move-robot 100 (first (robots test-data)))
      (bound-robot [7 11]))
@@ -80,14 +83,17 @@ p=9,5 v=-3,-3")
               x (range (int (Math/ceil (/ dimx 2))) dimx)]
           [y x]))])
 
+(defn safety-score [quadrants robot-positions]
+  (transduce (map (fn [q]
+                    (count (filter q robot-positions))))
+             *
+             quadrants))
+
 (defn part-1 [dims input]
   (let [robot-positions (->> (robots input)
                              (map #(apply move-robot 100 %))
                              (map #(bound-robot dims %)))]
-    (transduce (map (fn [q]
-                      (count (filter q robot-positions))))
-               *
-               (quadrants dims))))
+    (safety-score (quadrants dims) robot-positions)))
 
 (part-1 [7 11] test-data)
 
@@ -147,7 +153,7 @@ p=9,5 v=-3,-3")
          (sort-by :total-variance)
          first)))
 
-(def p2-solution (delay (part-2 (input/get-input 2024 14))))
+(def p2-solution (delay (time (part-2 (input/get-input 2024 14)))))
 
 p2-solution
 
@@ -169,3 +175,32 @@ p2-solution
                          (let [p (:dataset @p2-solution)]
                            (map vector (:y p) (:x p)))))
           #"\h" "")])
+
+; Har i etterkant også lært at det er mulig å gjenbruke kode fra del 1, ved å finne robot-posisjonene som
+; utgjør lavest "safety score":
+
+(defn move-all-robots-2 [dimensions robots]
+  (map (fn [[pos v]]
+         [(->> (move-robot pos v)
+               (bound-robot dimensions))
+          v])
+       robots))
+
+(defn part-2-safety [input]
+  (let [dimensions [103 101]
+        quadrants (quadrants dimensions)]
+    (->> (loop [game-state (robots input)
+                seen #{}
+                safety-scores []]
+           (let [new-state (move-all-robots-2 dimensions game-state)]
+             (cond (seen new-state) safety-scores
+                   ; Safeguard in case we don't detect a cycle
+                   (> (count safety-scores) 30000) nil
+                   :else
+                   (recur new-state
+                          (conj seen game-state)
+                          (conj safety-scores (safety-score quadrants (map first game-state)))))))
+         medley/indexed
+         (apply medley/least-by second))))
+
+(delay (part-2-safety (input/get-input 2024 14)))
