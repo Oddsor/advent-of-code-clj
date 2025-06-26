@@ -1,8 +1,18 @@
+^:kindly/hide-code
 (ns y2024.d15
   (:require
-   [advent-of-code-clj.utils :as utils]
-   [advent-of-code-clj.input :as input]
-   [clojure.core.matrix :as mx]))
+    [advent-of-code-clj.input :as input]
+    [advent-of-code-clj.utils :as utils]
+    [clojure.core.matrix :as mx]))
+
+; # Dag 15: Warehouse Woes
+
+; Denne gangen skal vi simulere at en robot dytter bokser rundt i et
+; varehus; løsningen er kalkulert ut fra sluttposisjonen til boksene.
+
+; ## Del 1
+
+; Gitt følgende testdata:
 
 (def test-data-small "########
 #..O.O.#
@@ -37,11 +47,6 @@ vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v
 ^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>
 v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^")
 
-(def dir-vector {\< [0 -1]
-                 \v [1 0]
-                 \^ [-1 0]
-                 \> [0 1]})
-
 (defn map-and-moves [input]
   (let [[game-map-str moves-str] (String/.split input "\n\n")
         game-matrix (utils/text->matrix game-map-str)
@@ -50,12 +55,19 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^")
     {:game-state {:walls (->> (grouped \#) (map key) set)
                   :boxes (->> (grouped \O) (map key) set)
                   :pos (->> (grouped \@) first key)}
-     :moves (keep dir-vector moves-str)}))
+     :moves (filter #{\^ \> \< \v} moves-str)}))
 
 (map-and-moves test-data-small)
 
+(defn new-position [[old-y old-x] move]
+  (case move
+    \^ [(dec old-y) old-x]
+    \> [old-y (inc old-x)]
+    \v [(inc old-y) old-x]
+    \< [old-y (dec old-x)]))
+
 (defn push-boxes [walls boxes pos move]
-  (let [path (seq (iteration (fn [x] (mapv + x move))
+  (let [path (seq (iteration (fn [x] (new-position x move))
                              :initk pos
                              :somef #(not (walls %))))
         box-positions (map boxes path)
@@ -63,7 +75,9 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^")
     (if (= (count boxes-to-move) (count path))
       nil ; No boxes could be moved
       (let [remaining-boxes (remove boxes-to-move boxes)]
-        (into (set remaining-boxes) (map (fn [box] (mapv + box move)) boxes-to-move))))))
+        (into (set remaining-boxes) (map (fn [box]
+                                           (new-position box move))
+                                         boxes-to-move))))))
 
 (defn print-board [{:keys [pos walls boxes]}]
   (let [dimensions [(inc (apply max (map first walls)))
@@ -74,10 +88,11 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^")
                               (cond
                                 (walls idx) \#
                                 (boxes idx) \O
-                                (= pos idx) \@)) (apply mx/new-matrix dimensions)))))
+                                (= pos idx) \@))
+                            (apply mx/new-matrix dimensions)))))
 
 (defn make-move [{:keys [pos walls boxes] :as game-state} move]
-  (let [maybe-new-pos (mapv + pos move)]
+  (let [maybe-new-pos (new-position pos move)]
     (cond
       (walls maybe-new-pos) game-state
       (boxes maybe-new-pos) (if-let [pushed-boxes (push-boxes walls boxes pos move)]
@@ -104,3 +119,11 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^")
 (part-1 (map-and-moves test-data-large))
 
 (delay (part-1 (map-and-moves (input/get-input 2024 15))))
+
+; ## Del 2
+
+(comment
+  (require '[scicloj.clay.v2.api :as clay])
+  (clay/start!)
+  (clay/make! {:source-path ["notebooks/y2024/d15.clj"]
+               :live-reload true}))
