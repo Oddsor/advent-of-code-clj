@@ -3,11 +3,11 @@
   (:require
     [advent-of-code-clj.input :as input]
     [clojure.core.matrix :as mx]
-    [clojure.string :as str]
     [medley.core :as medley]
     [tech.v3.dataset-api :as ds]
     [tech.v3.datatype-api :as dtype]
-    [tech.v3.datatype.functional-api :as dfn]))
+    [tech.v3.datatype.functional-api :as dfn]
+    [clojure.math :as math]))
 
 ; # Dag 14: "Restroom Redoubt"
 
@@ -157,24 +157,20 @@ p=9,5 v=-3,-3")
 
 p2-solution
 
-(defn print-board [[y x] robot-positions]
-  (mx/pm (mx/emap-indexed
-           (fn [index _]
-             (count (filter (set [(vec index)])
-                            robot-positions)))
-           (mx/new-matrix y x))))
-
 ; Og slik ser brettet ut:
 
 ^{:kind/hiccup true
   :kindly/hide-code true}
-(delay [:pre {:style {:line-height "0.875em"}}
-        (str/replace
-          (with-out-str
-            (print-board [103 101]
-                         (let [p (:dataset @p2-solution)]
-                           (map vector (:y p) (:x p)))))
-          #"\h" "")])
+(let [scale 6
+      {:keys [x y]} (:dataset @p2-solution)
+      x (mapv #(* % scale) x)
+      y (mapv #(* % scale) y)]
+  [:svg {:width (* 101 scale)
+         :height (* 103 scale)}
+   (for [i (range (count x))]
+     [:rect {:x (x i) :y (y i)
+             :width (math/floor-div scale 2)
+             :height (math/floor-div scale 2)}])])
 
 ; Har i etterkant også lært at det er mulig å gjenbruke kode fra del 1, ved å finne robot-posisjonene som
 ; utgjør lavest "safety score":
