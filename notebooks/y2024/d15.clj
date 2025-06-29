@@ -79,15 +79,6 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^")
     \v [(inc old-y) old-x]
     \< [old-y (dec old-x)]))
 
-(defn print-board [{:keys [coord-map robot]}]
-  (let [dimensions [(inc (apply max (map first (keys coord-map))))
-                    (inc (apply max (map second (keys coord-map))))]]
-    (with-out-str
-      (mx/pm (mx/emap-indexed (fn [idx _]
-                                (if (= idx robot) \@
-                                    (coord-map idx)))
-                              (apply mx/new-matrix dimensions))))))
-
 ; Denne algoritmen gir en score til en gitt boks:
 
 (defn gps-score [[y x :as _box]]
@@ -129,6 +120,16 @@ v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^")
       (assoc game-state
              :robot new-robot-position
              :coord-map (update-map coord-map new-locations move)))))
+
+^{:kindly/hide-code true}
+(defn print-board [{:keys [coord-map robot]}]
+  (let [dimensions [(inc (apply max (map first (keys coord-map))))
+                    (inc (apply max (map second (keys coord-map))))]]
+    (with-out-str
+      (mx/pm (mx/emap-indexed (fn [idx _]
+                                (if (= idx robot) \@
+                                    (coord-map idx)))
+                              (apply mx/new-matrix dimensions))))))
 
 ^{:kind/hiccup true :kindly/hide-code true}
 (let [game-state (:game-state (map-and-moves "...#...
