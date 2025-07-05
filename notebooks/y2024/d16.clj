@@ -4,7 +4,8 @@
     [advent-of-code-clj.utils :as utils]
     [ubergraph.alg :as ua]
     [medley.core :as medley]
-    [advent-of-code-clj.input :as input]))
+    [advent-of-code-clj.input :as input]
+    [clojure.data.priority-map :as p]))
 
 ; # Dag 16: Reindeer Maze
 
@@ -90,84 +91,93 @@
 ; I del 2 trenger vi å vite om alle nodene som ligger langs de korteste
 ; rutene igjennom labyrinten.
 
-(defn neighbour-nodes-2 [{[y x] :dest}]
-  [{:dest [(dec y) x]
-    :direction :n}
-   {:dest [(inc y) x]
-    :direction :s}
-   {:dest [y (inc x)]
-    :direction :e}
-   {:dest [y (dec x)]
-    :direction :w}])
+(defn opposite-direction [direction]
+  (case direction
+    :n :s :s :n :e :w :w :e))
 
-(defn node-filter-fn-2 [world]
-  (fn [{:keys [dest]}]
-    (= \. (world dest))))
+(defn neighbour-nodes-2 [world]
+  (fn [{[y x] :position dir :direction :as node}]
+    (let [opposite (opposite-direction dir)]
+      (filterv (fn [{:keys [position direction]}]
+                 (and (#{\. \S \E} (world position))
+                      (not= direction opposite)))
+               [{:position [(dec y) x]
+                 :direction :n}
+                {:position [(inc y) x]
+                 :direction :s}
+                {:position [y (inc x)]
+                 :direction :e}
+                {:position [y (dec x)]
+                 :direction :w}]))))
 
 (defn edge-cost-2 [[{dir-source :direction} {dir-target :direction}]]
   (if (= dir-source dir-target)
     1
     1001))
 
-(defn djikstra [g filter-fn cost-fn start end]
-  (loop [queue [start]
-         visited #{}
-         dist {(:dest start) 0}
-         prev {}
-         iterations 0]
-    (if (> 1000 iterations)
-      (let [edges (distinct (mapcat (fn [node]
-                                      (for [neighbour (g node)
-                                            :when (and (filter-fn neighbour)
-                                                       (not (visited (:dest neighbour))))]
-                                        [node neighbour]))
-                                    queue))]
-        (if (> (count edges) 0)
-          (let [{n-dist :dist
-                 n-prev :prev} (reduce (fn [{d :dist :as acc} [source neighbour :as e]]
-                                         (let [old-dist-t (or (d (:dest neighbour)) Long/MAX_VALUE)
-                                               old-dist-s (d (:dest source))
-                                               edge-cost (cost-fn e)
-                                               new-dist-n (+ old-dist-s edge-cost)]
-                                           (if (>= old-dist-t new-dist-n)
-                                             (->  acc
-                                                  (assoc-in [:dist (:dest neighbour)] new-dist-n)
-                                                  (update-in [:prev (:dest neighbour)]
-                                                             (fn [x]
-                                                               (let [x (or x #{})]
-                                                                 (conj x (:dest source))))))
-                                             acc)))
-                                       {:dist dist :prev prev}
-                                       edges)]
-            (recur (map second edges)
-                   (into visited (map :dest) queue)
-                   n-dist
-                   n-prev
-                   (inc iterations)))
-          [iterations dist prev]))
-      nil)))
+(defn djikstra [g cost-fn end-node? start]
+  (loop [queue (p/priority-map [start] 0)
+         good-paths []
+         seen {}
+         min-cost Long/MAX_VALUE]
+    (if (empty? queue)
+      {:seen seen :min-cost min-cost :paths good-paths}
+      (let [[path path-cost] (first queue)
+            current (peek path)
+            seen' (assoc seen current path-cost)
+            queue' (pop queue)]
+        (if (end-node? current)
+          (cond (> min-cost path-cost)
+                (recur queue' [path] seen' (long path-cost))
+                (= min-cost path-cost)
+                (recur queue' (conj good-paths path) seen' (long path-cost))
+                :else
+                (recur queue' good-paths seen' min-cost))
+          (let [neighbour->cost (into {}
+                                      (for [neighbour (g current)
+                                            :let [cost (+ path-cost
+                                                          (cost-fn [current neighbour]))]
+                                            :when (> (or (seen neighbour) Long/MAX_VALUE)
+                                                     cost)]
+                                        [(conj path neighbour) cost]))]
+            (recur (into queue' neighbour->cost)
+                   good-paths
+                   seen'
+                   min-cost)))))))
 
-(let [{:keys [start end world]} (parse-data test-data)]
-  (-> (djikstra neighbour-nodes-2
-                (node-filter-fn-2 world)
-                edge-cost-2
-                {:dest start :direction :e}
-                end)
-      #_#_second (get [1 13])))
+(let [{:keys [start world end]} (parse-data (input/get-input 2024 16))
+      end-node? (fn [node] (= end (:position node)))
+      calculation (djikstra (neighbour-nodes-2 world)
+                            edge-cost-2
+                            end-node?
+                            {:position start :direction :e})]
+  (->> calculation :min-cost))
 
-(defn part-2 [input]
-  (let [{:keys [start end world]} (parse-data input)]
-    (ua/shortest-path
-      neighbour-nodes
-      {:start-node [start :e] ; Start facing towards the east
-       :end-node? (fn [[position _direction]]
-                    (= end position))
-       :node-filter (node-filter-fn world)
-       :cost-fn edge-cost
-       :traverse true})))
+(let [{:keys [start world end]} (parse-data test-data)
+      end-node? (fn [node] (= end (:position node)))
+      calculation (djikstra (neighbour-nodes-2 world)
+                            edge-cost-2
+                            end-node?
+                            {:position start :direction :e})]
+  (->> calculation
+       :min-cost))
 
-(let [paths (part-2 test-data)
-      last-path (last paths)
-      similar-cost (filter (fn [x]
-                             (= (:cost x) (:cost last-path))) paths)]
-  similar-cost)
+(let [{:keys [start world end]} (parse-data test-data)
+      end-node? (fn [node] (= end (:position node)))]
+  (->> (djikstra (neighbour-nodes-2 world)
+                 edge-cost-2
+                 end-node?
+                 {:position start :direction :e})
+       :paths
+       (mapcat #(map :position %))
+       distinct count))
+
+(let [{:keys [start world end]} (parse-data (input/get-input 2024 16))
+      end-node? (fn [node] (= end (:position node)))]
+  (->> (djikstra (neighbour-nodes-2 world)
+                 edge-cost-2
+                 end-node?
+                 {:position start :direction :e})
+       :paths
+       (mapcat #(map :position %))
+       distinct count))

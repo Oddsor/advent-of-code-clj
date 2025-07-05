@@ -16,7 +16,7 @@
         org.clojure/math.numeric-tower {:mvn/version "0.1.0"}
         expresso/expresso {:mvn/version "0.2.4"}
         dev.weavejester/medley {:mvn/version "1.8.1"}
-        io.github.nextjournal/clerk {:git/sha "db26c836a11ed1b8dd6e304d0057c937df579a39"
+        io.github.nextjournal/clerk {:git/sha "31fbb987eb7715b079ce482d8d1cd32433b4a0e1"
                                      :git/url "https://github.com/nextjournal/clerk"}
         instaparse/instaparse {:mvn/version "1.5.0"}
         org.clojure/core.match {:mvn/version "1.1.0"}
@@ -28,10 +28,11 @@
         org.babashka/http-client {:mvn/version "0.4.23"}
         net.mikera/vectorz-clj {:mvn/version "0.48.0"}
         org.scicloj/clay {:mvn/version "2-beta31.1"}
-        org.scicloj/kindly {:mvn/version "4-beta16"}
+        org.scicloj/kindly {:mvn/version "4-beta17"}
         uncomplicate/fluokitten {:mvn/version "0.10.0"}
         metosin/malli {:mvn/version "0.19.1"}
-        aysylu/loom {:mvn/version "1.0.2"}}
+        aysylu/loom {:mvn/version "1.0.2"}
+        org.clojure/data.priority-map {:mvn/version "1.2.0"}}
  :aliases
  {:profiler {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.6.2"}}
              :jvm-opts ["-Djdk.attach.allowAttachSelf"]}
