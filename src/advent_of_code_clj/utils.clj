@@ -1,7 +1,9 @@
 (ns advent-of-code-clj.utils
-  (:import [java.util HashSet])
   (:require
-    [advent-of-code-clj.matrix :as mx]))
+    [advent-of-code-clj.matrix :as mx]
+    [clojure.data.priority-map :as p])
+  (:import
+    [java.util HashSet]))
 
 (defn coord-map
   {:malli/schema [:-> [:sequential [:sequential :any]] [:map-of [:tuple :int :int] :any]]}
@@ -96,3 +98,29 @@
   (let [visited (doto (HashSet.) (.add start-node))]
     (loop [node [start-node]]
       (let [neighbours (graph-fn node)]))))
+
+(defn djikstra [g cost-fn end-node? start]
+  (loop [queue (p/priority-map start 0)
+         seen {}
+         min-cost Long/MAX_VALUE]
+    (if (empty? queue)
+      {:seen seen :min-cost min-cost}
+      (let [[current path-cost] (peek queue)
+            seen' (assoc seen current path-cost)
+            queue' (pop queue)]
+        (if (end-node? current)
+          (cond (> min-cost path-cost)
+                (recur queue' seen' (long path-cost))
+                (= min-cost path-cost)
+                (recur queue' seen' (long path-cost))
+                :else
+                (recur queue' seen' min-cost))
+          (let [neighbour->cost (into {} (for [neighbour (g current)
+                                               :let [cost (+ path-cost
+                                                             (cost-fn [current neighbour]))]
+                                               :when (> (seen neighbour Long/MAX_VALUE)
+                                                        cost)]
+                                           [neighbour cost]))]
+            (recur (into queue' neighbour->cost)
+                   seen'
+                   min-cost)))))))
