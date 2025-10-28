@@ -147,9 +147,10 @@ MMMISSJEEE")
 ; vi har et hjørne.
 
 (defn square [x y]
-  (for [x [x (inc x)]
-        y [y (inc y)]]
-    [x y]))
+  [[x y]
+   [x (inc y)]
+   [(inc x) y]
+   [(inc x) (inc y)]])
 
 (square 1 1)
 
@@ -193,16 +194,15 @@ MMMISSJEEE")
 
 (defn count-corners [nodes]
   (let [node-set (set nodes)]
-    (->> (reduce (fn [{:keys [visited num-corners]} node]
+    (->> nodes
+         (reduce (fn [{:keys [visited num-corners]} node]
                    (let [squares-to-test (remove visited (corner-squares node))
-                         n-corners (->> squares-to-test
-                                        (map (fn [square]
-                                               (corners-in-square node-set square)))
-                                        (reduce + 0))]
+                         n-corners (transduce (map (fn [square]
+                                                     (corners-in-square node-set square)))
+                                              + 0 squares-to-test)]
                      {:visited (into visited squares-to-test)
                       :num-corners (+ num-corners n-corners)}))
-                 {:visited #{} :num-corners 0}
-                 nodes)
+                 {:visited #{} :num-corners 0})
          :num-corners)))
 
 (count-corners (find-region test-coordmap [0 0]))
@@ -226,4 +226,3 @@ AAAAAA")
 (= 368 (total-price sides-price test-input-part-2))
 
 (total-price sides-price (input/get-input 2024 12))
-
