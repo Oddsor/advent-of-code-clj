@@ -1,36 +1,40 @@
 {:paths ["notebooks" "src"]
- :deps {org.clojure/clojure {:mvn/version "1.12.1"}
-        com.rpl/specter {:mvn/version "1.1.4"}
+ :deps {org.clojure/clojure {:mvn/version "1.12.3"}
+        com.rpl/specter {:mvn/version "1.1.6"}
         meander/epsilon {:mvn/version "0.0.650"}
-        datascript/datascript {:mvn/version "1.7.5"}
+        datascript/datascript {:mvn/version "1.7.8"}
         net.mikera/core.matrix {:mvn/version "0.63.0"}
         ubergraph/ubergraph {:mvn/version "0.9.0"}
         criterium/criterium {:mvn/version "0.4.6"}
         #_#_pangloss/pattern {:git/url "https://github.com/pangloss/pattern"
                               :git/sha "affc7f3ac907f5b98de6638574a741e4693f1648"}
+        <<<<<<< HEAD
         techascent/tech.ml.dataset {:mvn/version "7.062"}
+        =======
+        techascent/tech.ml.dataset {:mvn/version "7.066"}
+        >>>>>>> 147e133 (Update deps)
         org.flatland/ordered {:mvn/version "1.15.12"}
         com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.4.0"}
         djblue/portal {:mvn/version "0.61.0"}
         org.clojure/math.combinatorics {:mvn/version "0.3.0"}
         org.clojure/math.numeric-tower {:mvn/version "0.1.0"}
         expresso/expresso {:mvn/version "0.2.4"}
-        dev.weavejester/medley {:mvn/version "1.8.1"}
-        io.github.nextjournal/clerk {:git/sha "b0fd4458a1af7f3ecd95e0cde41761ac297e24f5"
+        dev.weavejester/medley {:mvn/version "1.9.0"}
+        io.github.nextjournal/clerk {:git/sha "1b8f844e29a06ab1ff82bb95e4310c0c94b8ebdb"
                                      :git/url "https://github.com/nextjournal/clerk"}
         instaparse/instaparse {:mvn/version "1.5.0"}
         org.clojure/core.match {:mvn/version "1.1.0"}
-        com.github.flow-storm/flow-storm-dbg {:mvn/version "4.5.0"}
+        com.github.flow-storm/flow-storm-dbg {:mvn/version "4.5.8"}
         philoskim/debux {:mvn/version "0.9.1"}
         lambdaisland/regal {:mvn/version "0.1.175"}
         io.github.cdimascio/dotenv-java {:mvn/version "3.2.0"}
         com.taoensso/nippy {:mvn/version "3.6.0"}
         org.babashka/http-client {:mvn/version "0.4.23"}
         net.mikera/vectorz-clj {:mvn/version "0.48.0"}
-        org.scicloj/clay {:mvn/version "2-beta31.1"}
-        org.scicloj/kindly {:mvn/version "4-beta18"}
+        org.scicloj/clay {:mvn/version "2.0.1"}
+        org.scicloj/kindly {:mvn/version "4-beta20"}
         uncomplicate/fluokitten {:mvn/version "0.10.0"}
-        metosin/malli {:mvn/version "0.19.1"}
+        metosin/malli {:mvn/version "0.19.2"}
         aysylu/loom {:mvn/version "1.0.2"}
         org.clojure/data.priority-map {:mvn/version "1.2.0"}}
  :aliases

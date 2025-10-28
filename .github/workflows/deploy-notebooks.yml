@@ -21,7 +21,7 @@ jobs:
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@13.4
         with:
-          cli: 1.12.1.1561
+          cli: 1.12.3.1577
       - name: Build notebooks
         env:
           INPUT_SALT: ${{ secrets.INPUT_SALT }}

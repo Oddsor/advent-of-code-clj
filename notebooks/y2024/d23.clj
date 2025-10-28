@@ -80,7 +80,7 @@ td-yn")
 
 (apply max-key val (frequencies (find-interconnected-computers (computers->connections test-input))))
 
-(time (String/join "," ^Iterable (sort (key (apply max-key val (frequencies (find-interconnected-computers (computers->connections (input/get-input 2024 23)))))))))
+(String/join "," ^Iterable (sort (key (apply max-key val (frequencies (find-interconnected-computers (computers->connections (input/get-input 2024 23))))))))
 
 ; ## Del 2 med Loom
 

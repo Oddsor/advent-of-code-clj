@@ -1,7 +1,7 @@
 (ns y2024.d04
-  (:require [advent-of-code-clj.utils :as utils]
-            [clojure.core.matrix :as mx]
-            [advent-of-code-clj.input :as input]))
+  (:require [advent-of-code-clj.input :as input]
+            [advent-of-code-clj.utils :as utils]
+            [clojure.core.matrix :as mx]))
 
 ; # 2024, dag 4
 
@@ -50,18 +50,22 @@ MXMXAXMASX")))
 (coord-line 4 [0 0])
 
 (defn find-xmas [coord-map coord]
-  (let [seqs (coord-line 4 coord)]
-    (->> seqs
-         (mapv (fn [xs]
-                 (mapv coord-map xs)))
-         (filterv #{[\X \M \A \S]})
-         count)))
+  (->> (coord-line 4 coord)
+       (filter (fn [xs]
+                 (= [\X \M \A \S]
+                    (mapv coord-map xs))))
+       count))
+
+(defn position-that-contains-letter? [letter]
+  (fn [map-entry]
+    (when (->> map-entry val #{letter})
+      (key map-entry))))
 
 (defn part-1 [coord-map]
-  (let [x-es (filter (comp #{\X} val) coord-map)]
-    (->> x-es
-         (map #(find-xmas coord-map (key %)))
-         (reduce +))))
+  (->> coord-map
+       (keep (position-that-contains-letter? \X))
+       (map #(find-xmas coord-map %))
+       (reduce +)))
 
 (= 18 (part-1 test-data))
 
@@ -77,10 +81,10 @@ MXMXAXMASX")))
          (= 2))))
 
 (defn part-2 [coord-map]
-  (let [a-s (filter (comp #{\A} val) coord-map)]
-    (->> a-s
-         (filter #(find-x-mas coord-map (key %)))
-         count)))
+  (->> coord-map
+       (keep (position-that-contains-letter? \A))
+       (filter #(find-x-mas coord-map %))
+       count))
 
 (= 9 (part-2 test-data))
 
@@ -115,24 +119,25 @@ MXMXAXMASX")
   "Hent alle 'linjer' i matrisen, altså alle rader, kolonner
    og alle diagonaler."
   [matrix]
-  (let [lines (concat
-               (mx/rows matrix)
-               (mx/columns matrix)
-               (let [dim (mx/dimension-count matrix 0)]
-                 (for [i (range (- (- dim 4)) (- dim 3))]
-                   (mx/diagonal matrix i)))
-               (let [dim (mx/dimension-count matrix 0)
-                     rotated (mx/transpose (reverse matrix))]
-                 (for [i (range (- (- dim 4)) (- dim 3))]
-                   (mx/diagonal rotated i))))]
-    lines))
+  (concat
+    (mx/rows matrix)
+    (mx/columns matrix)
+    (let [dim (mx/dimension-count matrix 0)]
+      (for [i (range (- (- dim 4)) (- dim 3))]
+        (mx/diagonal matrix i)))
+    (let [dim (mx/dimension-count matrix 0)
+          rotated (mx/transpose (reverse matrix))]
+      (for [i (range (- (- dim 4)) (- dim 3))]
+        (mx/diagonal rotated i)))))
 
 (defn count-xmas-along-line
   "Finn alle XMAS langs en linje, både forlengs og baklengs"
   [line]
-  (count (filterv #{[\X \M \A \S]
-                    [\S \A \M \X]}
-                  (partitionv 4 1 line))))
+  (->> line
+       (partitionv 4 1)
+       (filterv #{[\X \M \A \S]
+                  [\S \A \M \X]})
+       count))
 
 (defn part-1-matrix [input]
   (transduce (map count-xmas-along-line)
