@@ -102,9 +102,9 @@ L82")
          num-zeroes 0]
     (if increment
       (let [[new-pos hits] (apply-movement pos increment)]
-        (recur new-pos
+        (recur (long new-pos)
                remainder
-               (+ num-zeroes hits)))
+               (+ num-zeroes ^long  hits)))
       num-zeroes)))
 
 (part-2 test-increments)
