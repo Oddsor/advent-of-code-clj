@@ -5,6 +5,8 @@
 
 ; # 2025, dag 1
 
+; ## Del 1
+
 ; Første oppgave i år er ganske grei; gitt et startpunkt og en serie med addisjoner/subtraksjoner,
 ; finn hvor mange ganger man treffer tallet null.
 
@@ -29,29 +31,82 @@ L82")
 
 ; Først trenger vi å omforme teksten til en sekvens av tall:
 
-(defn line->adjustment [line]
+(defn line->increment [line]
   (let [[dir n] [(first line) (Integer/parseInt (subs line 1))]]
     (case dir
       \L (- n)
       \R n)))
 
 (defn parse-input [input-text]
-  (map line->adjustment (String/.split input-text "\n")))
+  (map line->increment (String/.split input-text "\n")))
 
-(parse-input test-data)
+(def test-increments
+  (parse-input test-data))
+
+(defn new-position ^long [init increment]
+  (mod (+ init increment) 100))
+
+(defn positions [increment]
+  (reductions new-position
+              50
+              increment))
+
+(positions test-increments)
 
 ; Så kan vi redusere over sekvensen og telle antall treff på null:
 
-(defn part-1 [adjustments]
-  (let [start 50
-        values (reductions (fn [acc x]
-                             (mod (+ acc x) 100))
-                           start
-                           adjustments)]
-    (count (filter zero? values))))
+(defn part-1 [increments]
+  (->> (positions increments)
+       (filter zero?)
+       count))
 
-(part-1 (parse-input test-data))
+(part-1 test-increments)
 
 ; Som forventet ble svaret 3, så da kan vi prøve med det faktiske inputet:
 
 (part-1 (parse-input (input/get-input 2025 1)))
+
+; ## Del 2
+
+; Del 2 har en vrien vri; nå skal vi ta høyde for alle ganger vi "treffer null", ikke bare gangene
+; vi lander på null. For eksempel vil første bevegelse (L68) treffe 0 og lande på 82.
+; I tillegg vil feks bevegelsen "R1000" treffe null 10 ganger, som vi også må ta høyde for.
+
+; Forsøkte initielt å løse denne matematisk, men endte opp med en "bruteforce" variant fordi jeg fikk
+; feil svar på ekte input.
+
+(defn apply-movement [start increment]
+  (loop [current start
+         num-zeroes 0
+         remaining increment]
+    (if (zero? remaining)
+      [current num-zeroes]
+      (let [new-pos (mod (if (pos? remaining)
+                           (inc current)
+                           (dec current)) 100)
+            n-remaining (if (pos? remaining)
+                          (dec remaining)
+                          (inc remaining))]
+        (recur new-pos
+               (if (zero? new-pos)
+                 (inc num-zeroes)
+                 num-zeroes)
+               n-remaining)))))
+
+(apply-movement 50 1000)
+(apply-movement 50 -68)
+
+(defn part-2 [increments]
+  (loop [pos 50
+         [increment & remainder] increments
+         num-zeroes 0]
+    (if increment
+      (let [[new-pos hits] (apply-movement pos increment)]
+        (recur new-pos
+               remainder
+               (+ num-zeroes hits)))
+      num-zeroes)))
+
+(part-2 test-increments)
+
+(part-2 (parse-input (input/get-input 2025 1)))
