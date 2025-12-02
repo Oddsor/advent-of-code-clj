@@ -19,11 +19,10 @@
 (defn get-numeric-sequence [input-text]
   (->> input-text
        (re-seq #"(\d+)-(\d+)")
-       (map (fn [[_ range-start range-end-inclusive]]
-              (let [r-start (parse-long range-start)
-                    r-end (parse-long range-end-inclusive)]
-                (range r-start (inc r-end)))))
-       (apply concat)))
+       (mapcat (fn [[_ range-start range-end-inclusive]]
+                 (let [r-start (parse-long range-start)
+                       r-end (parse-long range-end-inclusive)]
+                   (range r-start (inc r-end)))))))
 
 (def test-sequence (get-numeric-sequence test-input))
 
