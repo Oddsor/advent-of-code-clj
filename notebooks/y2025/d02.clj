@@ -27,7 +27,7 @@
 
 (def test-sequence (get-numeric-sequence test-input))
 
-test-sequence
+(take 10 test-sequence)
 
 ; Hva definerer et ugyldig siffer? Det består av to repeterende nummer, som feks 11 (1,1), 123123 (123, 123),
 ; osv. Dette kan vi løse naivt ved å konvertere samtlige siffer til string, splitte på midten, og sjekke om de
