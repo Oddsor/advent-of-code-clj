@@ -2,7 +2,7 @@
 (ns y2025.d02
   (:require
     [advent-of-code-clj.input :as input]
-    [clojure.data :as data]))
+    [clojure.core.reducers :as r]))
 
 ; # 2025, dag 2
 
@@ -55,10 +55,12 @@
         (recur (* divisor 10))
         (= q r)))))
 
-; Da er det bare å summere ugyldige tall basert på et predikat:
+; Da er det bare å summere ugyldige tall basert på et predikat. Vi kan kaste litt flere tråder
+; på problemet ved å bruke `fold` fra reducers-namespacet (men kun dersom vi konverterer listen
+; med siffer til en vektor):
 
 (defn sum-all-invalid-numbers [predicate-fn numeric-sequence]
-  (transduce (filter predicate-fn) + numeric-sequence))
+  (r/fold + + (r/filter predicate-fn (vec numeric-sequence))))
 
 (= (sum-all-invalid-numbers two-repetitions? test-sequence) 1227775554)
 
@@ -82,10 +84,10 @@
       (cond
         (> partition-size max-partition) false
         (not= 0 (mod str-len partition-size)) (recur (inc partition-size))
-        :else (let [parts (partitionv-all partition-size numeric-string)]
-                (if (apply = parts)
-                  true ; All partitions are equal?
-                  (recur (inc partition-size))))))))
+        (apply = (if (= 1 partition-size)
+                   numeric-string
+                   (partitionv-all partition-size numeric-string))) true
+        :else (recur (inc partition-size))))))
 
 (repeating-sequence? 12341234)
 (repeating-sequence? 123123123)
