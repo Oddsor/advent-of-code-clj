@@ -1,3 +1,4 @@
+^:kindly/hide-code
 (ns y2025.d02
   (:require
     [advent-of-code-clj.input :as input]
