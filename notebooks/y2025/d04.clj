@@ -66,13 +66,14 @@ test-matrix
 ; Vi oppretter en funksjon for å visualisere hvilke papirruller
 ; som er tilgjengelige:
 
-(defn print-matrix [[y x :as dims] accessible input-map]
+(defn print-matrix [[y x :as _dims] accessible input-map]
   ^:kind/hiccup
   [:pre
    (with-out-str
      (mx/pm (mx/emap-indexed (fn [node _]
                                (cond (accessible node) \X
-                                     :else (input-map node)))
+                                     :else (let [x (input-map node)]
+                                             (if (= x \.) \space x))))
                              (mx/new-matrix (inc y) (inc x)))))])
 
 (print-matrix [(dec (count (first test-matrix))) (dec (count test-matrix))]
