@@ -14,8 +14,8 @@
 ; av papirruller. Oppgaven blir å finne tilgjengelige papirruller,
 ; definert ved at det er nok "luft" rundt papirrullen.
 
-; Med andre ord skal vi finne alle papirruller som ikke er omgitt av
-; mer enn 4 andre papirruller.
+; Med andre ord skal vi finne alle papirruller som er omgitt av
+; færre enn 4 andre papirruller.
 
 (def test-input "..@@.@@@@.
 @@@.@.@.@@
