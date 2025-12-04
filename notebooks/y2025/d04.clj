@@ -74,9 +74,9 @@ test-matrix
                                (cond (accessible node) \X
                                      :else (let [x (input-map node)]
                                              (if (= x \.) \space x))))
-                             (mx/new-matrix (inc y) (inc x)))))])
+                             (mx/new-matrix y x))))])
 
-(print-matrix [(dec (count (first test-matrix))) (dec (count test-matrix))]
+(print-matrix [(count (first test-matrix)) (count test-matrix)]
               test-accessible-rolls
               test-map)
 
@@ -109,15 +109,12 @@ test-matrix
 ; fjerne rullene og starte på nytt, helt til vi ikke lenger kan fjerne ruller.
 
 (defn part-2 [input]
-  (let [matrix (utils/text->matrix input)
-        init-map (utils/coord-map-fixed matrix)]
-    (loop [coord-map init-map
-           removed-rolls #{}]
-      (let [accessible-rolls (find-accessible-rolls coord-map)]
-        (if (empty? accessible-rolls)
-          (count removed-rolls)
-          (recur (medley/remove-keys accessible-rolls coord-map)
-                 (into removed-rolls accessible-rolls)))))))
+  (loop [coord-map (->> input utils/text->matrix utils/coord-map-fixed)
+         removed-rolls #{}]
+    (if-let [accessible-rolls (not-empty (find-accessible-rolls coord-map))]
+      (recur (medley/remove-keys accessible-rolls coord-map)
+             (into removed-rolls accessible-rolls))
+      (count removed-rolls))))
 
 (delay (part-2 test-input))
 
