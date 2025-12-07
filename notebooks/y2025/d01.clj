@@ -76,22 +76,19 @@ L82")
 ; feil svar på ekte input.
 
 (defn apply-movement [start increment]
-  (loop [current start
-         num-zeroes 0
-         remaining increment]
-    (if (zero? remaining)
-      [current num-zeroes]
-      (let [new-pos (mod (if (pos? remaining)
-                           (inc current)
-                           (dec current)) 100)
-            n-remaining (if (pos? remaining)
-                          (dec remaining)
-                          (inc remaining))]
-        (recur new-pos
-               (if (zero? new-pos)
-                 (inc num-zeroes)
-                 num-zeroes)
-               n-remaining)))))
+  (let [dir-fn (if (neg? increment) dec inc)
+        dec-fn (if (neg? increment) inc dec)]
+    (loop [current start
+           num-zeroes 0
+           remaining increment]
+      (if (zero? remaining)
+        [current num-zeroes]
+        (let [new-pos (mod (dir-fn current) 100)]
+          (recur new-pos
+                 (if (zero? new-pos)
+                   (inc num-zeroes)
+                   num-zeroes)
+                 (dec-fn remaining)))))))
 
 (apply-movement 50 1000)
 (apply-movement 50 -68)
@@ -104,7 +101,7 @@ L82")
       (let [[new-pos hits] (apply-movement pos increment)]
         (recur (long new-pos)
                remainder
-               (+ num-zeroes ^long  hits)))
+               (+ num-zeroes ^long hits)))
       num-zeroes)))
 
 (part-2 test-increments)
