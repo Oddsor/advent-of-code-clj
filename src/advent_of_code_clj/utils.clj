@@ -124,3 +124,5 @@
             (recur (into queue' neighbour->cost)
                    seen'
                    min-cost)))))))
+(defn ->lines [text]
+  (String/.split text "\n"))
