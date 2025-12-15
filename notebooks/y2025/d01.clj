@@ -1,7 +1,8 @@
 ^:kindly/hide-code
 (ns y2025.d01
   (:require
-    [advent-of-code-clj.input :as input]))
+    [advent-of-code-clj.input :as input]
+    [clojure.string :as str]))
 
 ; # 2025, dag 1
 
@@ -31,14 +32,11 @@ L82")
 
 ; Først trenger vi å omforme teksten til en sekvens av tall:
 
-(defn line->increment [line]
-  (let [[dir n] [(first line) (Integer/parseInt (subs line 1))]]
-    (case dir
-      \L (- n)
-      \R n)))
-
 (defn parse-input [input-text]
-  (map line->increment (String/.split input-text "\n")))
+  (->> (str/replace input-text #"[LR]" {"L" "-"
+                                        "R" ""})
+       str/split-lines
+       (mapv Integer/parseInt)))
 
 (def test-increments
   (parse-input test-data))
