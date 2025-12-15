@@ -39,20 +39,20 @@
         right-side (subs numeric-string (/ str-len 2) str-len)]
     (= left-side right-side)))
 
-(two-repetitions? 11)
-(two-repetitions? 12)
-(two-repetitions? 123123)
-(two-repetitions? 123122)
+; Eller ved regex hvor vi fanger opp et mønster, og sier at det skal følges 
+; av samme mønster en gang til:
 
-^{:kindly/hide-code true
-  :kind/hidden true}
-(defn is-invalid-number? [number]
-  (loop [divisor 10]
-    (let [q (quot number divisor)
-          r (rem number divisor)]
-      (if (< r q)
-        (recur (* divisor 10))
-        (= q r)))))
+(defn two-repetitions-re? [number]
+  (re-matches #"([0-9]+)\1" (str number)))
+
+(two-repetitions? 11)
+(two-repetitions-re? 11)
+(two-repetitions? 12)
+(two-repetitions-re? 12)
+(two-repetitions? 123123)
+(two-repetitions-re? 123123)
+(two-repetitions? 123122)
+(two-repetitions-re? 123122)
 
 ; Da er det bare å summere ugyldige tall basert på et predikat. Vi kan kaste litt flere tråder
 ; på problemet ved å bruke `fold` fra reducers-namespacet (men kun dersom vi konverterer listen
@@ -64,7 +64,7 @@
 (= (sum-all-invalid-numbers two-repetitions? test-sequence) 1227775554)
 
 (delay
-  (sum-all-invalid-numbers two-repetitions? (get-numeric-sequence (input/get-input 2025 2))))
+  (sum-all-invalid-numbers two-repetitions-re? (get-numeric-sequence (input/get-input 2025 2))))
 
 ; ## Del 2
 
@@ -80,28 +80,38 @@
         str-len (count numeric-string)
         max-partition (/ str-len 2)]
     (loop [partition-size 1]
-      (cond
-        (> partition-size max-partition) false
-        (not= 0 (mod str-len partition-size)) (recur (inc partition-size))
-        (apply = (if (= 1 partition-size)
-                   numeric-string
-                   (partitionv-all partition-size numeric-string))) true
-        :else (recur (inc partition-size))))))
+      (if (> partition-size max-partition) false
+          (let [search-string (subs numeric-string 0 partition-size)
+                pattern (re-pattern (str "^(" search-string ")+$"))]
+            (if (re-matches pattern numeric-string)
+              true
+              (recur (inc partition-size))))))))
+
+; Eller vi kan bruke samme regex-triks som over, men denne gangen sier vi at
+; mønsteret kan repetere en eller flere ganger
+
+(defn repeating-sequence-re? [number]
+  (let [numeric-string (str number)]
+    (re-matches #"^([0-9]+)\1+$" numeric-string)))
 
 (repeating-sequence? 12341234)
 (repeating-sequence? 123123123)
 (repeating-sequence? 111111111111)
 (repeating-sequence? 1188511885)
 (repeating-sequence? 2121212121)
+(repeating-sequence-re? 12341234)
+(repeating-sequence-re? 123123123)
+(repeating-sequence-re? 111111111111)
+(repeating-sequence-re? 1188511885)
+(repeating-sequence-re? 2121212121)
 
 (filter repeating-sequence? test-sequence)
 
-; En mye tregere komputasjon, men løser iallfall oppgaven:
+; En litt tregere komputasjon, men løser iallfall oppgaven:
 
 (= 4174379265 (sum-all-invalid-numbers repeating-sequence? test-sequence))
 
 ; Resultat for del 2:
 
-(delay
-  (sum-all-invalid-numbers repeating-sequence?
-                           (get-numeric-sequence (input/get-input 2025 2))))
+(sum-all-invalid-numbers repeating-sequence-re?
+                         (get-numeric-sequence (input/get-input 2025 2)))
