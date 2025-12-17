@@ -1,5 +1,5 @@
 {:paths ["notebooks" "src"]
- :deps {org.clojure/clojure {:mvn/version "1.12.3"}
+ :deps {org.clojure/clojure {:mvn/version "1.12.4"}
         com.rpl/specter {:mvn/version "1.1.6"}
         meander/epsilon {:mvn/version "0.0.650"}
         datascript/datascript {:mvn/version "1.7.8"}
@@ -16,7 +16,7 @@
         org.clojure/math.numeric-tower {:mvn/version "0.1.0"}
         expresso/expresso {:mvn/version "0.2.4"}
         dev.weavejester/medley {:mvn/version "1.9.0"}
-        io.github.nextjournal/clerk {:git/sha "c0b56ff8e470aa0e122f6588b18d52013d23cfb1"
+        io.github.nextjournal/clerk {:git/sha "3133ffbb8131e297d3ad2305c0ed0772140d119a"
                                      :git/url "https://github.com/nextjournal/clerk"}
         instaparse/instaparse {:mvn/version "1.5.0"}
         org.clojure/core.match {:mvn/version "1.1.0"}
@@ -34,8 +34,8 @@
         aysylu/loom {:mvn/version "1.0.2"}
         org.clojure/data.priority-map {:mvn/version "1.2.0"}
         askonomm/dompa {:git/url "https://github.com/askonomm/dompa"
-                        :git/tag "v1.1.0"
-                        :git/sha "a30919848d19168b4010f37d29c0a42a2c9f8f77"}
+                        :git/tag "v1.2.0"
+                        :git/sha "eb565a2a5c3dc5b1238fb9c175037121e86c1060"}
         net.cgrand/xforms {:mvn/version "0.19.6"}
         org.clj-commons/claypoole {:mvn/version "1.2.2"}}
  :aliases
