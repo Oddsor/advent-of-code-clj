@@ -8,18 +8,18 @@
         criterium/criterium {:mvn/version "0.4.6"}
         #_#_pangloss/pattern {:git/url "https://github.com/pangloss/pattern"
                               :git/sha "affc7f3ac907f5b98de6638574a741e4693f1648"}
-        techascent/tech.ml.dataset {:mvn/version "7.067"}
+        techascent/tech.ml.dataset {:mvn/version "8.015"}
         org.flatland/ordered {:mvn/version "1.15.12"}
         com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.4.0"}
-        djblue/portal {:mvn/version "0.62.0"}
-        org.clojure/math.combinatorics {:mvn/version "0.3.0"}
-        org.clojure/math.numeric-tower {:mvn/version "0.1.0"}
+        djblue/portal {:mvn/version "0.63.1"}
+        org.clojure/math.combinatorics {:mvn/version "0.3.2"}
+        org.clojure/math.numeric-tower {:mvn/version "0.1.1"}
         expresso/expresso {:mvn/version "0.2.4"}
         dev.weavejester/medley {:mvn/version "1.9.0"}
-        io.github.nextjournal/clerk {:git/sha "3133ffbb8131e297d3ad2305c0ed0772140d119a"
+        io.github.nextjournal/clerk {:git/sha "3d1fd5fade862fed487af32d921677dc84fcdea9"
                                      :git/url "https://github.com/nextjournal/clerk"}
         instaparse/instaparse {:mvn/version "1.5.0"}
-        org.clojure/core.match {:mvn/version "1.1.0"}
+        org.clojure/core.match {:mvn/version "1.1.1"}
         com.github.flow-storm/flow-storm-dbg {:mvn/version "4.5.9"}
         philoskim/debux {:mvn/version "0.9.1"}
         lambdaisland/regal {:mvn/version "0.1.175"}
@@ -27,19 +27,19 @@
         com.taoensso/nippy {:mvn/version "3.6.0"}
         org.babashka/http-client {:mvn/version "0.4.23"}
         net.mikera/vectorz-clj {:mvn/version "0.48.0"}
-        org.scicloj/clay {:mvn/version "2.0.3"}
-        org.scicloj/kindly {:mvn/version "4-beta21"}
+        org.scicloj/clay {:mvn/version "2.0.14"}
+        org.scicloj/kindly {:mvn/version "4-beta23"}
         uncomplicate/fluokitten {:mvn/version "0.10.0"}
-        metosin/malli {:mvn/version "0.20.0"}
+        metosin/malli {:mvn/version "0.20.1"}
         aysylu/loom {:mvn/version "1.0.2"}
-        org.clojure/data.priority-map {:mvn/version "1.2.0"}
+        org.clojure/data.priority-map {:mvn/version "1.2.1"}
         askonomm/dompa {:git/url "https://github.com/askonomm/dompa"
-                        :git/tag "v1.2.0"
-                        :git/sha "eb565a2a5c3dc5b1238fb9c175037121e86c1060"}
+                        :git/tag "v1.2.2"
+                        :git/sha "94f5f3c21f8ad352e149b59ce3a5fa3ae98acb91"}
         net.cgrand/xforms {:mvn/version "0.19.6"}
         org.clj-commons/claypoole {:mvn/version "1.2.2"}}
  :aliases
- {:profiler {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.6.2"}}
+ {:profiler {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.7.0"}}
              :jvm-opts ["-Djdk.attach.allowAttachSelf"]}
   :dev {:extra-paths ["test"]}
   :outdated {:deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
