@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-java@v5 # ratchet:exclude
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '25'
 
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@02f5a82b79a547523e664fe8a7a32ea14884d7b2 # ratchet:DeLaGuardo/setup-clojure@13.6.0
