@@ -115,7 +115,7 @@
 (defn prep-input [input]
   ; ?s slik at `.` matcher newline også
   ;`\Z` for å matche slutten av filen (fanger opp `don't` som ikke følges av en `do`)
-  (String/.replaceAll input prep-pattern ""))
+  (String/.replaceAll input "(?s)don't\\(\\).*?(?:do\\(\\)|\\Z)" ""))
 
 (prep-input "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?don't()mul(8,5))")
 
