@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'master'
+  workflow_dispatch:
 
 jobs:
   # Build job
@@ -12,36 +13,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6 # ratchet:exclude
-      - name: Prepare java
-        uses: actions/setup-java@v5 # ratchet:exclude
-        with:
-          distribution: 'temurin'
-          java-version: '25'
-
-      - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@02f5a82b79a547523e664fe8a7a32ea14884d7b2 # ratchet:DeLaGuardo/setup-clojure@13.6.0
-        with:
-          cli: 1.12.4.1618
       - name: Build notebooks
         env:
           INPUT_SALT: ${{ secrets.INPUT_SALT }}
-        run: make build-clerk
-
-      - name: Build clay
-        env:
-          INPUT_SALT: ${{ secrets.INPUT_SALT }}
-        run: make build-clay
-
-      # Optional step:
-      - name: Cache clojure dependencies
-        uses: actions/cache@v5 # ratchet:exclude
-        with:
-          path: |
-            ~/.m2/repository
-            ~/.gitlibs
-            ~/.deps.clj
-          key: cljdeps-${{ hashFiles('deps.edn') }}
-          restore-keys: cljdeps-
+        run: |
+         make docker-clerk
+         make docker-clay
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4 # ratchet:exclude
 

@@ -32,3 +32,11 @@ lint: # Build and run jar-file
 .PHONY: test
 test: # Run tests
 	bin/kaocha
+
+.PHONY: docker-clay
+docker-clay: # Build clay using docker image
+	docker run --rm -v $(PWD):/usr/src/app -w /usr/src/app -e INPUT_SALT=$(INPUT_SALT) docker.io/clojure:tools-deps clj -X:buildclay
+
+.PHONY: docker-clay
+docker-clerk: # Build clay using docker image
+	docker run --rm -v $(PWD):/usr/src/app -w /usr/src/app -e INPUT_SALT=$(INPUT_SALT) docker.io/clojure:tools-deps clj -X:buildclerk
