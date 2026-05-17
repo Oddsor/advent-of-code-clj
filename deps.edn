@@ -1,5 +1,5 @@
 {:paths ["notebooks" "src"]
- :deps {org.clojure/clojure {:mvn/version "1.12.4"}
+ :deps {org.clojure/clojure {:mvn/version "1.12.5"}
         com.rpl/specter {:mvn/version "1.1.6"}
         meander/epsilon {:mvn/version "0.0.650"}
         datascript/datascript {:mvn/version "1.7.8"}
@@ -8,15 +8,15 @@
         criterium/criterium {:mvn/version "0.4.6"}
         #_#_pangloss/pattern {:git/url "https://github.com/pangloss/pattern"
                               :git/sha "affc7f3ac907f5b98de6638574a741e4693f1648"}
-        techascent/tech.ml.dataset {:mvn/version "8.015"}
+        techascent/tech.ml.dataset {:mvn/version "8.021"}
         org.flatland/ordered {:mvn/version "1.15.12"}
         com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.4.0"}
-        djblue/portal {:mvn/version "0.63.1"}
+        djblue/portal {:mvn/version "0.64.1"}
         org.clojure/math.combinatorics {:mvn/version "0.3.2"}
         org.clojure/math.numeric-tower {:mvn/version "0.1.1"}
         expresso/expresso {:mvn/version "0.2.4"}
-        dev.weavejester/medley {:mvn/version "1.9.0"}
-        io.github.nextjournal/clerk {:git/sha "3d1fd5fade862fed487af32d921677dc84fcdea9"
+        dev.weavejester/medley {:mvn/version "1.10.0"}
+        io.github.nextjournal/clerk {:git/sha "83248053c8a55234c64fa1899d4b1b55e65b0893"
                                      :git/url "https://github.com/nextjournal/clerk"}
         instaparse/instaparse {:mvn/version "1.5.0"}
         org.clojure/core.match {:mvn/version "1.1.1"}
@@ -24,12 +24,12 @@
         philoskim/debux {:mvn/version "0.9.1"}
         lambdaisland/regal {:mvn/version "0.1.175"}
         io.github.cdimascio/dotenv-java {:mvn/version "3.2.0"}
-        com.taoensso/nippy {:mvn/version "3.6.0"}
+        com.taoensso/nippy {:mvn/version "3.6.2"}
         org.babashka/http-client {:mvn/version "0.4.23"}
         net.mikera/vectorz-clj {:mvn/version "0.48.0"}
-        org.scicloj/clay {:mvn/version "2.0.14"}
+        org.scicloj/clay {:mvn/version "2.0.16"}
         org.scicloj/kindly {:mvn/version "4-beta23"}
-        uncomplicate/fluokitten {:mvn/version "0.10.0"}
+        uncomplicate/fluokitten {:mvn/version "0.10.1"}
         metosin/malli {:mvn/version "0.20.1"}
         aysylu/loom {:mvn/version "1.0.2"}
         org.clojure/data.priority-map {:mvn/version "1.2.1"}

@@ -20,7 +20,7 @@ jobs:
          make docker-clerk
          make docker-clay
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4 # ratchet:exclude
+        uses: actions/upload-pages-artifact@v5 # ratchet:exclude
 
   # Deployment job
   deploy:
