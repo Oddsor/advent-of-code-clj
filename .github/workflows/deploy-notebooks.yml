@@ -12,13 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6 # ratchet:exclude
+        uses: actions/checkout@v7 # ratchet:exclude
       - name: Build notebooks
         env:
           INPUT_SALT: ${{ secrets.INPUT_SALT }}
         run: |
-         make docker-clerk
-         make docker-clay
+          make docker-clerk
+          make docker-clay
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5 # ratchet:exclude
 
