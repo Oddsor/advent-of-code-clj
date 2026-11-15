@@ -1,0 +1,10 @@
+{
+    "image": "docker.io/clojure:temurin-27-tools-deps-trixie",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "betterthantomorrow.calva"
+            ]
+        }
+    }
+}

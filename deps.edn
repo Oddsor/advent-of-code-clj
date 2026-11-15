@@ -7,14 +7,14 @@
         ubergraph/ubergraph {:mvn/version "0.9.0"}
         criterium/criterium {:mvn/version "0.4.6"}
         techascent/tech.ml.dataset {:mvn/version "8.027"}
-        org.flatland/ordered {:mvn/version "1.15.12"}
+        org.flatland/ordered {:mvn/version "1.16.13"}
         com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.5.0"}
-        djblue/portal {:mvn/version "0.68.1"}
+        djblue/portal {:mvn/version "0.69.2"}
         org.clojure/math.combinatorics {:mvn/version "0.3.2"}
         org.clojure/math.numeric-tower {:mvn/version "0.1.1"}
         expresso/expresso {:mvn/version "0.2.4"}
         dev.weavejester/medley {:mvn/version "1.10.0"}
-        io.github.nextjournal/clerk {:git/sha "6ad6516b65a2422b12f17905d1ecb7ad2ddc94d1"
+        io.github.nextjournal/clerk {:git/sha "5f8a7ce2827ad61f520dea1f6f5e9cc779d11305"
                                      :git/url "https://github.com/nextjournal/clerk"}
         instaparse/instaparse {:mvn/version "1.5.0"}
         org.clojure/core.match {:mvn/version "1.1.1"}
@@ -23,23 +23,17 @@
         lambdaisland/regal {:mvn/version "0.1.175"}
         io.github.cdimascio/dotenv-java {:mvn/version "3.2.0"}
         com.taoensso/nippy {:mvn/version "3.9.0"}
-        org.babashka/http-client {:mvn/version "0.4.25"}
+        org.babashka/http-client {:mvn/version "0.4.26"}
         net.mikera/vectorz-clj {:mvn/version "0.48.0"}
-        org.scicloj/clay {:mvn/version "2.0.23"}
+        org.scicloj/clay {:mvn/version "2.0.24"}
         org.scicloj/kindly {:mvn/version "4-beta25"}
         uncomplicate/fluokitten {:mvn/version "0.10.3"}
         metosin/malli {:mvn/version "0.20.3"}
-        aysylu/loom {:mvn/version "1.2.3"}
+        aysylu/loom {:mvn/version "1.2.4"}
         org.clojure/data.priority-map {:mvn/version "1.2.1"}
-        askonomm/dompa {:git/url "https://github.com/askonomm/dompa"
-                        :git/tag "v1.2.2"
-                        :git/sha "94f5f3c21f8ad352e149b59ce3a5fa3ae98acb91"}
-        net.cgrand/xforms {:mvn/version "0.19.6"}
-        org.clj-commons/claypoole {:mvn/version "1.2.2"}
-        org.replikativ/raster {:git/url "https://github.com/replikativ/raster"
-                               :git/sha "8b090c941cc44ffe71c02a2a311abd0823fe2386"}}
+        net.cgrand/xforms {:mvn/version "0.19.6"}}
  :aliases
- {:profiler {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.8.0"}}
+ {:profiler {:extra-deps {com.clojure-goes-fast/clj-async-profiler {:mvn/version "1.9.0"}}
              :jvm-opts ["-Djdk.attach.allowAttachSelf"]}
   :dev {:extra-paths ["test"]}
   :valhalla {:jvm-opts ["--enable-preview"]}
@@ -50,6 +44,9 @@
 
   :buildclerk {:exec-fn clerk/build-notebooks!}
   :buildclay {:exec-fn clay/build-notebooks!}
+  :neil {:deps {io.github.babashka/neil {:git/tag "v0.3.71"
+                                         :git/sha "78e11f7"}}
+         :main-opts ["-m" "babashka.neil"]}
   :test ;; added by neil
   {:extra-paths ["test"]
    :extra-deps {io.github.cognitect-labs/test-runner
