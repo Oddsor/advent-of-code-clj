@@ -21,7 +21,7 @@
     {:slope  m
      :offset (- y (* m x))}))
 
-(defn intercept [line1 line2]
+(defn intersect [line1 line2]
   (try
     (let [x (/ (- (:offset line1) (:offset line2))
                (- (:slope  line2) (:slope  line1)))]
@@ -52,7 +52,7 @@
                                    (let [a (get hailstones i)
                                          b (get hailstones j)]
                                      {:a a :b b
-                                      :intercept (intercept (:line a) (:line b))})))
+                                      :intercept (intersect (:line a) (:line b))})))
         in-test-area? (fn [{{:keys [x y]} :intercept}]
                         (and (>= max-x x min-x)
                              (>= max-x y min-x)))
