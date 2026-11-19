@@ -3,8 +3,7 @@
   (:require
     [advent-of-code-clj.input :as input]
     [clojure.math.combinatorics :as combinatorics]
-    [clojure.string :as str]
-    [taoensso.tufte :as t]))
+    [clojure.string :as str]))
 
 ; # 2025, dag 9
 
@@ -77,24 +76,23 @@
 (defn intersection
   "Reimplementert algoritme fra https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line_segment"
   [[a1 a2] [b1 b2]]
-  (t/p :intersection
-       (let [{x1 :x y1 :y} a1
-             {x2 :x y2 :y} a2
-             {x3 :x y3 :y} b1
-             {x4 :x y4 :y} b2
-             denom (- (* (- x1 x2) (- y3 y4))
-                      (* (- y1 y2) (- x3 x4)))
-             t (try (/ (- (* (- x1 x3) (- y3 y4))
-                          (* (- y1 y3) (- x3 x4)))
-                       denom)
-                    (catch ArithmeticException _ 1000))
-             u (try (- (/ (- (* (- x1 x2) (- y1 y3))
-                             (* (- y1 y2) (- x1 x3)))
-                          denom))
-                    (catch ArithmeticException _ 1000))]
-         (when (and (<= 0 t 1) (<= 0 u 1))
-           {:x (+ x1 (* (- x2 x1) t))
-            :y (+ y1 (* (- y2 y1) t))}))))
+  (let [{x1 :x y1 :y} a1
+        {x2 :x y2 :y} a2
+        {x3 :x y3 :y} b1
+        {x4 :x y4 :y} b2
+        denom (- (* (- x1 x2) (- y3 y4))
+                 (* (- y1 y2) (- x3 x4)))
+        t (try (/ (- (* (- x1 x3) (- y3 y4))
+                     (* (- y1 y3) (- x3 x4)))
+                  denom)
+               (catch ArithmeticException _ 1000))
+        u (try (- (/ (- (* (- x1 x2) (- y1 y3))
+                        (* (- y1 y2) (- x1 x3)))
+                     denom))
+               (catch ArithmeticException _ 1000))]
+    (when (and (<= 0 t 1) (<= 0 u 1))
+      {:x (+ x1 (* (- x2 x1) t))
+       :y (+ y1 (* (- y2 y1) t))})))
 
 (defn polygon-edges [points]
   (->> (partitionv 2 1 points)
@@ -103,8 +101,6 @@
               (let [[min-x max-x] ((juxt min max) (:x a) (:x b))
                     [min-y max-y] ((juxt min max) (:y a) (:y b))]
                 [min-x max-x min-y max-y])))))
-
-(comment (t/add-handler! :my-console-handler (t/handler:console)))
 
 (defn intersects-rectangle? [p-min-x p-max-x p-min-y p-max-y rectangle-min-x rectangle-max-x rectangle-min-y rectangle-max-y]
   (cond
@@ -120,22 +116,21 @@
     :else nil))
 
 (defn valid-fast? [polygon solution]
-  (t/p :valid-fast?
-       (let [[_area p1 p2] solution
-             r-min-x (min (:x p1) (:x p2))
-             r-max-x (max (:x p1) (:x p2))
-             r-min-y (min (:y p1) (:y p2))
-             r-max-y (max (:y p1) (:y p2))]
-         (not-any? (fn [[a b c d]]
-                     (intersects-rectangle? a b c d r-min-x r-max-x r-min-y r-max-y)) 
-                   polygon))))
+  (let [[_area p1 p2] solution
+        r-min-x (min (:x p1) (:x p2))
+        r-max-x (max (:x p1) (:x p2))
+        r-min-y (min (:y p1) (:y p2))
+        r-max-y (max (:y p1) (:y p2))]
+    (not-any? (fn [[a b c d]]
+                (intersects-rectangle? a b c d r-min-x r-max-x r-min-y r-max-y)) 
+              polygon)))
 
 (defn part-2-faster [input]
   (let [points (points input)
         polygon (polygon-edges points)
-        solutions (t/p :with-area-and-sort (->> points
-                                                with-area
-                                                (sort-by first >)))]
+        solutions (->> points
+                       with-area
+                       (sort-by first >))]
     (first (filter #(valid-fast? polygon %) solutions))))
 
 (part-2-faster test-input)
