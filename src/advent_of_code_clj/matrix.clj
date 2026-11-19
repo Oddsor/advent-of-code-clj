@@ -9,7 +9,7 @@
   (->> xs-of-xses
        (map-indexed (fn [idy xs]
                       (map-indexed (fn [idx v]
-                                     [[idy idx] v])
+                                     {[idy idx] v})
                                    xs)))
        (transduce cat merge)))
 
