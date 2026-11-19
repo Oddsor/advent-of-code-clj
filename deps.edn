@@ -1,5 +1,5 @@
 {:paths ["notebooks" "src"]
- :deps {org.clojure/clojure {:mvn/version "1.13.0-alpha11"}
+ :deps {org.clojure/clojure {:mvn/version "1.12.7"}
         com.rpl/specter {:mvn/version "1.1.6"}
         meander/epsilon {:mvn/version "0.0.650"}
         datascript/datascript {:mvn/version "1.8.1"}
